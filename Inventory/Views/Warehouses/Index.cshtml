@@ -1,0 +1,105 @@
+﻿@model PagingList<Warehouse>
+
+@{
+    ViewData["Title"] = "Depósito";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="get" class="nput-group mb-3">
+
+    <div class="input-group mb-3">
+        <input name="filter" class="form-control" placeholder="filtro"
+               value="@Model.RouteValue["Filter"]" />
+
+        <button type="submit" class="btn btn-info">Procurar</button>
+    </div>
+</form>
+
+<p>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#create-modal">
+        Novo Depósito
+    </button>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" onclick="actionEdit(@item.Id)" data-bs-target="#edit-modal"> Editar</button>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-success">Details</a>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" onclick="actionDelete(@item.Id)" data-bs-target="#delete-modal">Deletar</button>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <vc:pager paging-list="@Model"></vc:pager>
+</div>
+
+<!--Modal Create-->
+<div class="modal fade" id="create-modal" tabindex="-1" aria-labelledby="create-modalLabel" aria-hidden="true">
+    @await Html.PartialAsync("~/Views/Addressings/Create.cshtml", new Addressing())
+</div>
+
+<!--Modal Edit-->
+<div class="modal fade" id="edit-modal" tabindex="-1" aria-labelledby="create-modalLabel" aria-hidden="true">
+    @await Html.PartialAsync("~/Views/Addressings/Edit.cshtml", new Addressing())
+</div>
+
+<!--Modal Delete-->
+<div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="create-modalLabel" aria-hidden="true">
+    @await Html.PartialAsync("~/Views/Addressings/Delete.cshtml", new Addressing())
+</div>
+
+@section Scripts{
+
+    <script type="text/javascript">
+
+        function actionEdit(id) {
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("Edit")',
+                dataType: 'html',
+                data: { id: id },
+                cache: false,
+                async: true,
+                success: function (data) {
+                    $('#edit-modal').html(data);
+                }
+            });
+        }
+
+        function actionDelete(id) {
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("Delete")',
+                dataType: 'html',
+                data: { id: id },
+                cache: false,
+                async: true,
+                success: function (data) {
+                    $('#delete-modal').html(data);
+                }
+            });
+        }
+
+    </script>
+    }

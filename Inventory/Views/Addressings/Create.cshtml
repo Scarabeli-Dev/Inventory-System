@@ -1,0 +1,26 @@
+﻿@model Addressing
+
+@{
+    ViewData["Title"] = "Nova Prateleira";
+}
+
+<h5>@ViewData["Title"]</h5>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create" asp-controller="Addressings">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="WarehouseId" /> <!-- Hidden for Warehouse Id -->
+            <label asp-for="Name" class="control-label"></label>
+            <div class="input-group mb-3">
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+                <input type="submit" value="Cadastrar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@*@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}*@

@@ -1,0 +1,58 @@
+﻿@model Warehouse
+
+@{
+    string filter = ViewBag.Filter;
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Stock</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+    </dl>
+</div>
+
+<div id="locations">
+    <div id="modal-form" aria-hidden="true">
+    </div>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script type="text/javascript">
+
+        $.ready(loadAddressings(@Model.Id, @filter))
+
+        function loadAddressings(stockId, filter) {
+            $.ajax({
+                type: 'GET',
+                url: "/Addressings/Index",
+                dataType: 'html',
+                data: { stockId: stockId,
+                    filter: filter },
+                cache: false,
+                async: true,
+                success: function (data) {
+                    $('#modal-form').empty();
+                    $('#modal-form').append('<partial name = "/Addressings/Index" />');
+                    $('#modal-form').html(data);
+                }
+            });
+        }
+    </script>
+}
