@@ -23,8 +23,6 @@ namespace Inventory.Controllers
         {
             var addressings = await _addressingService.GetAddressingsByWarehouseIdAsync(stockId, filter, pageindex = 1, sort = "Name");
 
-            if (addressings.Count() == 0) return View();
-
             ViewBag.WarehouseId = stockId;
 
             return View(addressings);
@@ -59,10 +57,9 @@ namespace Inventory.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _addressingService.AddAddressingAsync(addressing);
+                _addressingService.Add(addressing);
 
-                //_context.Add(addressing);
-                //await _context.SaveChangesAsync();
+                await _addressingService.SaveChangesAsync();
                 return RedirectToAction("Details", "Warehouses", new { id = addressing.WarehouseId });
             }
             //ViewData["WarehouseId"] = new SelectList(_context.Warehouse, "Id", "Name", addressing.WarehouseId);

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inventory.Migrations
 {
     [DbContext(typeof(InventoryContext))]
-    [Migration("20230613190453_FirstMigration")]
+    [Migration("20230613215857_FirstMigration")]
     partial class FirstMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,19 +54,69 @@ namespace Inventory.Migrations
                     b.Property<bool>("AddressingCountRealized")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int?>("AddressingId")
+                    b.Property<int>("AddressingId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StockTakingStartId")
+                    b.Property<int>("InventoryStartId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AddressingId");
 
-                    b.HasIndex("StockTakingStartId");
+                    b.HasIndex("InventoryStartId");
 
                     b.ToTable("AddressingsStockTaking");
+                });
+
+            modelBuilder.Entity("Inventory.Models.InventoryMovement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("double");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("MovementDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("MovementeType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
+
+                    b.HasIndex("WarehouseId");
+
+                    b.ToTable("InventoryMovement");
+                });
+
+            modelBuilder.Entity("Inventory.Models.InventoryStart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("InventoryStartDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsCompleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime>("StockTakingFinishDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("InventoryStart");
                 });
 
             modelBuilder.Entity("Inventory.Models.Item", b =>
@@ -128,6 +178,9 @@ namespace Inventory.Migrations
                     b.Property<DateTime>("FabricationDate")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<int>("InventoryStartId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ItemBatch")
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
@@ -146,57 +199,13 @@ namespace Inventory.Migrations
                         .IsRequired()
                         .HasColumnType("double");
 
-                    b.Property<int>("StockTakingStartId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("ItemId");
+                    b.HasIndex("InventoryStartId");
 
-                    b.HasIndex("StockTakingStartId");
+                    b.HasIndex("ItemId");
 
                     b.ToTable("StockTaking");
-                });
-
-            modelBuilder.Entity("Inventory.Models.StockTakingItems", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("ItemId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StockTakingId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ItemId");
-
-                    b.HasIndex("StockTakingId");
-
-                    b.ToTable("StockTakingItems");
-                });
-
-            modelBuilder.Entity("Inventory.Models.StockTakingStart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsCompleted")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime>("StockTakingFinishDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("StockTakingStartDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("StockTakingStart");
                 });
 
             modelBuilder.Entity("Inventory.Models.Warehouse", b =>
@@ -426,15 +435,38 @@ namespace Inventory.Migrations
                 {
                     b.HasOne("Inventory.Models.Addressing", "Addressing")
                         .WithMany("StockTaking")
-                        .HasForeignKey("AddressingId");
+                        .HasForeignKey("AddressingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("Inventory.Models.StockTakingStart", "StockTakingStart")
+                    b.HasOne("Inventory.Models.InventoryStart", "InventoryStart")
                         .WithMany("Addressings")
-                        .HasForeignKey("StockTakingStartId");
+                        .HasForeignKey("InventoryStartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Addressing");
 
-                    b.Navigation("StockTakingStart");
+                    b.Navigation("InventoryStart");
+                });
+
+            modelBuilder.Entity("Inventory.Models.InventoryMovement", b =>
+                {
+                    b.HasOne("Inventory.Models.Item", "Item")
+                        .WithMany()
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Inventory.Models.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Item");
+
+                    b.Navigation("Warehouse");
                 });
 
             modelBuilder.Entity("Inventory.Models.ItemsAddressings", b =>
@@ -458,40 +490,21 @@ namespace Inventory.Migrations
 
             modelBuilder.Entity("Inventory.Models.StockTaking", b =>
                 {
+                    b.HasOne("Inventory.Models.InventoryStart", "InventoryStart")
+                        .WithMany()
+                        .HasForeignKey("InventoryStartId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Inventory.Models.Item", "Item")
                         .WithMany()
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Inventory.Models.StockTakingStart", "StockTakingStart")
-                        .WithMany()
-                        .HasForeignKey("StockTakingStartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("InventoryStart");
 
                     b.Navigation("Item");
-
-                    b.Navigation("StockTakingStart");
-                });
-
-            modelBuilder.Entity("Inventory.Models.StockTakingItems", b =>
-                {
-                    b.HasOne("Inventory.Models.Item", "Item")
-                        .WithMany()
-                        .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Inventory.Models.StockTaking", "StockTaking")
-                        .WithMany()
-                        .HasForeignKey("StockTakingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Item");
-
-                    b.Navigation("StockTaking");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -552,14 +565,14 @@ namespace Inventory.Migrations
                     b.Navigation("StockTaking");
                 });
 
+            modelBuilder.Entity("Inventory.Models.InventoryStart", b =>
+                {
+                    b.Navigation("Addressings");
+                });
+
             modelBuilder.Entity("Inventory.Models.Item", b =>
                 {
                     b.Navigation("Addressing");
-                });
-
-            modelBuilder.Entity("Inventory.Models.StockTakingStart", b =>
-                {
-                    b.Navigation("Addressings");
                 });
 
             modelBuilder.Entity("Inventory.Models.Warehouse", b =>

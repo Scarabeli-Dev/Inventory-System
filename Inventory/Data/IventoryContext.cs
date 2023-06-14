@@ -8,13 +8,14 @@ namespace Inventory.Data
     {
         public InventoryContext(DbContextOptions<InventoryContext> options) : base(options) { }
 
+        public DbSet<Addressing> Addressing { get; set; }
+        public DbSet<AddressingsStockTaking> AddressingsStockTaking { get; set; }
+        public DbSet<InventoryMovement> InventoryMovement { get; set; }
+        public DbSet<InventoryStart> InventoryStart { get; set; }
         public DbSet<Item> Item { get; set; }
         public DbSet<ItemsAddressings> ItemsAddressing { get; set; }
-        public DbSet<Addressing> Addressing { get; set; }
-        public DbSet<StockTakingItems> AddressingsStockTaking { get; set; }
-        public DbSet<Warehouse> Warehouse { get; set; }
         public DbSet<StockTaking> StockTaking { get; set; }
-        public DbSet<StockTakingItems> StockTakingStart { get; set; }
+        public DbSet<Warehouse> Warehouse { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

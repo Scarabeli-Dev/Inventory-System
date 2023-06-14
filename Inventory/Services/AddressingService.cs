@@ -15,14 +15,14 @@ namespace Inventory.Services
             _context = context;
         }
 
-        public async Task<Addressing> AddAddressingAsync(Addressing location)
+        public async Task<Addressing> AddAddressingAsync(Addressing addressing)
         {
 
-            _context.Add(location);
+            _context.Add(addressing);
 
             await _context.SaveChangesAsync();
 
-            return location;
+            return addressing;
 
         }
 

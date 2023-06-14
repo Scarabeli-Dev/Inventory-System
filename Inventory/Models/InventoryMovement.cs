@@ -4,6 +4,7 @@ namespace Inventory.Models
 {
     public class InventoryMovement
     {
+        public int Id { get; set; }
         public int ItemId { get; set; }
         public Item Item { get; set; }
         public MovementeType MovementeType { get; set; }

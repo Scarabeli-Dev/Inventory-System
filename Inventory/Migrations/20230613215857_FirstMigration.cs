@@ -68,6 +68,22 @@ namespace Inventory.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "InventoryStart",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    InventoryStartDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    StockTakingFinishDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    IsCompleted = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InventoryStart", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "Item",
                 columns: table => new
                 {
@@ -83,22 +99,6 @@ namespace Inventory.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Item", x => x.Id);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
-                name: "StockTakingStart",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    StockTakingStartDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    StockTakingFinishDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    IsCompleted = table.Column<bool>(type: "tinyint(1)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StockTakingStart", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -259,21 +259,21 @@ namespace Inventory.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     StockTakingObservation = table.Column<string>(type: "varchar(250)", maxLength: 250, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    StockTakingStartId = table.Column<int>(type: "int", nullable: false)
+                    InventoryStartId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_StockTaking", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_StockTaking_Item_ItemId",
-                        column: x => x.ItemId,
-                        principalTable: "Item",
+                        name: "FK_StockTaking_InventoryStart_InventoryStartId",
+                        column: x => x.InventoryStartId,
+                        principalTable: "InventoryStart",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_StockTaking_StockTakingStart_StockTakingStartId",
-                        column: x => x.StockTakingStartId,
-                        principalTable: "StockTakingStart",
+                        name: "FK_StockTaking_Item_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "Item",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -302,27 +302,30 @@ namespace Inventory.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "StockTakingItems",
+                name: "InventoryMovement",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    StockTakingId = table.Column<int>(type: "int", nullable: false),
-                    ItemId = table.Column<int>(type: "int", nullable: false)
+                    ItemId = table.Column<int>(type: "int", nullable: false),
+                    MovementeType = table.Column<int>(type: "int", nullable: false),
+                    WarehouseId = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<double>(type: "double", nullable: false),
+                    MovementDate = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StockTakingItems", x => x.Id);
+                    table.PrimaryKey("PK_InventoryMovement", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_StockTakingItems_Item_ItemId",
+                        name: "FK_InventoryMovement_Item_ItemId",
                         column: x => x.ItemId,
                         principalTable: "Item",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_StockTakingItems_StockTaking_StockTakingId",
-                        column: x => x.StockTakingId,
-                        principalTable: "StockTaking",
+                        name: "FK_InventoryMovement_Warehouse_WarehouseId",
+                        column: x => x.WarehouseId,
+                        principalTable: "Warehouse",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 })
@@ -334,8 +337,8 @@ namespace Inventory.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    AddressingId = table.Column<int>(type: "int", nullable: true),
-                    StockTakingStartId = table.Column<int>(type: "int", nullable: true),
+                    AddressingId = table.Column<int>(type: "int", nullable: false),
+                    InventoryStartId = table.Column<int>(type: "int", nullable: false),
                     AddressingCountRealized = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     AddressingCountEnded = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
@@ -346,12 +349,14 @@ namespace Inventory.Migrations
                         name: "FK_AddressingsStockTaking_Addressing_AddressingId",
                         column: x => x.AddressingId,
                         principalTable: "Addressing",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AddressingsStockTaking_StockTakingStart_StockTakingStartId",
-                        column: x => x.StockTakingStartId,
-                        principalTable: "StockTakingStart",
-                        principalColumn: "Id");
+                        name: "FK_AddressingsStockTaking_InventoryStart_InventoryStartId",
+                        column: x => x.InventoryStartId,
+                        principalTable: "InventoryStart",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -393,9 +398,9 @@ namespace Inventory.Migrations
                 column: "AddressingId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AddressingsStockTaking_StockTakingStartId",
+                name: "IX_AddressingsStockTaking_InventoryStartId",
                 table: "AddressingsStockTaking",
-                column: "StockTakingStartId");
+                column: "InventoryStartId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -435,6 +440,16 @@ namespace Inventory.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_InventoryMovement_ItemId",
+                table: "InventoryMovement",
+                column: "ItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_InventoryMovement_WarehouseId",
+                table: "InventoryMovement",
+                column: "WarehouseId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ItemsAddressing_AddressingId",
                 table: "ItemsAddressing",
                 column: "AddressingId");
@@ -445,24 +460,14 @@ namespace Inventory.Migrations
                 column: "ItemId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_StockTaking_InventoryStartId",
+                table: "StockTaking",
+                column: "InventoryStartId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_StockTaking_ItemId",
                 table: "StockTaking",
                 column: "ItemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StockTaking_StockTakingStartId",
-                table: "StockTaking",
-                column: "StockTakingStartId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StockTakingItems_ItemId",
-                table: "StockTakingItems",
-                column: "ItemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_StockTakingItems_StockTakingId",
-                table: "StockTakingItems",
-                column: "StockTakingId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -486,10 +491,13 @@ namespace Inventory.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "InventoryMovement");
+
+            migrationBuilder.DropTable(
                 name: "ItemsAddressing");
 
             migrationBuilder.DropTable(
-                name: "StockTakingItems");
+                name: "StockTaking");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -501,16 +509,13 @@ namespace Inventory.Migrations
                 name: "Addressing");
 
             migrationBuilder.DropTable(
-                name: "StockTaking");
-
-            migrationBuilder.DropTable(
-                name: "Warehouse");
+                name: "InventoryStart");
 
             migrationBuilder.DropTable(
                 name: "Item");
 
             migrationBuilder.DropTable(
-                name: "StockTakingStart");
+                name: "Warehouse");
         }
     }
 }

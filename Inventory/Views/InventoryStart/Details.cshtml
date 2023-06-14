@@ -1,0 +1,62 @@
+﻿@model InventoryStart
+
+@{
+    //List<AddressingsStockTaking> addressings = ViewBag.Addressings as List<AddressingsStockTaking>;
+
+    List<AddressingsStockTaking> stockTakingOpen = ViewBag.StockTakingOpen;
+    List<AddressingsStockTaking> stockTakingRealized = ViewBag.StockTakingRealized;
+    List<AddressingsStockTaking> stockTakingEnded = ViewBag.StockTakingEnded;
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>InventoryStart</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.InventoryStartDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.InventoryStartDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.StockTakingFinishDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.StockTakingFinishDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IsCompleted)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IsCompleted)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Addressings)
+        </dt>
+        @foreach (var item in stockTakingOpen)
+        {
+            <dd class="col-sm-10 bg-info">
+                @Html.DisplayFor(modelItem => item.Addressing.Name)
+            </dd>
+        }
+        @foreach (var item in stockTakingRealized)
+        {
+            <dd class="col-sm-10 bg-danger">
+                @Html.DisplayFor(modelItem => item.Addressing.Name)
+            </dd>
+        }
+        @foreach (var item in stockTakingEnded)
+        {
+            <dd class="col-sm-10 bg-success">
+                @Html.DisplayFor(modelItem => item.Addressing.Name)
+            </dd>
+        }
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

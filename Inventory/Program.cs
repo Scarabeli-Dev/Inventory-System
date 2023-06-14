@@ -35,6 +35,8 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 // Add Services
 builder.Services.AddScoped<IWarehouseService, WarehouseService>();
 builder.Services.AddScoped<IAddressingService, AddressingService>();
+builder.Services.AddScoped<IInventoryStartService, InventoryStartService>();
+builder.Services.AddScoped<IAddressingsStockTakingService, AddressingsStockTakingService>();
 builder.Services.AddScoped<IItemService, ItemService>();
 
 // Add Paging List

@@ -35,7 +35,7 @@ namespace Inventory.Models
 
         [Display(Name = "Contagem")]
         [Required(ErrorMessage = "{0} é obrigatório")]
-        public int StockTakingStartId { get; set; }
-        public StockTakingStart StockTakingStart { get; set; }
+        public int InventoryStartId { get; set; }
+        public InventoryStart InventoryStart { get; set; }
     }
 }
