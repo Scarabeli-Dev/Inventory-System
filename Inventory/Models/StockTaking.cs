@@ -7,13 +7,18 @@ namespace Inventory.Models
         [Key]
         public int Id { get; set; }
 
-        [Display(Name = "Data de Validade")]
+        [Display(Name = "Data da contagem")]
         public DateTime? StockTakingDate { get; set; }
 
         [Display(Name = "Item")]
         [Required(ErrorMessage = "{0} é obrigatório")]
         public int ItemId { get; set; }
         public Item Item { get; set; }
+
+        [Display(Name = "Endereçamento")]
+        [Required(ErrorMessage = "{0} é obrigatório")]
+        public int AddressingId { get; set; }
+        public Addressing Addressing { get; set; }
 
         [Display(Name = "Quantidade na Contagem")]
         [Required(ErrorMessage = "{0} é obrigatório")]

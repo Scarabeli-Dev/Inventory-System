@@ -10,11 +10,13 @@ namespace Inventory.Services
     {
         private readonly InventoryContext _context;
         private readonly IAddressingsStockTakingService _addressingsStockTakingService;
+        private readonly IAddressingService _addressingService;
 
-        public InventoryStartService(InventoryContext context, IAddressingsStockTakingService addressingsStockTakingService) : base(context)
+        public InventoryStartService(InventoryContext context, IAddressingsStockTakingService addressingsStockTakingService, IAddressingService addressingService) : base(context)
         {
             _context = context;
             _addressingsStockTakingService = addressingsStockTakingService;
+            _addressingService = addressingService;
         }
 
         public async Task CreateInventoryStartAsync(InventoryStart inventoryStart)
@@ -45,6 +47,16 @@ namespace Inventory.Services
         public async Task<InventoryStart> GetInventoryStartByIdAsync(int id)
         {
             return await _context.InventoryStart.Include(l => l.Addressings).ThenInclude(il => il.Addressing).FirstOrDefaultAsync(m => m.Id == id);
+        }
+
+        public async Task<InventoryStart> GetInventoryStartByAddressingAsync(int addressingId)
+        {
+            var addressing = await _addressingService.GetAddressingByIdAsync(addressingId);
+
+            var inventoryStart = await _context.InventoryStart.Include(l => l.Addressings)
+                                                              .ThenInclude(il => il.Addressing)
+                                                              .FirstOrDefaultAsync(i => i.IsCompleted != true);
+            return inventoryStart;
         }
     }
 }

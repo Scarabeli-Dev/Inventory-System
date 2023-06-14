@@ -36,15 +36,15 @@
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Addressings)
         </dt>
-        @foreach (var item in stockTakingOpen)
-        {
-            <dd class="col-sm-10 bg-info">
-                @Html.DisplayFor(modelItem => item.Addressing.Name)
-            </dd>
-        }
         @foreach (var item in stockTakingRealized)
         {
             <dd class="col-sm-10 bg-danger">
+                @Html.DisplayFor(modelItem => item.Addressing.Name)
+            </dd>
+        }
+        @foreach (var item in stockTakingOpen)
+        {
+            <dd class="col-sm-10 bg-info">
                 @Html.DisplayFor(modelItem => item.Addressing.Name)
             </dd>
         }

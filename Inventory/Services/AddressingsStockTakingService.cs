@@ -1,6 +1,7 @@
 ﻿using Inventory.Data;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Inventory.Services
 {
@@ -33,6 +34,25 @@ namespace Inventory.Services
                 _context.Add(addressingsStockTaking);
                 _context.SaveChanges();
             }
+        }
+
+        public async Task<AddressingsStockTaking> GetAddressingsStockTakingAddressingByIdAsync(int addressingId)
+        {
+            return await _context.AddressingsStockTaking.Include(x => x.Addressing)
+                                                        .Include(x => x.InventoryStart)
+                                                        .FirstOrDefaultAsync(a => a.AddressingId == addressingId);
+        }
+
+        public async Task<bool> SetAddressingCountRealizedTrueAsync(int addressingId)
+        {
+            var addressingsStockTaking = await GetAddressingsStockTakingAddressingByIdAsync(addressingId);
+
+            addressingsStockTaking.AddressingCountRealized = true;
+
+            _context.Update(addressingsStockTaking);
+            _context.SaveChanges();
+
+            return true;
         }
     }
 }

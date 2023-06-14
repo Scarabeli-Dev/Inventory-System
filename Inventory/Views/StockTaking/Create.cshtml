@@ -1,0 +1,103 @@
+﻿@model Inventory.Models.StockTaking
+
+@{
+    Item itemCount = ViewBag.Item;
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>StockTaking</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <h1>Selecione o endereçamento a ser contado</h1>
+                @foreach (var item in itemCount.Addressing)
+                {
+                    <div class="form-check">
+                        <input asp-for="AddressingId" class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="@item.Addressing.Id">
+                        <label class="form-check-label" for="exampleRadios1">@item.Addressing.Name</label>
+                    </div>
+                }
+                <div class="form-group">
+                    <label asp-for="AddressingId" class="control-label"></label>
+                    <select asp-for="AddressingId" class="form-control" asp-items="ViewBag.AddressingId"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="ItemId" class="control-label"></label>
+                <select asp-for="ItemId" class="form-control" asp-items="ViewBag.ItemId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="StockTakingQuantity" class="control-label"></label>
+                <input asp-for="StockTakingQuantity" class="form-control" />
+                <span asp-validation-for="StockTakingQuantity" class="text-danger"></span>
+            </div>
+
+            <div class="form-group col-12 form-check form-switch">
+                <input type="checkbox" class="form-control form-check-input" role="switch" id="flexSwitchCheckDefault" />
+                <label class="control-label form-check-label" for="flexSwitchCheckDefault">Item Perecível</label>
+                <span class="text-danger"></span>
+            </div>
+            <div id="dates" style="display: none;">
+                <div class="form-group">
+                    <label asp-for="FabricationDate" class="control-label"></label>
+                    <input asp-for="FabricationDate" class="form-control" />
+                    <span asp-validation-for="FabricationDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ExpirationDate" class="control-label"></label>
+                    <input asp-for="ExpirationDate" class="form-control" />
+                    <span asp-validation-for="ExpirationDate" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ItemBatch" class="control-label"></label>
+                    <input asp-for="ItemBatch" class="form-control" />
+                    <span asp-validation-for="ItemBatch" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="StockTakingObservation" class="control-label"></label>
+                <input asp-for="StockTakingObservation" class="form-control" />
+                <span asp-validation-for="StockTakingObservation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="InventoryStartId" class="control-label"></label>
+                <select asp-for="InventoryStartId" class="form-control" asp-items="ViewBag.InventoryStartId"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script type="text/javascript">
+
+        // Função para mostrar ou ocultar o conteúdo da div "dates"
+        function toggleDates() {
+            var switchElement = document.getElementById("flexSwitchCheckDefault");
+            var datesDiv = document.getElementById("dates");
+
+            if (switchElement.checked) {
+                datesDiv.style.display = "block";
+            } else {
+                datesDiv.style.display = "none";
+            }
+        }
+
+        // Vincula o evento de mudança (change) do switch à função toggleDates
+        document.getElementById("flexSwitchCheckDefault").addEventListener("change", toggleDates);
+    </script>
+}
