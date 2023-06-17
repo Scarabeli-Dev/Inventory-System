@@ -6,7 +6,7 @@ namespace Inventory.Models
     public class Item
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; }
 
         [Display(Name = "Nome")]
         [StringLength(50, ErrorMessage = "Máximo de {1} caracteres!")]
@@ -19,13 +19,18 @@ namespace Inventory.Models
 
         [Display(Name = "Prateleira")]
         [Required(ErrorMessage = "{0} é obrigatório")]
-        public IEnumerable<ItemsAddressings> Addressing { get; set; }
+        public IEnumerable<ItemsAddressings> Addressings { get; set; }
 
         [Display(Name = "Quantidade de Itens")]
-        public double? Quantity { get; set; }
+        public decimal Quantity { get; set; }
 
         [Display(Name = "Observação")]
         [StringLength(250, ErrorMessage = "Máximo de {1} caracteres!")]
         public string Observation { get; set; }
+
+        [Display(Name = "Imagem do Item")]
+        public string ImageUrl { get; set; }
+        public IEnumerable<ItemsStockTaking> StockTaking { get; set; }
+
     }
 }

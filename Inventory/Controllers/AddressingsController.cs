@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Inventory.Data;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
+using Inventory.Helpers;
 
 namespace Inventory.Controllers
 {
@@ -11,19 +12,31 @@ namespace Inventory.Controllers
     {
         private readonly InventoryContext _context;
         private readonly IAddressingService _addressingService;
+        private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly IUtil _util;
+        private string _destiny = "Adressing";
 
-        public AddressingsController(InventoryContext context, IAddressingService addressingService)
+        public AddressingsController(InventoryContext context, IAddressingService addressingService, IWebHostEnvironment hostEnvironment, IUtil util)
         {
             _context = context;
             _addressingService = addressingService;
+            _hostEnvironment = hostEnvironment;
+            _util = util;
         }
 
         // GET: Addressings
-        public async Task<IActionResult> Index(int stockId, string filter, int pageindex = 1, string sort = "Name")
+        public async Task<IActionResult> Index(string filter, int pageindex = 1, string sort = "Name")
         {
-            var addressings = await _addressingService.GetAddressingsByWarehouseIdAsync(stockId, filter, pageindex = 1, sort = "Name");
+            var addressings = await _addressingService.GetAllAddressingsByPagingAsync(filter, pageindex = 1, sort = "Name");
 
-            ViewBag.WarehouseId = stockId;
+            return View(addressings);
+        }
+
+        public async Task<IActionResult> AddressingByWarehouse(int warehouseId, string filter, int pageindex = 1, string sort = "Name")
+        {
+            var addressings = await _addressingService.GetAddressingsByWarehouseIdAsync(warehouseId, filter, pageindex = 1, sort = "Name");
+
+            ViewBag.WarehouseId = warehouseId;
 
             return View(addressings);
         }
@@ -160,6 +173,33 @@ namespace Inventory.Controllers
         private bool AddressingExists(int id)
         {
           return _context.Addressing.Any(e => e.Id == id);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ImportAddressings(IFormFile documentFile)
+        {
+            if (documentFile != null && documentFile.Length > 0)
+            {
+                // Salva o documento
+                string documentName = await _util.SaveDocument(documentFile, _destiny);
+
+                // Lê o arquivo CSV e cria os modelos
+                string documentPath = Path.Combine(_hostEnvironment.ContentRootPath, "Resources", _destiny, documentName);
+
+                // Implemente o código para ler o arquivo CSV e criar os modelos
+                if (await _addressingService.ImportAddressingAsync(documentPath, _destiny))
+                {
+                    // Deleta o arquivox
+                    _util.DeleteDocument(documentName, _destiny);
+
+                    // Retorna uma resposta de sucesso ou redireciona para outra página
+                    return RedirectToAction(nameof(Index));
+
+                }
+            }
+            // Retorna uma resposta de erro ou redireciona para outra página
+            return BadRequest("Nenhum documento foi enviado.");
         }
     }
 }

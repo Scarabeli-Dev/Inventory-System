@@ -17,6 +17,12 @@
 </form>
 
 <p>
+    <form asp-controller="Items" asp-action="ImportItems" mothod="post" enctype="multipart/form-data">
+        <div class="input-group mb-3">
+            <input type="file" name="documentFile" class="form-control" />
+            <button type="submit" class="btn btn-group btn-success">Upload</button>
+        </div>
+    </form>
     <a asp-action="Create" class="btn btn-primary">Novo Item</a>
 </p>
 <table class="table">
@@ -46,7 +52,7 @@
             <tr>
                 <td>
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a href="@Url.Action("Create", "StockTaking", new { itemId = item.Id })" class="btn btn-primary">Realizar Contagem</a>
+                        <a href="@Url.Action("ItemCount", "StockTaking", new { itemId = item.Id })" class="btn btn-primary">Realizar Contagem</a>
                     </div>
                 </td>
                 <td>

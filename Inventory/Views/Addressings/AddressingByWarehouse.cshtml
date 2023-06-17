@@ -1,0 +1,81 @@
+﻿@model PagingList<Addressing>
+
+@{
+    int warehouseId = ViewBag.WarehouseId;
+    ViewData["Title"] = "Edereçamentos";
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<form method="get" class="nput-group mb-3">
+    <div class="input-group mb-3">
+        <input name="filter" class="form-control" placeholder="filtro"
+               value="@Model.RouteValue["Filter"]" />
+
+        <button type="submit" class="btn btn-info">Procurar</button>
+    </div>
+</form>
+
+<div>
+    @await Html.PartialAsync("~/Views/Addressings/Create.cshtml", new Addressing { WarehouseId = warehouseId})
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a title="Editar Registro" data-toggle="modal" class=" btn btn-success pull-right sem_footer" onclick="actionEdit(@item.Id)" href="#modal-form"><i class="fa fa-pencil" /> Editar</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-success">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <vc:pager paging-list="@Model"></vc:pager>
+</div>
+
+<div id="divEdit">
+    <div id="modal-form" class="modal fade" aria-hidden="true">
+    </div>
+</div>
+
+@section Scripts{
+
+    <script type="text/javascript">
+
+        function actionEdit(id) {
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("Edit")',
+                dataType: 'html',
+                data: { id: id },
+                cache: false,
+                async: true,
+                success: function (data) {
+                    $('#modal-form').empty();
+                    $('#modal-form').append('<partial name = "Edit" />');
+                    $('#modal-form').html(data);
+                }
+            });
+        }
+
+    </script>
+    }

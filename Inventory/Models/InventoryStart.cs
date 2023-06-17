@@ -7,5 +7,6 @@
         public DateTime StockTakingFinishDate { get; set; }
         public bool IsCompleted { get; set; }
         public IEnumerable<AddressingsStockTaking> Addressings { get; set; }
+        public IEnumerable<ItemsStockTaking> Items { get; set; }
     }
 }

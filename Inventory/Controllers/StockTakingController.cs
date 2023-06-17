@@ -1,7 +1,9 @@
 ﻿using Inventory.Models;
-using Inventory.Services;
 using Inventory.Services.Interfaces;
+using Inventory.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace Inventory.Controllers
 {
@@ -11,13 +13,19 @@ namespace Inventory.Controllers
         private readonly IItemService _itemService;
         private readonly IAddressingService _addressingService;
         private readonly IWarehouseService _warehouseService;
+        private readonly IInventoryStartService _inventoryStartService;
+        private readonly IItemsStockTakingService _itemsStockTakingService;
+        private readonly IAddressingsStockTakingService _addressingsStockTakingService;
 
-        public StockTakingController(IStockTakingService stockTakingService, IItemService itemService, IAddressingService addressingService, IWarehouseService warehouseService)
+        public StockTakingController(IStockTakingService stockTakingService, IItemService itemService, IAddressingService addressingService, IWarehouseService warehouseService, IInventoryStartService inventoryStartService, IItemsStockTakingService itemsStockTakingService, IAddressingsStockTakingService addressingsStockTakingService)
         {
             _stockTakingService = stockTakingService;
             _itemService = itemService;
             _addressingService = addressingService;
             _warehouseService = warehouseService;
+            _inventoryStartService = inventoryStartService;
+            _itemsStockTakingService = itemsStockTakingService;
+            _addressingsStockTakingService = addressingsStockTakingService;
         }
 
         public IActionResult Index()
@@ -25,15 +33,128 @@ namespace Inventory.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Create(int itemId)
+        public async Task<IActionResult> ItemCount(string itemId)
         {
-            ViewBag.Item = await _itemService.GetItemByIdAsync(itemId);
+            var itemStockCount = await _itemsStockTakingService.GetItemsStockTakingItemByIdAsync(itemId);
 
-            ViewBag.Warehouses = await _warehouseService.GetAllAsync<Warehouse>();
+            if (itemStockCount.ItemCountRealized == true)
+            {
+                return RedirectToAction(nameof(ItemCountEdit), new { itemId = itemId });
+            }
+            var item = await _itemService.GetItemByIdAsync(itemId);
 
-            ViewBag.Addressing = await _addressingService.GetAllAsync<Addressing>();
+            ViewBag.item = item;
+
+            var addressing = await _addressingService.GetAddressingByItemIdAsync(itemId);
+            ViewBag.Addressing = addressing;
+
+            var addressings = await _addressingService.GetAllAddressingsByWarehouseIdAsync(addressing.WarehouseId);
+            ViewBag.Addressings = addressings;
+
+            ViewBag.Inventory = await _inventoryStartService.GetInventoryStartByAddressingAsync(addressing.Id);
+
 
             return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ItemCount(StockTaking stockTaking)
+        {
+            if (ModelState.IsValid)
+            {
+                stockTaking.StockTakingQuantity = decimal.Parse(stockTaking.StockTakingQuantity.ToString().Replace(",", "."), CultureInfo.InvariantCulture);
+
+                await _stockTakingService.NewStockTakingAsync(stockTaking);
+                await _stockTakingService.SaveChangesAsync();
+                return RedirectToAction("Index", "Items");
+            }
+            var item = await _itemService.GetItemByIdAsync(stockTaking.ItemId);
+
+            ViewBag.item = item;
+            return View(stockTaking);
+        }
+
+        public async Task<IActionResult> ItemCountEdit(string itemId)
+        {
+            var stockTaking = await _stockTakingService.GetStockTakingByItemIdAsync(itemId);
+
+            var addressings = await _addressingService.GetAllAddressingsByWarehouseIdAsync(stockTaking.Addressing.WarehouseId);
+            ViewBag.Addressings = addressings;
+
+            return View(stockTaking);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ItemCountEdit(string itemId, StockTaking stockTaking)
+        {
+            if (itemId != stockTaking.ItemId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _stockTakingService.UpdateStockTaking(stockTaking);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    var result = await _stockTakingService.GetStockTakingByIdAsync(stockTaking.Id);
+                    if (result == null)
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction("Index", "Items");
+            }
+            return View(stockTaking);
+        }
+
+        public async Task<IActionResult> StockTakingReport(int addressingId)
+        {
+            var stockTakingAddressing = await _addressingsStockTakingService.GetAddressingsStockTakingAddressingByIdAsync(addressingId);
+
+
+            var stockTakingItems = await _itemsStockTakingService.GetItemsStockTakingItemByAddressingIdAsync(addressingId);
+
+
+            List<StockTakingReportAddressing> result = new List<StockTakingReportAddressing>();
+
+            foreach (var item in stockTakingItems)
+            {
+                StockTakingReportAddressing model = new StockTakingReportAddressing();
+
+                model.StockTakingId = item.Id;
+                model.ItemId = item.ItemId;
+                model.ItemName = item.Item.Name;
+                model.ItemInitialAmount = item.Item.Quantity;
+
+                var stockTaking = await _stockTakingService.GetStockTakingByItemIdAsync(item.ItemId);
+
+                if (stockTaking == null)
+                {
+                    model.ItemStockTakingAmount = 0;
+                    model.NumberOfCount = 0;
+                }
+                else
+                {
+                    model.ItemStockTakingAmount = stockTaking.StockTakingQuantity;
+                    model.NumberOfCount = stockTaking.NumberOfCount;
+                }
+
+                result.Add(model);
+            }
+
+            ViewBag.AddressingInfo = stockTakingAddressing;
+
+            return View(result);
         }
     }
 }

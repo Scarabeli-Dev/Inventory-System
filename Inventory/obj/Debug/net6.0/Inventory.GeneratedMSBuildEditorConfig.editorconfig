@@ -20,6 +20,10 @@ build_property._RazorSourceGeneratorDebug =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcSWRlbnRpdHlcUGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Systems/Inventory/Inventory/Views/Addressings/AddressingByWarehouse.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRkcmVzc2luZ3NcQWRkcmVzc2luZ0J5V2FyZWhvdXNlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Systems/Inventory/Inventory/Views/Addressings/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRkcmVzc2luZ3NcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -46,6 +50,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Systems/Inventory/Inventory/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Systems/Inventory/Inventory/Views/InventoryMovement/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52ZW50b3J5TW92ZW1lbnRcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Systems/Inventory/Inventory/Views/InventoryStart/AddressingCount.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52ZW50b3J5U3RhcnRcQWRkcmVzc2luZ0NvdW50LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Systems/Inventory/Inventory/Views/InventoryStart/Create.cshtml]
@@ -92,8 +104,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Systems/Inventory/Inventory/Views/StockTaking/Create.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvY2tUYWtpbmdcQ3JlYXRlLmNzaHRtbA==
+[C:/Systems/Inventory/Inventory/Views/StockTaking/ItemCount.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvY2tUYWtpbmdcSXRlbUNvdW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Systems/Inventory/Inventory/Views/StockTaking/ItemCountEdit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvY2tUYWtpbmdcSXRlbUNvdW50RWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Systems/Inventory/Inventory/Views/StockTaking/StockTakingReport.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvY2tUYWtpbmdcU3RvY2tUYWtpbmdSZXBvcnQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Systems/Inventory/Inventory/Views/Warehouses/Create.cshtml]

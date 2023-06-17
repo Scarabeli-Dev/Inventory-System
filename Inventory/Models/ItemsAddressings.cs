@@ -8,7 +8,7 @@ namespace Inventory.Models
         public int AddressingId { get; set; }
         public Addressing Addressing { get; set; }
 
-        public int ItemId { get; set; }
+        public string ItemId { get; set; }
         public Item Item { get; set; }
     }
 }

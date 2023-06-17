@@ -1,8 +1,11 @@
-﻿using Inventory.Data;
+﻿using CsvHelper;
+using Inventory.Data;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
+using Inventory.ViewModels.Imports;
 using Microsoft.EntityFrameworkCore;
 using ReflectionIT.Mvc.Paging;
+using System.Globalization;
 
 namespace Inventory.Services
 {
@@ -17,8 +20,28 @@ namespace Inventory.Services
 
         public async Task<PagingList<Item>> GetAllItemsAsync(string filter, int pageindex = 1, string sort = "Name")
         {
-            var result = _context.Item.Include(l => l.Addressing)
+            var result = _context.Item.Include(l => l.Addressings)
                                       .ThenInclude(l => l.Addressing)
+                                      .AsNoTracking()
+                                      .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                result = result.Where(p => (p.Name.ToLower().Contains(filter.ToLower())) ||
+                                           (p.Id.ToLower().Contains(filter.ToLower())));
+            }
+
+            var model = await PagingList.CreateAsync(result, 10, pageindex, sort, "Name");
+            model.RouteValue = new RouteValueDictionary { { "filter", filter } };
+
+            return model;
+        }
+
+        public async Task<PagingList<Item>> GetItemsByAddressingAsync(int addressingnId, string filter, int pageindex = 1, string sort = "Name")
+        {
+            var result = _context.Item.Include(l => l.Addressings)
+                                      .ThenInclude(l => l.Addressing)
+                                      .Where(l => l.Addressings.Any(il => il.AddressingId == addressingnId))
                                       .AsNoTracking()
                                       .AsQueryable();
 
@@ -34,31 +57,50 @@ namespace Inventory.Services
             return model;
         }
 
-        public async Task<PagingList<Item>> GetItemsByAddressingAsync(int locationId, string filter, int pageindex = 1, string sort = "Name")
+        public async Task<List<Item>> GetAllItemsByAddressingAsync(int addressingnId)
         {
-            var result = _context.Item.Include(l => l.Addressing)
+            var result = await _context.Item.Include(l => l.Addressings)
                                       .ThenInclude(l => l.Addressing)
-                                      .Where(l => l.Addressing.Any(il => il.AddressingId == locationId))
-                                      .AsNoTracking()
-                                      .AsQueryable();
+                                      .Where(l => l.Addressings.Any(il => il.AddressingId == addressingnId)).ToListAsync();
 
-            if (!string.IsNullOrWhiteSpace(filter))
-            {
-                result = result.Where(p => (p.Name.ToLower().Contains(filter.ToLower())) ||
-                                           (p.Id.ToString().Contains(filter)));
-            }
-
-            var model = await PagingList.CreateAsync(result, 10, pageindex, sort, "Name");
-            model.RouteValue = new RouteValueDictionary { { "filter", filter } };
-
-            return model;
+            return result;
         }
 
-        public async Task<Item> GetItemByIdAsync(int id)
+        public async Task<Item> GetItemByIdAsync(string id)
         {
-           var result = await _context.Item.Include(l => l.Addressing).ThenInclude(il => il.Addressing).FirstOrDefaultAsync(m => m.Id == id);
+           var result = await _context.Item.Include(l => l.Addressings).ThenInclude(il => il.Addressing).FirstOrDefaultAsync(m => m.Id == id);
 
            return result;
+        }
+
+        public async Task<bool> ImportItemAsync(string fileName, string destiny)
+        {
+            List<ItemImport> items = new List<ItemImport>();
+
+            //Read CSV
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "Resources", destiny, fileName);
+            using (var reader = new StreamReader(path))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                csv.Read();
+                csv.ReadHeader();
+                while (csv.Read())
+                {
+                    var item = csv.GetRecord<ItemImport>();
+                    items.Add(item);
+                }
+            }
+            List<Item> itemReturn = new List<Item>();
+
+            foreach (var item in items)
+            {
+                Item itemInsert = new Item();
+                itemInsert.Name = item.Name;
+
+                _context.Item.Add(itemInsert);
+                _context.SaveChanges();
+            }
+            return true;
         }
     }
 }

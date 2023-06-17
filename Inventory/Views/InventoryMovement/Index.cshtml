@@ -1,0 +1,57 @@
+﻿@model List<InventoryMovement>
+@{
+
+}
+
+<form asp-controller="InventoryMovement" asp-action="UploadDocument" mothod="post" enctype="multipart/form-data">
+    <input type="file" name="documentFile" />
+    <hr />
+    <button type="submit">Upload</button>
+</form>
+
+<h2>
+    Itens importados:
+</h2>
+
+@if (Model.Count() > 0)
+{
+    <hr />
+    <table cellpadding="0" cellspacing="0" border="1">
+        <tr>
+            <th>
+                Nome do Item
+            </th>
+            <th>
+                Tipo de Movimento
+            </th>
+            <th>
+                Depósito
+            </th>
+            <th>
+                Quantidade
+            </th>
+            <th>
+                Data da Movimentação
+            </th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MovementeType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Warehouse.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Amount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MovementDate)
+            </tr>
+        }
+    </table>
+}

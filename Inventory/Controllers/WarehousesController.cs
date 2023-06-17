@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
+using Inventory.Helpers;
 
 namespace Inventory.Controllers
 {
@@ -9,11 +10,16 @@ namespace Inventory.Controllers
     {
         private readonly IWarehouseService _warehouseService;
         private readonly IAddressingService _addressingService;
+        private readonly IWebHostEnvironment _hostEnvironment;
+        private readonly IUtil _util;
+        private string _destiny = "Warehouse";
 
-        public WarehousesController(IWarehouseService warehouseService, IAddressingService addressingService)
+        public WarehousesController(IWarehouseService warehouseService, IAddressingService addressingService, IUtil util, IWebHostEnvironment hostEnvironment)
         {
             _warehouseService = warehouseService;
             _addressingService = addressingService;
+            _util = util;
+            _hostEnvironment = hostEnvironment;
         }
 
         // GET: Warehouses
@@ -150,9 +156,31 @@ namespace Inventory.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //private bool WarehouseExists(int id)
-        //{
-        //  return _warehouseService.Warehouse.Any(e => e.Id == id);
-        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ImportWareHouses(IFormFile documentFile)
+        {
+            if (documentFile != null && documentFile.Length > 0)
+            {
+                // Salva o documento
+                string documentName = await _util.SaveDocument(documentFile, _destiny);
+
+                // Lê o arquivo CSV e cria os modelos
+                string documentPath = Path.Combine(_hostEnvironment.ContentRootPath, "Resources", _destiny, documentName);
+
+                // Implemente o código para ler o arquivo CSV e criar os modelos
+                if(await _warehouseService.ImportWarehouseAsync(documentPath, _destiny))
+                {
+                // Deleta o arquivox
+                _util.DeleteDocument(documentName, _destiny);
+
+                // Retorna uma resposta de sucesso ou redireciona para outra página
+                return RedirectToAction(nameof(Index));
+
+                }
+            }
+            // Retorna uma resposta de erro ou redireciona para outra página
+            return BadRequest("Nenhum documento foi enviado.");
+        }
     }
 }

@@ -1,9 +1,12 @@
-﻿using Inventory.Data;
+﻿using CsvHelper;
+using Inventory.Data;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
+using Inventory.ViewModels.Imports;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReflectionIT.Mvc.Paging;
+using System.Globalization;
 
 namespace Inventory.Services
 {
@@ -43,6 +46,36 @@ namespace Inventory.Services
             }
 
             return result;
+        }
+
+        public async Task<bool> ImportWarehouseAsync(string fileName, string destiny)
+        {
+            List<WarehouseImport> warehouses = new List<WarehouseImport>();
+
+            //Read CSV
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "Resources", destiny, fileName);
+            using (var reader = new StreamReader(path))
+            using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+            {
+                csv.Read();
+                csv.ReadHeader();
+                while (csv.Read())
+                {
+                    var warehouse = csv.GetRecord<WarehouseImport>();
+                    warehouses.Add(warehouse);
+                }
+            }
+            List<Warehouse> warehouseReturn = new List<Warehouse>();
+
+            foreach (var item in warehouses)
+            {
+                Warehouse warehouseInsert = new Warehouse();
+                warehouseInsert.Name = item.Name;
+
+                _context.Warehouse.Add(warehouseInsert);
+                _context.SaveChanges();
+            }
+            return true;
         }
     }
 }

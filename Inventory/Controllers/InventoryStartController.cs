@@ -2,6 +2,7 @@
 using Inventory.Services;
 using Inventory.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using ReflectionIT.Mvc.Paging;
 using System.Collections.Generic;
 
 namespace Inventory.Controllers
@@ -9,10 +10,12 @@ namespace Inventory.Controllers
     public class InventoryStartController : Controller
     {
         private readonly IInventoryStartService _inventoryStartService;
+        private readonly IAddressingsStockTakingService _addressingsStockTakingService;
 
-        public InventoryStartController(IInventoryStartService inventoryStartService)
+        public InventoryStartController(IInventoryStartService inventoryStartService, IAddressingsStockTakingService addressingsStockTakingService)
         {
             _inventoryStartService = inventoryStartService;
+            _addressingsStockTakingService = addressingsStockTakingService;
         }
 
         public async Task<IActionResult> Index(string filter, int pageindex = 1, string sort = "InventoryStartDate")
@@ -54,34 +57,39 @@ namespace Inventory.Controllers
             //    addressingsStockTakings.Add(item);
             //}
 
-            List <AddressingsStockTaking> stockTakingOpen = new List<AddressingsStockTaking>();
-            List <AddressingsStockTaking> stockTakingRealized = new List<AddressingsStockTaking>();
-            List <AddressingsStockTaking> stockTakingEnded = new List<AddressingsStockTaking>();
+            //List <AddressingsStockTaking> stockTakingOpen = new List<AddressingsStockTaking>();
+            //List <AddressingsStockTaking> stockTakingRealized = new List<AddressingsStockTaking>();
+            //List <AddressingsStockTaking> stockTakingEnded = new List<AddressingsStockTaking>();
 
-            foreach (var item in inventoryStart.Addressings)
-            {
-                if (item.AddressingCountRealized == false && item.AddressingCountEnded == false)
-                {
-                    stockTakingOpen.Add(item);
-                }
-                if (item.AddressingCountRealized == true && item.AddressingCountEnded == false)
-                {
-                    stockTakingRealized.Add(item);
-                }
-                if (item.AddressingCountRealized == true && item.AddressingCountEnded == true)
-                {
-                    stockTakingEnded.Add(item);
-                }
-            }
+            //foreach (var item in inventoryStart.Addressings)
+            //{
+            //    if (item.AddressingCountRealized == false && item.AddressingCountEnded == false)
+            //    {
+            //        stockTakingOpen.Add(item);
+            //    }
+            //    if (item.AddressingCountRealized == true && item.AddressingCountEnded == false)
+            //    {
+            //        stockTakingRealized.Add(item);
+            //    }
+            //    if (item.AddressingCountRealized == true && item.AddressingCountEnded == true)
+            //    {
+            //        stockTakingEnded.Add(item);
+            //    }
+            //}
 
-            ViewBag.StockTakingOpen = stockTakingOpen;
-            ViewBag.StockTakingRealized = stockTakingRealized;
-            ViewBag.StockTakingEnded = stockTakingEnded;
+            //ViewBag.StockTakingOpen = stockTakingOpen;
+            //ViewBag.StockTakingRealized = stockTakingRealized;
+            //ViewBag.StockTakingEnded = stockTakingEnded;
 
 
             ViewBag.Filter = filter;
 
             return View(inventoryStart);
+        }
+
+        public async Task<IActionResult> AddressingCount(int inventaryStartId, string filter, int pageindex = 1, string sort = "Id")
+        {
+            return View(await _addressingsStockTakingService.GetAllAddressingsStockTakingsByPageList(inventaryStartId, filter, pageindex, sort));
         }
     }
 }

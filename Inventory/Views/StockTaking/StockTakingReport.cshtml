@@ -1,0 +1,65 @@
+﻿@model List<StockTakingReportAddressing>
+
+@{
+    AddressingsStockTaking addressing = ViewBag.AddressingInfo;
+    ViewData["Title"] = "Apuração de Contagem";
+}
+
+<h2>@ViewData["Title"] - @addressing.Addressing.Name</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Código do Produto
+            </th>
+            <th>
+                Estoque Inicial
+            </th>
+            <th>
+                Nome do Item
+            </th>
+            <th>
+                Contagem
+            </th>
+            <th>
+                Nº de Contagens
+            </th>
+            <th>
+                Recontar?
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                      @Html.DisplayFor(modelItem => item.ItemId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ItemInitialAmount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ItemName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ItemStockTakingAmount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumberOfCount)
+                </td>
+                <td>
+                    @if (item.ItemInitialAmount != item.ItemStockTakingAmount && item.NumberOfCount < 2)
+                    {
+                        <p class="text-danger">Sim</p>
+                    }
+                    else
+                    {
+                        <p class="text-success">Não</p>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

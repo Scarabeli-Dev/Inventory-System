@@ -14,6 +14,7 @@ namespace Inventory.Data
         public DbSet<InventoryStart> InventoryStart { get; set; }
         public DbSet<Item> Item { get; set; }
         public DbSet<ItemsAddressings> ItemsAddressing { get; set; }
+        public DbSet<ItemsStockTaking> ItemsStockTaking { get; set; }
         public DbSet<StockTaking> StockTaking { get; set; }
         public DbSet<Warehouse> Warehouse { get; set; }
 

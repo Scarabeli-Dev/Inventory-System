@@ -1,0 +1,55 @@
+﻿@model PagingList<AddressingsStockTaking>
+
+@{
+    ViewData["Title"] = "Edereçamentos";
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<form method="get" class="nput-group mb-3">
+    <div class="input-group mb-3">
+        <input name="filter" class="form-control" placeholder="filtro"
+               value="@Model.RouteValue["Filter"]" />
+
+        <button type="submit" class="btn btn-info">Procurar</button>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Addressing.Name)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                @if (item.AddressingCountRealized == false && item.AddressingCountEnded == false)
+                {
+                    <td class=" bg-primary">
+                        @Html.DisplayFor(modelItem => item.Addressing.Name)
+                    </td>
+                }
+                @if (item.AddressingCountRealized == true && item.AddressingCountEnded == false)
+                {
+                    <td class=" bg-danger">
+                        @Html.DisplayFor(modelItem => item.Addressing.Name)
+                    </td>
+                }
+                @if (item.AddressingCountRealized == true && item.AddressingCountEnded == true)
+                {
+                    <td class=" bg-success">
+                        @Html.DisplayFor(modelItem => item.Addressing.Name)
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <vc:pager paging-list="@Model"></vc:pager>
+</div>

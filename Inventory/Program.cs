@@ -1,9 +1,13 @@
 using Inventory.Data;
+using Inventory.Helpers;
 using Inventory.Services;
 using Inventory.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using ReflectionIT.Mvc.Paging;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +24,12 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
                 .AddEntityFrameworkStores<InventoryContext>();
 builder.Services.AddControllersWithViews();
 
+// Regional Configurations
+var enUsCulture = new CultureInfo("en-US");
+CultureInfo.DefaultThreadCurrentCulture = enUsCulture;
+CultureInfo.DefaultThreadCurrentUICulture = enUsCulture;
+
+
 // Add Authorization
 builder.Services.AddAuthorization(options =>
 {
@@ -32,11 +42,16 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
+// Add Helpers
+builder.Services.AddScoped<IUtil, Util>();
+
 // Add Services
 builder.Services.AddScoped<IWarehouseService, WarehouseService>();
 builder.Services.AddScoped<IAddressingService, AddressingService>();
 builder.Services.AddScoped<IInventoryStartService, InventoryStartService>();
+builder.Services.AddScoped<IInventoryMovementService, InventoryMovementService>();
 builder.Services.AddScoped<IAddressingsStockTakingService, AddressingsStockTakingService>();
+builder.Services.AddScoped<IItemsStockTakingService, ItemsStockTakingService>();
 builder.Services.AddScoped<IStockTakingService, StockTakingService>();
 builder.Services.AddScoped<IItemService, ItemService>();
 
@@ -68,6 +83,12 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseStaticFiles(new StaticFileOptions()
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Resources")),
+    RequestPath = new PathString("/Resources")
+});
 
 app.MapControllerRoute(
     name: "default",

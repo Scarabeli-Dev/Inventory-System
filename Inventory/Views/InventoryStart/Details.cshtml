@@ -3,9 +3,10 @@
 @{
     //List<AddressingsStockTaking> addressings = ViewBag.Addressings as List<AddressingsStockTaking>;
 
-    List<AddressingsStockTaking> stockTakingOpen = ViewBag.StockTakingOpen;
-    List<AddressingsStockTaking> stockTakingRealized = ViewBag.StockTakingRealized;
-    List<AddressingsStockTaking> stockTakingEnded = ViewBag.StockTakingEnded;
+    //List<AddressingsStockTaking> stockTakingOpen = ViewBag.StockTakingOpen;
+    //List<AddressingsStockTaking> stockTakingRealized = ViewBag.StockTakingRealized;
+    //List<AddressingsStockTaking> stockTakingEnded = ViewBag.StockTakingEnded;
+    string filter = ViewBag.Filter;
     ViewData["Title"] = "Details";
 }
 
@@ -36,27 +37,44 @@
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Addressings)
         </dt>
-        @foreach (var item in stockTakingRealized)
-        {
-            <dd class="col-sm-10 bg-danger">
-                @Html.DisplayFor(modelItem => item.Addressing.Name)
-            </dd>
-        }
-        @foreach (var item in stockTakingOpen)
-        {
-            <dd class="col-sm-10 bg-info">
-                @Html.DisplayFor(modelItem => item.Addressing.Name)
-            </dd>
-        }
-        @foreach (var item in stockTakingEnded)
-        {
-            <dd class="col-sm-10 bg-success">
-                @Html.DisplayFor(modelItem => item.Addressing.Name)
-            </dd>
-        }
     </dl>
 </div>
+
+<div id="addressings">
+    <div id="modal-form" aria-hidden="true">
+    </div>
+</div>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+<script type="text/javascript">
+
+        $.ready(loadAddressings(@Model.Id, @filter))
+
+        function loadAddressings(inventaryStartId, filter) {
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("AddressingCount")',
+                dataType: 'html',
+                data: { inventaryStartId: inventaryStartId,
+                                  filter: filter },
+                cache: false,
+                async: true,
+                success: function (data) {
+                    $('#modal-form').empty();
+                    $('#modal-form').append('<partial name="AddressingCount" />');
+                    $('#modal-form').html(data);
+                }
+            });
+        }
+
+    </script>
+}

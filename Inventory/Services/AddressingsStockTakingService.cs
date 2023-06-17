@@ -2,6 +2,7 @@
 using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using ReflectionIT.Mvc.Paging;
 
 namespace Inventory.Services
 {
@@ -9,11 +10,33 @@ namespace Inventory.Services
     {
         private readonly InventoryContext _context;
         private readonly IAddressingService _addressingService;
+        private readonly IItemsStockTakingService _itemsStockTakingService;
 
-        public AddressingsStockTakingService(InventoryContext context, IAddressingService addressingService) : base(context)
+        public AddressingsStockTakingService(InventoryContext context, IAddressingService addressingService, IItemsStockTakingService itemsStockTakingService) : base(context)
         {
             _context = context;
             _addressingService = addressingService;
+            _itemsStockTakingService = itemsStockTakingService;
+        }
+
+        public async Task<PagingList<AddressingsStockTaking>> GetAllAddressingsStockTakingsByPageList(int inventaryStartId, string filter, int pageindex = 1, string sort = "Id")
+        {
+            var result = _context.AddressingsStockTaking.Include(l => l.Addressing)
+                                                        .Where(s => s.InventoryStartId == inventaryStartId)
+                                                        .OrderBy(l => l.AddressingCountRealized)
+                                                        .ThenBy(l => l.AddressingCountEnded)
+                                                        .AsNoTracking()
+                                                        .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                result = result.Where(p => p.Addressing.Name.ToLower().Contains(filter.ToLower()));
+            }
+
+            var model = await PagingList.CreateAsync(result, 10, pageindex, sort, "Id");
+            model.RouteValue = new RouteValueDictionary { { "filter", filter } };
+
+            return model;
         }
 
         public async Task CreateAddressingsStockTakingAsync(int inventoryStartId)
@@ -46,13 +69,30 @@ namespace Inventory.Services
         public async Task<bool> SetAddressingCountRealizedTrueAsync(int addressingId)
         {
             var addressingsStockTaking = await GetAddressingsStockTakingAddressingByIdAsync(addressingId);
+            var stockTakingItems = await _itemsStockTakingService.GetItemsStockTakingItemByAddressingIdAsync(addressingId);
 
-            addressingsStockTaking.AddressingCountRealized = true;
+            int itemsCount = 0;
+            int itemsInAddressing = 0;
 
-            _context.Update(addressingsStockTaking);
-            _context.SaveChanges();
+            foreach (var item in stockTakingItems)
+            {
+                if (item.ItemCountRealized == true)
+                {
+                    itemsCount++;
+                }
+            }
 
-            return true;
+            if (itemsCount == itemsInAddressing)
+            {
+                addressingsStockTaking.AddressingCountRealized = true;
+
+                _context.Update(addressingsStockTaking);
+                _context.SaveChanges();
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

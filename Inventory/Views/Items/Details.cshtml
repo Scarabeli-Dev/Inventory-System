@@ -30,9 +30,9 @@
             @Html.DisplayFor(model => model.Observation)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Addressing)
+            @Html.DisplayNameFor(model => model.Addressings)
         </dt>
-        @foreach (var item in Model.Addressing)
+        @foreach (var item in Model.Addressings)
         {
             <dd class="col-sm-10">
                 @Html.DisplayFor(modelItem => item.Addressing.Name)

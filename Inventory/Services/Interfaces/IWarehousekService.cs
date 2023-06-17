@@ -7,5 +7,6 @@ namespace Inventory.Services.Interfaces
     {
         Task<Warehouse> GetWarehouseByIdAsync(int? id);
         Task<PagingList<Warehouse>> GetAllWarehousesAsync(string filter, int pageindex = 1, string sort = "Name");
+        Task<bool> ImportWarehouseAsync(string fileName, string destiny);
     }
 }
