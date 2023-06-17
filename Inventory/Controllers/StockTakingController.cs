@@ -1,8 +1,10 @@
-﻿using Inventory.Models;
+﻿using Inventory.Helpers.Exceptions;
+using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Inventory.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MySqlX.XDevAPI.Relational;
 using System.Globalization;
 
 namespace Inventory.Controllers
@@ -37,6 +39,10 @@ namespace Inventory.Controllers
         {
             var itemStockCount = await _itemsStockTakingService.GetItemsStockTakingItemByIdAsync(itemId);
 
+            if (itemStockCount == null)
+            {
+                throw new NotFoundException("Contagem de estoque não encontrada");
+            }
             if (itemStockCount.ItemCountRealized == true)
             {
                 return RedirectToAction(nameof(ItemCountEdit), new { itemId = itemId });

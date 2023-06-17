@@ -1,0 +1,60 @@
+﻿@model PagingList<Item>
+
+@{
+    Layout = null;
+    int warehouseId = ViewBag.WarehouseId;
+    ViewData["Title"] = "Items do depósito";
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<form method="get" class="nput-group mb-3">
+    <div class="input-group mb-3">
+        <input name="filter" class="form-control" placeholder="filtro"
+               value="@Model.RouteValue["Filter"]" />
+
+        <button type="submit" class="btn btn-info">Procurar</button>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th class="col-4">
+                Realizar contagem
+            </th>
+            <th>
+                Código do Produto
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="col-4">
+                    <div class="d-grid gap-2 d-md-flex justify-content-center">
+                        <a href="@Url.Action("ItemCount", "StockTaking", new { itemId = item.Id })" class="btn btn-primary">Realizar Contagem</a>
+                    </div>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <vc:pager paging-list="@Model"></vc:pager>
+</div>
+
+@section Scripts{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -18,7 +18,7 @@ namespace Inventory.Services
             _context = context;
         }
 
-        public async Task<PagingList<Item>> GetAllItemsAsync(string filter, int pageindex = 1, string sort = "Name")
+        public async Task<PagingList<Item>> GetAllItemsPagingAsync(string filter, int pageindex = 1, string sort = "Name")
         {
             var result = _context.Item.Include(l => l.Addressings)
                                       .ThenInclude(l => l.Addressing)
@@ -37,7 +37,7 @@ namespace Inventory.Services
             return model;
         }
 
-        public async Task<PagingList<Item>> GetItemsByAddressingAsync(int addressingnId, string filter, int pageindex = 1, string sort = "Name")
+        public async Task<PagingList<Item>> GetItemsByAddressingPagingAsync(int addressingnId, string filter, int pageindex = 1, string sort = "Name")
         {
             var result = _context.Item.Include(l => l.Addressings)
                                       .ThenInclude(l => l.Addressing)
@@ -64,6 +64,27 @@ namespace Inventory.Services
                                       .Where(l => l.Addressings.Any(il => il.AddressingId == addressingnId)).ToListAsync();
 
             return result;
+        }
+
+        public async Task<PagingList<Item>> GetItemsByWarehousePagingAsync(int warehouseId, string filter, int pageindex = 1, string sort = "Name")
+        {
+            var result = _context.Item.Include(l => l.Addressings)
+                                      .ThenInclude(l => l.Addressing)
+                                      .ThenInclude(w => w.Warehouse)
+                                      .Where(a => a.Addressings.Any(a => a.Addressing.WarehouseId == warehouseId))
+                                      .AsNoTracking()
+                                      .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                result = result.Where(p => (p.Name.ToLower().Contains(filter.ToLower())) ||
+                                           (p.Id.ToString().Contains(filter)));
+            }
+
+            var model = await PagingList.CreateAsync(result, 10, pageindex, sort, "Name");
+            model.RouteValue = new RouteValueDictionary { { "filter", filter } };
+
+            return model;
         }
 
         public async Task<Item> GetItemByIdAsync(string id)

@@ -5,19 +5,12 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
-
 <div>
-    <h4>Stock</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-    </dl>
+    <h4>Depósito</h4>
+
+    <h2 class="col-sm-10">
+        @Html.DisplayFor(model => model.Name)
+    </h2>
 </div>
 
 <div id="addressings">
@@ -41,15 +34,17 @@
         function loadAddressings(warehouseId, filter) {
             $.ajax({
                 type: 'GET',
-                url: "/Addressings/AddressingByWarehouse",
+                url: "/Items/ItemWarehouseIndex",
                 dataType: 'html',
-                data: { warehouseId: warehouseId,
-                    filter: filter },
+                data: {
+                    warehouseId: warehouseId,
+                    filter: filter
+                },
                 cache: false,
                 async: true,
                 success: function (data) {
                     $('#modal-form').empty();
-                    $('#modal-form').append('<partial name = "/Addressings/AddressingByWarehouse" />');
+                    $('#modal-form').append('<partial name = "/Items/ItemWarehouseIndex" />');
                     $('#modal-form').html(data);
                 }
             });

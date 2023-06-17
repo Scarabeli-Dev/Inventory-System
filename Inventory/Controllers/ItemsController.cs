@@ -31,13 +31,20 @@ namespace Inventory.Controllers
         // GET: Items
         public async Task<IActionResult> Index(string filter, int pageindex = 1, string sort = "Name")
         {
-              return View(await _itemService.GetAllItemsAsync(filter, pageindex, sort));
+              return View(await _itemService.GetAllItemsPagingAsync(filter, pageindex, sort));
         }
 
         // GET: Items by addressing
         public async Task<IActionResult> ItemAddressingIndex(int addressingId, string filter, int pageindex = 1, string sort = "Name")
         {
-            return View(await _itemService.GetItemsByAddressingAsync(addressingId, filter, pageindex, sort));
+            return View(await _itemService.GetItemsByAddressingPagingAsync(addressingId, filter, pageindex, sort));
+        }
+
+        // GET: Items by warehouse
+        public async Task<IActionResult> ItemWarehouseIndex(int warehouseId, string filter, int pageindex = 1, string sort = "Name")
+        {
+            ViewBag.WarehouseId = warehouseId;
+            return View(await _itemService.GetItemsByWarehousePagingAsync(warehouseId, filter, pageindex, sort));
         }
 
         // GET: Items/Details/5

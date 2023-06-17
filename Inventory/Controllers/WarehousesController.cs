@@ -27,19 +27,12 @@ namespace Inventory.Controllers
         {
             var model = await _warehouseService.GetAllWarehousesAsync(filter, pageindex, sort);
 
-            //if (model.Count() == 0) return View();
-
             return View(model);
         }
 
         // GET: Warehouses/Details/5
         public async Task<IActionResult> Details(int? id, string filter)
         {
-            //if (id == null || _warehouseService.GetWarehouseByIdAsync(id) == null)
-            //{
-            //    return NotFound();
-            //}
-
             var warehouse = await _warehouseService.GetWarehouseByIdAsync(id);
             if (warehouse == null)
             {
@@ -76,11 +69,6 @@ namespace Inventory.Controllers
         // GET: Warehouses/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            //if (id == null || _warehouseService.GetWarehouseByIdAsync(id) == null)
-            //{
-            //    return NotFound();
-            //}
-
             var warehouse = await _warehouseService.GetWarehouseByIdAsync(id);
             if (warehouse == null)
             {
