@@ -1,10 +1,10 @@
 using Inventory.Data;
 using Inventory.Helpers;
+using Inventory.Models.Account;
 using Inventory.Services;
 using Inventory.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using ReflectionIT.Mvc.Paging;
@@ -21,7 +21,9 @@ builder.Services.AddDbContext<InventoryContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Add Identity
-builder.Services.AddDefaultIdentity<IdentityUser>(options => {
+builder.Services.AddIdentity<User, Role>(options =>
+//builder.Services.AddDefaultIdentity<User>(options =>
+{
     // SignIn
     options.SignIn.RequireConfirmedEmail = false;
     options.SignIn.RequireConfirmedAccount = false;
@@ -33,7 +35,13 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => {
     options.Password.RequireDigit = false;
     options.Password.RequireNonAlphanumeric = false;
 })
-    .AddEntityFrameworkStores<InventoryContext>();
+.AddRoles<Role>()
+    .AddRoleManager<RoleManager<Role>>()
+    .AddSignInManager<SignInManager<User>>()
+    .AddRoleValidator<RoleValidator<Role>>()
+    .AddEntityFrameworkStores<InventoryContext>()
+    .AddDefaultUI()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
@@ -74,6 +82,7 @@ builder.Services.AddScoped<IAddressingsStockTakingService, AddressingsStockTakin
 builder.Services.AddScoped<IItemsStockTakingService, ItemsStockTakingService>();
 builder.Services.AddScoped<IStockTakingService, StockTakingService>();
 builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
 
 // Add Paging List
 builder.Services.AddPaging(options =>
@@ -101,6 +110,8 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+CriarPerfisUsuarios(app);
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -116,3 +127,14 @@ app.MapControllerRoute(
 app.MapRazorPages();
 
 app.Run();
+
+void CriarPerfisUsuarios(WebApplication app)
+{
+    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+    using (var scope = scopedFactory.CreateScope())
+    {
+        var service = scope.ServiceProvider.GetService<ISeedUserRoleInitial>();
+        service.SeedRoles();
+        service.SeedUsers();
+    }
+}

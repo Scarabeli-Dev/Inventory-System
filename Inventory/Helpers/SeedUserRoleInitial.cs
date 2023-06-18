@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Inventory.Models.Account;
+using Microsoft.AspNetCore.Identity;
 
 namespace Inventory.Helpers
 {
     public class SeedUserRoleInitial : ISeedUserRoleInitial
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<User> _userManager;
+        private readonly RoleManager<Role> _roleManager;
 
-        public SeedUserRoleInitial(UserManager<IdentityUser> userManager, 
-            RoleManager<IdentityRole> roleManager)
+        public SeedUserRoleInitial(UserManager<User> userManager, 
+            RoleManager<Role> roleManager)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -18,14 +19,14 @@ namespace Inventory.Helpers
         {
             if(!_roleManager.RoleExistsAsync("Member").Result)
             {
-                IdentityRole role = new IdentityRole();
+                Role role = new Role();
                 role.Name = "Member";
                 role.NormalizedName = "MEMBER";
                 IdentityResult roleResult = _roleManager.CreateAsync(role).Result;
             }
             if (!_roleManager.RoleExistsAsync("Admin").Result)
             {
-                IdentityRole role = new IdentityRole();
+                Role role = new Role();
                 role.Name = "Admin";
                 role.NormalizedName = "ADMIN";
                 IdentityResult roleResult = _roleManager.CreateAsync(role).Result;
@@ -36,7 +37,8 @@ namespace Inventory.Helpers
         {
             if(_userManager.FindByEmailAsync("usuario@localhost").Result == null)
             {
-                IdentityUser user = new IdentityUser();
+                User user = new User();
+                user.Name = "Teste Member";
                 user.UserName = "usuario@localhost";
                 user.Email = "usuario@localhost";
                 user.NormalizedUserName = "USUARIO@LOCALHOST";
@@ -55,7 +57,8 @@ namespace Inventory.Helpers
 
             if (_userManager.FindByEmailAsync("elana.scarabeli@rcproconsultoria.com.br").Result == null)
             {
-                IdentityUser user = new IdentityUser();
+                User user = new User();
+                user.Name = "Elanã";
                 user.UserName = "esesena";
                 user.Email = "elana.scarabeli@rcproconsultoria.com.br";
                 user.NormalizedUserName = "ESESENA";

@@ -1,11 +1,12 @@
 ﻿using Inventory.Models;
+using Inventory.Models.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Inventory.Data
 {
-    public class InventoryContext : IdentityDbContext<IdentityUser>
+    public class InventoryContext : IdentityDbContext<User, Role, int>
     {
         public InventoryContext(DbContextOptions<InventoryContext> options) : base(options) { }
 
@@ -23,20 +24,19 @@ namespace Inventory.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            //modelBuilder.Entity<ItemsAddressings>(itemsAddressings =>
-            //{
-            //    itemsAddressings.HasOne(il => il.Item)
-            //                  .WithMany(i => i.Addressing)
-            //                  .HasForeignKey(il => il.ItemId);
 
-            //    itemsAddressings.HasOne(il => il.Addressing)
-            //                  .WithMany(i => i.Item)
-            //                  .HasForeignKey(il => il.AddressingId);
-            //});
+            modelBuilder.Entity<UserRole>(userRole =>
+            {
+                userRole.HasOne(ur => ur.Role)
+                        .WithMany(r => r.UserRole)
+                        .HasForeignKey(ur => ur.RoleId)
+                        .IsRequired();
 
-
-            //modelBuilder.Entity<IventoriesItems>()
-            //            .HasKey(ii => new { ii.ItemId, ii.StockTakingId });
+                userRole.HasOne(ur => ur.User)
+                        .WithMany(r => r.UserRole)
+                        .HasForeignKey(ur => ur.UserId)
+                        .IsRequired();
+            });
 
             modelBuilder.Entity<Warehouse>()
                         .HasMany(s => s.Addressings)

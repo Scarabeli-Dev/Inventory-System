@@ -1,4 +1,5 @@
-﻿using Inventory.ViewModels.AccountVM;
+﻿using Inventory.Models.Account;
+using Inventory.ViewModels.AccountVM;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,11 +7,11 @@ namespace Inventory.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public AccountController(UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<User> userManager,
+            SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -61,7 +62,7 @@ namespace Inventory.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = registroVM.UserName };
+                var user = new User { UserName = registroVM.UserName };
                 var result = await _userManager.CreateAsync(user, registroVM.Password);
 
                 if (result.Succeeded)
