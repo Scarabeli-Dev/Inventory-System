@@ -1,5 +1,7 @@
 ﻿using Inventory.Models.Account;
+using Inventory.Services.Interfaces;
 using Inventory.ViewModels.AccountVM;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,12 +11,15 @@ namespace Inventory.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private readonly IAccountService _accountService;
 
         public AccountController(UserManager<User> userManager,
-            SignInManager<User> signInManager)
+                                 SignInManager<User> signInManager,
+                                 IAccountService accountService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _accountService = accountService;
         }
 
         public IActionResult Login(string returnUrl)
@@ -49,26 +54,28 @@ namespace Inventory.Controllers
             }
             ModelState.AddModelError("", "Falha ao realizar o login!!");
             return View(loginVM);
-        }//
+        }
 
-        public IActionResult Register()
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Register()
         {
+            List<Role>  roles = await _accountService.GetAllRoles();
+
+            ViewBag.Roles = roles;
+
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(LoginViewModel registroVM)
+        public async Task<IActionResult> Register(RegisterViewModel userVM)
         {
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = registroVM.UserName };
-                var result = await _userManager.CreateAsync(user, registroVM.Password);
+                var user = _accountService.CreateUser(userVM);
 
-                if (result.Succeeded)
+                if (user != null)
                 {
-                    //await _signInManager.SignInAsync(user, isPersistent: false);
-                    await _userManager.AddToRoleAsync(user, "Member");
                     return RedirectToAction("Login", "Account");
                 }
                 else
@@ -76,7 +83,7 @@ namespace Inventory.Controllers
                     this.ModelState.AddModelError("Registro", "Falha ao registrar o usuário");
                 }
             }
-            return View(registroVM);
+            return View(userVM);
         }
 
         [HttpPost]
@@ -85,7 +92,7 @@ namespace Inventory.Controllers
             HttpContext.Session.Clear();
             HttpContext.User = null;
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Account");
         }
 
         public IActionResult AccessDenied()

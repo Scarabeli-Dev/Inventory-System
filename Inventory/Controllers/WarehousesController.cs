@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Inventory.Controllers
 {
+    [Authorize]
     public class WarehousesController : Controller
     {
         private readonly IWarehouseService _warehouseService;

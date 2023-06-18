@@ -5,9 +5,11 @@ using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Microsoft.Extensions.Hosting;
 using Inventory.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inventory.Controllers
 {
+    [Authorize]
     public class ItemsController : Controller
     {
         private readonly InventoryContext _context;
@@ -29,6 +31,7 @@ namespace Inventory.Controllers
         }
 
         // GET: Items
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index(string filter, int pageindex = 1, string sort = "Name")
         {
               return View(await _itemService.GetAllItemsPagingAsync(filter, pageindex, sort));

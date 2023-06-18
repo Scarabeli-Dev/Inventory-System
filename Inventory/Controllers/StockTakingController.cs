@@ -2,6 +2,7 @@
 using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Inventory.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MySqlX.XDevAPI.Relational;
@@ -9,6 +10,7 @@ using System.Globalization;
 
 namespace Inventory.Controllers
 {
+    [Authorize]
     public class StockTakingController : Controller
     {
         private readonly IStockTakingService _stockTakingService;

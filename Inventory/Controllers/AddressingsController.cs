@@ -5,9 +5,11 @@ using Inventory.Data;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Inventory.Helpers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inventory.Controllers
 {
+    [Authorize]
     public class AddressingsController : Controller
     {
         private readonly InventoryContext _context;

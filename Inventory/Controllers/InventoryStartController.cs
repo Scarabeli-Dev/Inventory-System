@@ -1,12 +1,14 @@
 ﻿using Inventory.Models;
 using Inventory.Services;
 using Inventory.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ReflectionIT.Mvc.Paging;
 using System.Collections.Generic;
 
 namespace Inventory.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class InventoryStartController : Controller
     {
         private readonly IInventoryStartService _inventoryStartService;

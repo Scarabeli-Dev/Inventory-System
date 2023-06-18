@@ -1,11 +1,13 @@
 ﻿using Inventory.Helpers;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 
 namespace Inventory.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class InventoryMovementController : Controller
     {
         private readonly IInventoryMovementService _inventoryMovementService;

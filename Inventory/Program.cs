@@ -22,7 +22,6 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Add Identity
 builder.Services.AddIdentity<User, Role>(options =>
-//builder.Services.AddDefaultIdentity<User>(options =>
 {
     // SignIn
     options.SignIn.RequireConfirmedEmail = false;
@@ -82,6 +81,7 @@ builder.Services.AddScoped<IAddressingsStockTakingService, AddressingsStockTakin
 builder.Services.AddScoped<IItemsStockTakingService, ItemsStockTakingService>();
 builder.Services.AddScoped<IStockTakingService, StockTakingService>();
 builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
 
 // Add Paging List
@@ -89,6 +89,13 @@ builder.Services.AddPaging(options =>
 {
     options.ViewName = "Bootstrap4";
     options.PageParameterName = "pageindex";
+});
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login"; // Página de login personalizada
+    options.LogoutPath = "/Account/Logout"; // Página de logout personalizada
+    options.AccessDeniedPath = "/Account/AccessDenied"; // Página de acesso negado personalizada
 });
 
 var app = builder.Build();
@@ -113,6 +120,16 @@ app.UseRouting();
 CriarPerfisUsuarios(app);
 
 app.UseAuthentication();
+app.UseCookiePolicy();
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/Account/Login" && context.User.Identity.IsAuthenticated)
+    {
+        context.Response.Redirect("/"); // Página inicial do seu aplicativo
+        return;
+    }
+    await next();
+});
 app.UseAuthorization();
 
 app.UseStaticFiles(new StaticFileOptions()
@@ -123,7 +140,7 @@ app.UseStaticFiles(new StaticFileOptions()
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=Login}/{id?}");
+    pattern: "{controller=Warehouses}/{action=Index}/{id?}");
 app.MapRazorPages();
 
 app.Run();
