@@ -53,18 +53,18 @@ namespace Inventory.Helpers
                 }
             }
 
-            if (_userManager.FindByEmailAsync("admin@localhost").Result == null)
+            if (_userManager.FindByEmailAsync("elana.scarabeli@rcproconsultoria.com.br").Result == null)
             {
                 IdentityUser user = new IdentityUser();
-                user.UserName = "admin@localhost";
-                user.Email = "admin@localhost";
-                user.NormalizedUserName = "ADMIN@LOCALHOST";
-                user.NormalizedEmail = "ADMIN@LOCALHOST";
+                user.UserName = "esesena";
+                user.Email = "elana.scarabeli@rcproconsultoria.com.br";
+                user.NormalizedUserName = "ESESENA";
+                user.NormalizedEmail = "ELANA.SCARABELI@RCPROCONSULTORIA.COM.BR";
                 user.EmailConfirmed = true;
                 user.LockoutEnabled = false;
                 user.SecurityStamp = Guid.NewGuid().ToString();
 
-                IdentityResult result = _userManager.CreateAsync(user, "Numsey#2022").Result;
+                IdentityResult result = _userManager.CreateAsync(user, "123456").Result;
 
                 if (result.Succeeded)
                 {

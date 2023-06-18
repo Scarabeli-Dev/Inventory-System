@@ -2,6 +2,7 @@ using Inventory.Data;
 using Inventory.Helpers;
 using Inventory.Services;
 using Inventory.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
@@ -20,8 +21,27 @@ builder.Services.AddDbContext<InventoryContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // Add Identity
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<InventoryContext>();
+builder.Services.AddDefaultIdentity<IdentityUser>(options => {
+    // SignIn
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedAccount = false;
+    options.SignIn.RequireConfirmedPhoneNumber = false;
+    // Password
+    options.Password.RequiredLength = 4;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireDigit = false;
+    options.Password.RequireNonAlphanumeric = false;
+})
+    .AddEntityFrameworkStores<InventoryContext>();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/Login/";
+                });
+
+
 builder.Services.AddControllersWithViews();
 
 // Regional Configurations
@@ -92,7 +112,7 @@ app.UseStaticFiles(new StaticFileOptions()
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Account}/{action=Login}/{id?}");
 app.MapRazorPages();
 
 app.Run();
