@@ -26,7 +26,7 @@ namespace Inventory.ViewModels.AccountVM
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Display(Name = "Senha")]
+        [Display(Name = "Perfil de Usuário")]
         [StringLength(80, ErrorMessage = "Máximo de {1} caracteres!")]
         [Required(ErrorMessage = "{0} é obrigatório!")]
         public string Role { get; set; }

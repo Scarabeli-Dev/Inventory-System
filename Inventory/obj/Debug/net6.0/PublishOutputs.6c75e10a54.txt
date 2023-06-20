@@ -295,6 +295,7 @@ C:\Systems\Inventory\Inventory\obj\Debug\net6.0\PubTmp\Out\refs\WindowsBase.dll
 C:\Systems\Inventory\Inventory\obj\Debug\net6.0\PubTmp\Out\Inventory.dll
 C:\Systems\Inventory\Inventory\obj\Debug\net6.0\PubTmp\Out\Inventory.runtimeconfig.json
 C:\Systems\Inventory\Inventory\obj\Debug\net6.0\PubTmp\Out\Inventory.pdb
+C:\Systems\Inventory\Inventory\obj\Debug\net6.0\PubTmp\Out\CsvHelper.dll
 C:\Systems\Inventory\Inventory\obj\Debug\net6.0\PubTmp\Out\Google.Protobuf.dll
 C:\Systems\Inventory\Inventory\obj\Debug\net6.0\PubTmp\Out\Humanizer.dll
 C:\Systems\Inventory\Inventory\obj\Debug\net6.0\PubTmp\Out\K4os.Compression.LZ4.dll

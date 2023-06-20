@@ -34,6 +34,7 @@
     ".NETCoreApp,Version=v6.0": {
       "Inventory/1.0.0": {
         "dependencies": {
+          "CsvHelper": "30.0.1",
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "6.0.14",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.14",
           "Microsoft.AspNetCore.Identity.UI": "6.0.14",
@@ -335,6 +336,17 @@
         },
         "compile": {
           "Inventory.dll": {}
+        }
+      },
+      "CsvHelper/30.0.1": {
+        "runtime": {
+          "lib/net6.0/CsvHelper.dll": {
+            "assemblyVersion": "30.0.0.0",
+            "fileVersion": "30.0.1.0"
+          }
+        },
+        "compile": {
+          "lib/net6.0/CsvHelper.dll": {}
         }
       },
       "Google.Protobuf/3.21.9": {
@@ -5109,6 +5121,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "CsvHelper/30.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rcZtgbWR+As4G3Vpgx0AMNmShGuQLFjkHAPIIflzrfkJCx8/AOd4m96ZRmiU1Wi39qS5UVjV0P8qdgqOo5Cwyg==",
+      "path": "csvhelper/30.0.1",
+      "hashPath": "csvhelper.30.0.1.nupkg.sha512"
     },
     "Google.Protobuf/3.21.9": {
       "type": "package",

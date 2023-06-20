@@ -1,5 +1,6 @@
 ﻿using Inventory.Models.Account;
 using Inventory.ViewModels.AccountVM;
+using ReflectionIT.Mvc.Paging;
 
 namespace Inventory.Services.Interfaces
 {
@@ -7,5 +8,7 @@ namespace Inventory.Services.Interfaces
     {
         Task<List<Role>> GetAllRoles();
         Task<User> CreateUser(RegisterViewModel userVM);
+        Task<PagingList<User>> GetAllUsersByPaggingList(string filter, int pageindex = 1, string sort = "Name");
+        Task<User> GetUserByIdAsync(int userId);
     }
 }

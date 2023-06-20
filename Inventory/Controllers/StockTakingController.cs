@@ -75,7 +75,8 @@ namespace Inventory.Controllers
 
                 await _stockTakingService.NewStockTakingAsync(stockTaking);
                 await _stockTakingService.SaveChangesAsync();
-                return RedirectToAction("Index", "Items");
+
+                return RedirectToAction("Details", "Warehouses", new { id = stockTaking.Addressing.WarehouseId });
             }
             var item = await _itemService.GetItemByIdAsync(stockTaking.ItemId);
 
@@ -107,6 +108,7 @@ namespace Inventory.Controllers
                 try
                 {
                     _stockTakingService.UpdateStockTaking(stockTaking);
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -120,7 +122,9 @@ namespace Inventory.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction("Index", "Items");
+                Addressing wareHouseReturn = await _addressingService.GetAddressingByIdAsync(stockTaking.AddressingId);
+
+                return RedirectToAction("Details", "Warehouses", new { id = wareHouseReturn.WarehouseId });
             }
             return View(stockTaking);
         }
@@ -142,9 +146,18 @@ namespace Inventory.Controllers
                 model.StockTakingId = item.Id;
                 model.ItemId = item.ItemId;
                 model.ItemName = item.Item.Name;
-                model.ItemInitialAmount = item.Item.Quantity;
+
+                var itemVerify = await _itemService.GetItemByIdAsync(item.ItemId);
 
                 var stockTaking = await _stockTakingService.GetStockTakingByItemIdAsync(item.ItemId);
+
+                //if (!itemVerify.Addressings.Any(a => a.Addressing.Id == addressingId) && !itemVerify.Addressings.Any(a => a.Addressing.Id == stockTaking.AddressingId))
+                if (!itemVerify.Addressings.Any(a => a.Addressing.Id == addressingId))
+                {
+                    model.ItemInitialAmount = 0;
+                }
+                model.ItemInitialAmount = item.Item.Quantity;
+
 
                 if (stockTaking == null)
                 {

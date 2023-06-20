@@ -14,10 +14,10 @@
                 Código do Produto
             </th>
             <th>
-                Estoque Inicial
+                Nome do Item
             </th>
             <th>
-                Nome do Item
+                Estoque Inicial
             </th>
             <th>
                 Contagem
@@ -38,10 +38,10 @@
                       @Html.DisplayFor(modelItem => item.ItemId)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ItemInitialAmount)
+                    @Html.DisplayFor(modelItem => item.ItemName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ItemName)
+                    @Html.DisplayFor(modelItem => item.ItemInitialAmount)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ItemStockTakingAmount)

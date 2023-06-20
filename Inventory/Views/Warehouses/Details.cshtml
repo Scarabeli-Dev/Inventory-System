@@ -13,7 +13,7 @@
     </h2>
 </div>
 
-<div id="addressings">
+<div id="items">
     <div id="modal-form" aria-hidden="true">
     </div>
 </div>
@@ -29,9 +29,9 @@
 
     <script type="text/javascript">
 
-        $.ready(loadAddressings(@Model.Id, @filter))
+        $.ready(loadItems(@Model.Id, @filter))
 
-        function loadAddressings(warehouseId, filter) {
+        function loadItems(warehouseId, filter) {
             $.ajax({
                 type: 'GET',
                 url: "/Items/ItemWarehouseIndex",

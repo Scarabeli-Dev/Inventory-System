@@ -1,4 +1,5 @@
 ﻿using Inventory.Models.Account;
+using Inventory.Services;
 using Inventory.Services.Interfaces;
 using Inventory.ViewModels.AccountVM;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Inventory.Controllers
 {
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         private readonly UserManager<User> _userManager;
@@ -47,7 +49,7 @@ namespace Inventory.Controllers
                 {
                     if (string.IsNullOrEmpty(loginVM.ReturnUrl))
                     {
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Warehouses");
                     }
                     return Redirect(loginVM.ReturnUrl);
                 }
@@ -57,9 +59,17 @@ namespace Inventory.Controllers
         }
 
         [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UserList(string filter, int pageindex = 1, string sort = "Name")
+        {
+            var model = await _accountService.GetAllUsersByPaggingList(filter, pageindex, sort);
+
+            return View(model);
+        }
+
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Register()
         {
-            List<Role>  roles = await _accountService.GetAllRoles();
+            List<Role> roles = await _accountService.GetAllRoles();
 
             ViewBag.Roles = roles;
 
@@ -67,6 +77,7 @@ namespace Inventory.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel userVM)
         {
@@ -76,7 +87,7 @@ namespace Inventory.Controllers
 
                 if (user != null)
                 {
-                    return RedirectToAction("Login", "Account");
+                    return RedirectToAction("Warehouses", "Index");
                 }
                 else
                 {

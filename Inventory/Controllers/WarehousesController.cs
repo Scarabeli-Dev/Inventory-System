@@ -32,6 +32,13 @@ namespace Inventory.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> IndexTable(string filter, int pageindex = 1, string sort = "Name")
+        {
+            var model = await _warehouseService.GetAllWarehousesAsync(filter, pageindex, sort);
+
+            return View(model);
+        }
+
         // GET: Warehouses/Details/5
         public async Task<IActionResult> Details(int? id, string filter)
         {

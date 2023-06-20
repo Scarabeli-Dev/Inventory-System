@@ -13,7 +13,7 @@
         <input name="filter" class="form-control" placeholder="filtro"
                value="@Model.RouteValue["Filter"]" />
 
-        <button type="submit" class="btn btn-info">Procurar</button>
+        <button type="submit" class="btn btn-info" onclick="showList()">Procurar</button>
     </div>
 </form>
 
@@ -51,10 +51,8 @@
     </tbody>
 </table>
 
-<div>
-    <vc:pager paging-list="@Model"></vc:pager>
-</div>
-
 @section Scripts{
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
