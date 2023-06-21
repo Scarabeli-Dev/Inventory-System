@@ -22,9 +22,10 @@ namespace Inventory.Controllers
             _accountService = accountService;
         }
 
-        public IActionResult Index()
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Index(string filter, int pageindex = 1, string sort = "Name")
         {
-            return View();
+            return View(await _accountService.GetUsersByPaggingList(filter, pageindex, sort));
         }
 
         public IActionResult Login(string returnUrl)

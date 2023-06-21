@@ -61,12 +61,12 @@ namespace Inventory.Services
                                              .FirstOrDefaultAsync(st => st.Id == stockTakingId);
         }
 
-        public async Task<StockTaking> GetStockTakingByItemIdAsync(string itemId)
+        public async Task<List<StockTaking>> GetAllStockTakingByItemIdAsync(string itemId)
         {
             return await _context.StockTaking.Include(i => i.Item)
                                              .Include(a => a.AddressingsInventoryStart).ThenInclude(a => a.Addressing)
                                              .Include(i => i.AddressingsInventoryStart).ThenInclude(a => a.InventoryStart)
-                                             .FirstOrDefaultAsync(st => st.ItemId == itemId);
+                                             .Where(st => st.ItemId == itemId).ToListAsync();
         }
 
         public async Task<List<StockTaking>> GetAllStockTakingAsync()
@@ -102,6 +102,13 @@ namespace Inventory.Services
             return await _context.StockTaking.Include(x => x.Item)
                                              .Include(a => a.AddressingsInventoryStart).ThenInclude(inv => inv.InventoryStart)
                                              .Where(a => a.AddressingsInventoryStart.AddressingId == addressingId).ToListAsync();
+        }
+
+        public async Task<StockTaking> GetStockTakingByAddressingAndItemIdAsync(int addressingId, string itemId)
+        {
+            return await _context.StockTaking.Include(x => x.Item)
+                                             .Include(a => a.AddressingsInventoryStart).ThenInclude(inv => inv.InventoryStart)
+                                             .FirstOrDefaultAsync(a => a.AddressingsInventoryStart.AddressingId == addressingId && a.ItemId == itemId);
         }
 
         public int GetCountStockTakingByAddressingAsync(int addressingId)

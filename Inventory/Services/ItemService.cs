@@ -89,9 +89,9 @@ namespace Inventory.Services
 
         public async Task<Item> GetItemByIdAsync(string id)
         {
-           var result = await _context.Item.Include(l => l.Addressings).ThenInclude(il => il.Addressing).FirstOrDefaultAsync(m => m.Id == id);
+            var result = await _context.Item.Include(l => l.Addressings).ThenInclude(il => il.Addressing).FirstOrDefaultAsync(m => m.Id == id);
 
-           return result;
+            return result;
         }
 
         public async Task<bool> ImportItemAsync(string fileName, string destiny)
@@ -116,9 +116,19 @@ namespace Inventory.Services
             foreach (var item in items)
             {
                 Item itemInsert = new Item();
+                itemInsert.Id = item.Id;
                 itemInsert.Name = item.Name;
+                itemInsert.UnitOfMeasurement = item.UnitOfMeasurement;
+                itemInsert.Quantity = item.Quantity;
 
                 _context.Item.Add(itemInsert);
+                _context.SaveChanges();
+
+                ItemsAddressings itemsAddressings = new ItemsAddressings();
+                itemsAddressings.ItemId = itemInsert.Id;
+                itemsAddressings.AddressingId = item.AddressingId;
+
+                _context.ItemsAddressing.Add(itemsAddressings);
                 _context.SaveChanges();
             }
             return true;

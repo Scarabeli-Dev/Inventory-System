@@ -40,8 +40,14 @@ namespace Inventory.Controllers
             return View();
         }
 
-        public async Task<IActionResult> ItemCount(string itemId)
+        public async Task<IActionResult> ItemCount(string itemId, bool stockTakingCheched)
         {
+            var checkStockTacking = await _stockTakingService.GetAllStockTakingByItemIdAsync(itemId);
+
+            if (checkStockTacking != null && stockTakingCheched == false)
+                return RedirectToAction("CheckStockTaking", "StockTaking", new { itemId = itemId });
+
+
             var item = await _itemService.GetItemByIdAsync(itemId);
 
             ViewBag.item = item;
@@ -77,25 +83,14 @@ namespace Inventory.Controllers
             return View(stockTaking);
         }
 
-        public async Task<IActionResult> ItemCountEdit(string itemId)
+        public async Task<IActionResult> ItemCountEdit(int stockTakingId)
         {
-            var stockTaking = await _stockTakingService.GetStockTakingByItemIdAsync(itemId);
+            var stockTaking = await _stockTakingService.GetStockTakingByIdAsync(stockTakingId);
 
             var addressings = await _addressingService.GetAllAddressingsByWarehouseIdAsync(stockTaking.AddressingsInventoryStart.Addressing.WarehouseId);
             ViewBag.Addressings = addressings;
 
             return View(stockTaking);
-
-            //var itemStockCount = await _itemsStockTakingService.GetItemsStockTakingItemByIdAsync(itemId);
-
-            //if (itemStockCount == null)
-            //{
-            //    throw new NotFoundException("Contagem de estoque não encontrada");
-            //}
-            //if (itemStockCount.ItemCountRealized == true)
-            //{
-            //    return RedirectToAction(nameof(ItemCountEdit), new { itemId = itemId });
-            //}
         }
 
         [HttpPost]
@@ -130,6 +125,15 @@ namespace Inventory.Controllers
             return View(stockTaking);
         }
 
+        public async Task<IActionResult> CheckStockTaking(string itemId)
+        {
+            var itemStockTaking = await _stockTakingService.GetAllStockTakingByItemIdAsync(itemId);
+            var item = await _itemService.GetItemByIdAsync(itemId);
+
+            ViewBag.Item = item;
+            return View(itemStockTaking);
+        }
+
 
         public async Task<IActionResult> StockTakingReport(int addressingId)
         {
@@ -158,7 +162,7 @@ namespace Inventory.Controllers
 
                 model.ItemInitialQuantity = item.Item.Quantity;
 
-                var stockTaking = await _stockTakingService.GetStockTakingByItemIdAsync(item.ItemId);
+                var stockTaking = await _stockTakingService.GetStockTakingByAddressingAndItemIdAsync(addressingId, item.ItemId);
 
                 if (stockTaking == null)
                 {

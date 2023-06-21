@@ -8,10 +8,11 @@ namespace Inventory.Services.Interfaces
         Task<bool> NewStockTakingAsync(StockTaking stockTaking);
         bool UpdateStockTaking(StockTaking stockTaking);
         Task<StockTaking> GetStockTakingByIdAsync(int stockTakingId);
-        Task<StockTaking> GetStockTakingByItemIdAsync(string itemId);
+        Task<List<StockTaking>> GetAllStockTakingByItemIdAsync(string itemId);
         Task<List<StockTaking>> GetAllStockTakingAsync();
         Task<PagingList<StockTaking>> GetStockTakingByPagingAsync(string filter, int pageindex = 1, string sort = "StockTakingDate");
         Task<List<StockTaking>> GetStockTakingByAddressingAsync(int addressingId);
+        Task<StockTaking> GetStockTakingByAddressingAndItemIdAsync(int addressingId, string itemId);
         int GetCountStockTakingByAddressingAsync(int addressingId);
     }
 }

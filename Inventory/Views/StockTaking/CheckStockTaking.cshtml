@@ -1,0 +1,45 @@
+﻿@model List<StockTaking>
+
+@{
+    var item = ViewBag.Item;
+}
+
+<h3>O Item: @item.Name já foi contado, o que deseja fazer?</h3>
+
+@*@foreach (var itemStockTaking in Model)
+{
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="@itemStockTaking.Id">
+        <label class="form-check-label" for="exampleRadios1">
+            @itemStockTaking.Item.Name
+        </label>
+    </div>
+}
+
+<a href="@Url.Action("ItemCountEdit", "StockTaking", new { itemId = Model.Id })" class="btn btn-primary">Recontar o item selecionado</a>
+<a href="@Url.Action("ItemCount", "StockTaking", new { itemId = item.Id })" class="btn btn-primary">Contar novamente com outro endereçamento</a>*@
+
+
+@foreach (var itemStockTaking in Model)
+{
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="SelectedStockTakingId" id="stockTakingId_@itemStockTaking.Id" value="@itemStockTaking.Id">
+        <label class="form-check-label" for="stockTakingId_@itemStockTaking.Id">
+            @itemStockTaking.Item.Name
+        </label>
+    </div>
+}
+
+<button id="recountButton" class="btn btn-primary">Recontar o item selecionado</button>
+
+<a href="@Url.Action("ItemCount", "StockTaking", new { itemId = item.Id, stockTakingCheched = true })" class="btn btn-primary">Contar novamente com outro endereçamento</a>
+
+@section Scripts {
+    <script>
+        document.getElementById("recountButton").addEventListener("click", function () {
+            var selectedStockTakingId = document.querySelector('input[name="SelectedStockTakingId"]:checked').value;
+            var redirectUrl = "@Url.Action("ItemCountEdit", "StockTaking")" + "?stockTakingId=" + selectedStockTakingId;
+            window.location.href = redirectUrl;
+        });
+    </script>
+}
