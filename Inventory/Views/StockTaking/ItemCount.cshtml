@@ -20,7 +20,7 @@
                 <div class="form-group">
                     <h2>Confirme o endereçamento: <strong>@addressing.Name</strong></h2>
                     <div id="stockTakingList">
-                        <select asp-for="AddressingId" name="AddressingId"  class="chosen-select col-6 form-control" tabindex="17" id="addressing-select">
+                        <select asp-for="AddressingsInventoryStartId" name="AddressingsInventoryStartId"  class="chosen-select col-6 form-control" tabindex="17" id="addressing-select">
                             @foreach (var item in addressingsList)
                             {
                                 if (addressing.Id == item.Id)
@@ -73,7 +73,6 @@
                     <span asp-validation-for="StockTakingObservation" class="text-danger"></span>
                 </div>
                 <div class="form-group d-none">
-                    <input asp-for="InventoryStartId" class="form-control" value="@inventoryStart.Id" />
                     <input asp-for="ItemId" class="form-control" value="@itemCount.Id" />
                 </div>
                 <div class="form-group">

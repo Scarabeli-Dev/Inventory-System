@@ -12,9 +12,9 @@ namespace Inventory.Controllers
     public class InventoryStartController : Controller
     {
         private readonly IInventoryStartService _inventoryStartService;
-        private readonly IAddressingsStockTakingService _addressingsStockTakingService;
+        private readonly IAddressingsInventoryStartService _addressingsStockTakingService;
 
-        public InventoryStartController(IInventoryStartService inventoryStartService, IAddressingsStockTakingService addressingsStockTakingService)
+        public InventoryStartController(IInventoryStartService inventoryStartService, IAddressingsInventoryStartService addressingsStockTakingService)
         {
             _inventoryStartService = inventoryStartService;
             _addressingsStockTakingService = addressingsStockTakingService;

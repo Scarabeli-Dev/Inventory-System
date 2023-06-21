@@ -16,11 +16,11 @@
             <input type="hidden" asp-for="Id" />
             <div class="row">
                 <div class="form-group">
-                    <h3>Endereçamento: <strong>@Model.Addressing.Name</strong></h3>
-                    <select asp-for="AddressingId" name="AddressingId" class="chosen-select col-6 form-control" tabindex="17" id="addressing-select">
+                    <h3>Endereçamento: <strong>@Model.AddressingsInventoryStart.Addressing.Name</strong></h3>
+                    <select asp-for="AddressingsInventoryStartId" name="AddressingsInventoryStartId" class="chosen-select col-6 form-control" tabindex="17" id="addressing-select">
                         @foreach (var item in addressingsList)
                         {
-                            if (Model.Addressing.Id == item.Id)
+                            if (Model.AddressingsInventoryStart.AddressingId == item.Id)
                             {
                                 <option selected value="@item.Id">@item.Name</option>
                             }
@@ -67,7 +67,6 @@
                     <span asp-validation-for="StockTakingObservation" class="text-danger"></span>
                 </div>
                 <div class="form-group d-none">
-                    <input type="hidden" asp-for="InventoryStartId" />
                     <input type="hidden" asp-for="ItemId" />
                     <input type="hidden" asp-for="NumberOfCount" />
                 </div>

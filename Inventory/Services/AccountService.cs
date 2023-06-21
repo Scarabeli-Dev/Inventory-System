@@ -5,7 +5,6 @@ using Inventory.ViewModels.AccountVM;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ReflectionIT.Mvc.Paging;
-using System.Xml.Linq;
 
 namespace Inventory.Services
 {
@@ -38,21 +37,13 @@ namespace Inventory.Services
 
             if (result.Succeeded)
             {
-                var role = await GetRoleByNameAsync(userVM.Role);
-                var userReturn = await GetUserByUserNameAsync(user.UserName);
-
-                UserRole userRole = new UserRole();
-                userRole.UserId = userReturn.Id;
-                userRole.RoleId = role.Id;
-
-                _context.UserRoles.Add(userRole);
-                _context.SaveChanges();
+                _userManager.AddToRoleAsync(user, userVM.Role).Wait();
             }
 
             return user;
         }
 
-        public async Task<PagingList<User>> GetAllUsersByPaggingList(string filter, int pageindex = 1, string sort = "Name")
+        public async Task<PagingList<User>> GetUsersByPaggingList(string filter, int pageindex = 1, string sort = "Name")
         {
             var result = _context.Users.Include(ur => ur.UserRole)
                                        .ThenInclude(r => r.Role)
@@ -61,7 +52,7 @@ namespace Inventory.Services
 
             if (!string.IsNullOrWhiteSpace(filter))
             {
-                result = result.Where(p => (p.Name.ToLower().Contains(filter.ToLower())) );
+                result = result.Where(p => (p.Name.ToLower().Contains(filter.ToLower())));
             }
 
             var model = await PagingList.CreateAsync(result, 10, pageindex, sort, "Name");
@@ -75,16 +66,9 @@ namespace Inventory.Services
             return await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
         }
 
-
-        //Private
-        private async Task<User> GetUserByUserNameAsync(string userName)
-        {
-            return await _context.Users.FirstOrDefaultAsync(r => r.UserName == userName);
-        }
-
-        private async Task<Role> GetRoleByNameAsync(string name)
-        {
-            return await _context.Roles.FirstOrDefaultAsync(r => r.Name == name);
-        }
+        //private async Task<List<User>> GetAllUsersAsync()
+        //{
+        //    return await _context.Users.Include(r => r.UserRole).ThenInclude(r => r.Role).ToListAsync();
+        //}
     }
 }

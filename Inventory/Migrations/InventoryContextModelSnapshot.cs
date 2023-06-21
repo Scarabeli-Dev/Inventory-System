@@ -119,21 +119,6 @@ namespace Inventory.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Inventory.Models.Account.UserRole", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles", (string)null);
-                });
-
             modelBuilder.Entity("Inventory.Models.Addressing", b =>
                 {
                     b.Property<int>("Id")
@@ -155,7 +140,7 @@ namespace Inventory.Migrations
                     b.ToTable("Addressing");
                 });
 
-            modelBuilder.Entity("Inventory.Models.AddressingsStockTaking", b =>
+            modelBuilder.Entity("Inventory.Models.AddressingsInventoryStart", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -179,7 +164,7 @@ namespace Inventory.Migrations
 
                     b.HasIndex("InventoryStartId");
 
-                    b.ToTable("AddressingsStockTaking");
+                    b.ToTable("AddressingsInventoryStart");
                 });
 
             modelBuilder.Entity("Inventory.Models.InventoryMovement", b =>
@@ -317,7 +302,7 @@ namespace Inventory.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("AddressingId")
+                    b.Property<int>("AddressingsInventoryStartId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("ExpirationDate")
@@ -325,9 +310,6 @@ namespace Inventory.Migrations
 
                     b.Property<DateTime?>("FabricationDate")
                         .HasColumnType("datetime(6)");
-
-                    b.Property<int>("InventoryStartId")
-                        .HasColumnType("int");
 
                     b.Property<string>("ItemBatch")
                         .HasMaxLength(30)
@@ -352,9 +334,7 @@ namespace Inventory.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressingId");
-
-                    b.HasIndex("InventoryStartId");
+                    b.HasIndex("AddressingsInventoryStartId");
 
                     b.HasIndex("ItemId");
 
@@ -424,12 +404,10 @@ namespace Inventory.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("varchar(128)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ProviderKey")
-                        .HasMaxLength(128)
-                        .HasColumnType("varchar(128)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("longtext");
@@ -444,18 +422,35 @@ namespace Inventory.Migrations
                     b.ToTable("AspNetUserLogins", (string)null);
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUserRole<int>");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.Property<string>("LoginProvider")
-                        .HasMaxLength(128)
-                        .HasColumnType("varchar(128)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Name")
-                        .HasMaxLength(128)
-                        .HasColumnType("varchar(128)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Value")
                         .HasColumnType("longtext");
@@ -467,21 +462,11 @@ namespace Inventory.Migrations
 
             modelBuilder.Entity("Inventory.Models.Account.UserRole", b =>
                 {
-                    b.HasOne("Inventory.Models.Account.Role", "Role")
-                        .WithMany("UserRole")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUserRole<int>");
 
-                    b.HasOne("Inventory.Models.Account.User", "User")
-                        .WithMany("UserRole")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasIndex("RoleId");
 
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
+                    b.HasDiscriminator().HasValue("UserRole");
                 });
 
             modelBuilder.Entity("Inventory.Models.Addressing", b =>
@@ -495,7 +480,7 @@ namespace Inventory.Migrations
                     b.Navigation("Warehouse");
                 });
 
-            modelBuilder.Entity("Inventory.Models.AddressingsStockTaking", b =>
+            modelBuilder.Entity("Inventory.Models.AddressingsInventoryStart", b =>
                 {
                     b.HasOne("Inventory.Models.Addressing", "Addressing")
                         .WithMany("StockTaking")
@@ -551,7 +536,7 @@ namespace Inventory.Migrations
             modelBuilder.Entity("Inventory.Models.ItemsStockTaking", b =>
                 {
                     b.HasOne("Inventory.Models.InventoryStart", "InventoryStart")
-                        .WithMany("Items")
+                        .WithMany()
                         .HasForeignKey("InventoryStartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -567,15 +552,9 @@ namespace Inventory.Migrations
 
             modelBuilder.Entity("Inventory.Models.StockTaking", b =>
                 {
-                    b.HasOne("Inventory.Models.Addressing", "Addressing")
-                        .WithMany()
-                        .HasForeignKey("AddressingId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Inventory.Models.InventoryStart", "InventoryStart")
-                        .WithMany()
-                        .HasForeignKey("InventoryStartId")
+                    b.HasOne("Inventory.Models.AddressingsInventoryStart", "AddressingsInventoryStart")
+                        .WithMany("StockTaking")
+                        .HasForeignKey("AddressingsInventoryStartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -585,9 +564,7 @@ namespace Inventory.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Addressing");
-
-                    b.Navigation("InventoryStart");
+                    b.Navigation("AddressingsInventoryStart");
 
                     b.Navigation("Item");
                 });
@@ -628,6 +605,25 @@ namespace Inventory.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Inventory.Models.Account.UserRole", b =>
+                {
+                    b.HasOne("Inventory.Models.Account.Role", "Role")
+                        .WithMany("UserRole")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Inventory.Models.Account.User", "User")
+                        .WithMany("UserRole")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Inventory.Models.Account.Role", b =>
                 {
                     b.Navigation("UserRole");
@@ -645,11 +641,14 @@ namespace Inventory.Migrations
                     b.Navigation("StockTaking");
                 });
 
+            modelBuilder.Entity("Inventory.Models.AddressingsInventoryStart", b =>
+                {
+                    b.Navigation("StockTaking");
+                });
+
             modelBuilder.Entity("Inventory.Models.InventoryStart", b =>
                 {
                     b.Navigation("Addressings");
-
-                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("Inventory.Models.Item", b =>

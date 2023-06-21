@@ -73,16 +73,15 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IUtil, Util>();
 
 // Add Services
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IAddressingService, AddressingService>();
-builder.Services.AddScoped<IAddressingsStockTakingService, AddressingsStockTakingService>();
-builder.Services.AddScoped<IGeralService, GeralService>();
-builder.Services.AddScoped<IItemsStockTakingService, ItemsStockTakingService>();
-builder.Services.AddScoped<IInventoryMovementService, InventoryMovementService>();
-builder.Services.AddScoped<IInventoryStartService, InventoryStartService>();
-builder.Services.AddScoped<IItemService, ItemService>();
-builder.Services.AddScoped<IStockTakingService, StockTakingService>();
 builder.Services.AddScoped<IWarehouseService, WarehouseService>();
+builder.Services.AddScoped<IAddressingService, AddressingService>();
+builder.Services.AddScoped<IInventoryStartService, InventoryStartService>();
+builder.Services.AddScoped<IInventoryMovementService, InventoryMovementService>();
+builder.Services.AddScoped<IAddressingsInventoryStartService, AddressingsInventoryStartService>();
+builder.Services.AddScoped<IItemsStockTakingService, ItemsStockTakingService>();
+builder.Services.AddScoped<IStockTakingService, StockTakingService>();
+builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
 
 // Add Paging List
@@ -141,7 +140,7 @@ app.UseStaticFiles(new StaticFileOptions()
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=Login}/{id?}");
+    pattern: "{controller=Warehouses}/{action=Index}/{id?}");
 app.MapRazorPages();
 
 app.Run();

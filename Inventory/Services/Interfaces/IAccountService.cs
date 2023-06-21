@@ -8,7 +8,7 @@ namespace Inventory.Services.Interfaces
     {
         Task<List<Role>> GetAllRoles();
         Task<User> CreateUser(RegisterViewModel userVM);
-        Task<PagingList<User>> GetAllUsersByPaggingList(string filter, int pageindex = 1, string sort = "Name");
+        Task<PagingList<User>> GetUsersByPaggingList(string filter, int pageindex = 1, string sort = "Name");
         Task<User> GetUserByIdAsync(int userId);
     }
 }

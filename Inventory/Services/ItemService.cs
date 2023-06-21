@@ -48,7 +48,7 @@ namespace Inventory.Services
             if (!string.IsNullOrWhiteSpace(filter))
             {
                 result = result.Where(p => (p.Name.ToLower().Contains(filter.ToLower())) ||
-                                           (p.Id.ToString().Contains(filter)));
+                                          (p.Id.ToLower().Contains(filter.ToLower())));
             }
 
             var model = await PagingList.CreateAsync(result, 10, pageindex, sort, "Name");

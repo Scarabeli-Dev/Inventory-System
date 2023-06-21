@@ -166,13 +166,13 @@ namespace Inventory.Controllers
                 string documentPath = Path.Combine(_hostEnvironment.ContentRootPath, "Resources", _destiny, documentName);
 
                 // Implemente o código para ler o arquivo CSV e criar os modelos
-                if(await _warehouseService.ImportWarehouseAsync(documentPath, _destiny))
+                if (await _warehouseService.ImportWarehouseAsync(documentPath, _destiny))
                 {
-                // Deleta o arquivox
-                _util.DeleteDocument(documentName, _destiny);
+                    // Deleta o arquivox
+                    _util.DeleteDocument(documentName, _destiny);
 
-                // Retorna uma resposta de sucesso ou redireciona para outra página
-                return RedirectToAction(nameof(Index));
+                    // Retorna uma resposta de sucesso ou redireciona para outra página
+                    return RedirectToAction(nameof(Index));
 
                 }
             }

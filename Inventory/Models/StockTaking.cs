@@ -18,8 +18,8 @@ namespace Inventory.Models
 
         [Display(Name = "Endereçamento")]
         [Required(ErrorMessage = "{0} é obrigatório")]
-        public int AddressingId { get; set; }
-        public Addressing Addressing { get; set; }
+        public int AddressingsInventoryStartId { get; set; }
+        public AddressingsInventoryStart AddressingsInventoryStart { get; set; }
 
         [Display(Name = "Quantidade na Contagem")]
         [Required(ErrorMessage = "{0} é obrigatório")]
@@ -40,10 +40,10 @@ namespace Inventory.Models
         [StringLength(250, ErrorMessage = "Máximo de {1} caracteres!")]
         public string StockTakingObservation { get; set; }
 
-        [Display(Name = "Contagem para o inventário")]
-        [Required(ErrorMessage = "{0} é obrigatório")]
-        public int InventoryStartId { get; set; }
-        public InventoryStart InventoryStart { get; set; }
+        //[Display(Name = "Contagem para o inventário")]
+        //[Required(ErrorMessage = "{0} é obrigatório")]
+        //public int InventoryStartId { get; set; }
+        //public InventoryStart InventoryStart { get; set; }
 
         public int NumberOfCount { get; set; }
     }

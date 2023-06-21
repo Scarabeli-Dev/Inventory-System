@@ -1,7 +1,7 @@
 ﻿@model List<StockTakingReportAddressing>
 
 @{
-    AddressingsStockTaking addressing = ViewBag.AddressingInfo;
+    AddressingsInventoryStart addressing = ViewBag.AddressingInfo;
     ViewData["Title"] = "Apuração de Contagem";
 }
 
@@ -41,16 +41,16 @@
                     @Html.DisplayFor(modelItem => item.ItemName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ItemInitialAmount)
+                    @Html.DisplayFor(modelItem => item.ItemInitialQuantity)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ItemStockTakingAmount)
+                    @Html.DisplayFor(modelItem => item.ItemStockTakingQuantity)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.NumberOfCount)
                 </td>
                 <td>
-                    @if (item.ItemInitialAmount != item.ItemStockTakingAmount && item.NumberOfCount < 2)
+                    @if (item.ItemInitialQuantity != item.ItemStockTakingQuantity && item.NumberOfCount < 2)
                     {
                         <p class="text-danger">Sim</p>
                     }

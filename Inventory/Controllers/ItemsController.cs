@@ -34,7 +34,7 @@ namespace Inventory.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index(string filter, int pageindex = 1, string sort = "Name")
         {
-            return View(await _itemService.GetAllItemsPagingAsync(filter, pageindex, sort));
+              return View(await _itemService.GetAllItemsPagingAsync(filter, pageindex, sort));
         }
 
         // GET: Items by addressing
@@ -160,7 +160,7 @@ namespace Inventory.Controllers
             {
                 _context.Item.Remove(item);
             }
-
+            
             await _itemService.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

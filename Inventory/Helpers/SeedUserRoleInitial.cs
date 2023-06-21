@@ -1,4 +1,5 @@
-﻿using Inventory.Models.Account;
+﻿using Inventory.Data;
+using Inventory.Models.Account;
 using Microsoft.AspNetCore.Identity;
 
 namespace Inventory.Helpers
@@ -7,12 +8,15 @@ namespace Inventory.Helpers
     {
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<Role> _roleManager;
+        private readonly InventoryContext _context;
 
-        public SeedUserRoleInitial(UserManager<User> userManager, 
-            RoleManager<Role> roleManager)
+        public SeedUserRoleInitial(UserManager<User> userManager,
+            RoleManager<Role> roleManager,
+            InventoryContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _context = context;
         }
 
         public void SeedRoles()

@@ -11,7 +11,7 @@ namespace Inventory.Data
         public InventoryContext(DbContextOptions<InventoryContext> options) : base(options) { }
 
         public DbSet<Addressing> Addressing { get; set; }
-        public DbSet<AddressingsStockTaking> AddressingsStockTaking { get; set; }
+        public DbSet<AddressingsInventoryStart> AddressingsInventoryStart { get; set; }
         public DbSet<InventoryMovement> InventoryMovement { get; set; }
         public DbSet<InventoryStart> InventoryStart { get; set; }
         public DbSet<Item> Item { get; set; }
@@ -41,6 +41,16 @@ namespace Inventory.Data
             modelBuilder.Entity<Warehouse>()
                         .HasMany(s => s.Addressings)
                         .WithOne(s => s.Warehouse)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<InventoryStart>()
+                        .HasMany(s => s.Addressings)
+                        .WithOne(s => s.InventoryStart)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<AddressingsInventoryStart>()
+                        .HasMany(s => s.StockTaking)
+                        .WithOne(s => s.AddressingsInventoryStart)
                         .OnDelete(DeleteBehavior.Cascade);
         }
 

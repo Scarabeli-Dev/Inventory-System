@@ -9,16 +9,14 @@ namespace Inventory.Services
     public class InventoryStartService : GeralService, IInventoryStartService
     {
         private readonly InventoryContext _context;
-        private readonly IAddressingsStockTakingService _addressingsStockTakingService;
-        private readonly IItemsStockTakingService _itemsStockTakingService;
+        private readonly IAddressingsInventoryStartService _addressingsStockTakingService;
         private readonly IAddressingService _addressingService;
 
-        public InventoryStartService(InventoryContext context, IAddressingsStockTakingService addressingsStockTakingService, IAddressingService addressingService, IItemsStockTakingService itemsStockTakingService) : base(context)
+        public InventoryStartService(InventoryContext context, IAddressingsInventoryStartService addressingsStockTakingService, IAddressingService addressingService) : base(context)
         {
             _context = context;
             _addressingsStockTakingService = addressingsStockTakingService;
             _addressingService = addressingService;
-            _itemsStockTakingService = itemsStockTakingService;
         }
 
         public async Task CreateInventoryStartAsync(InventoryStart inventoryStart)
@@ -26,7 +24,6 @@ namespace Inventory.Services
             var result = await _context.InventoryStart.AddAsync(inventoryStart);
             await _context.SaveChangesAsync();
             await _addressingsStockTakingService.CreateAddressingsStockTakingAsync(result.Entity.Id);
-            await _itemsStockTakingService.CreateItemsStockTakingAsync(result.Entity.Id);
         }
 
         public async Task<PagingList<InventoryStart>> GetAllInventoryStartsAsync(string filter, int pageindex = 1, string sort = "InventoryStartDate")
@@ -58,8 +55,7 @@ namespace Inventory.Services
 
             var inventoryStart = await _context.InventoryStart.Include(l => l.Addressings)
                                                               .ThenInclude(il => il.Addressing)
-                                                              .Include(i => i.Items)
-                                                              .ThenInclude(i => i.Item)
+                                                              .ThenInclude(s => s.StockTaking)
                                                               .FirstOrDefaultAsync(i => i.IsCompleted != true);
             return inventoryStart;
         }

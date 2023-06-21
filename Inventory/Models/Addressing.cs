@@ -19,7 +19,7 @@ namespace Inventory.Models
 
         [Display(Name = "Itens")]
         public IEnumerable<ItemsAddressings> Item { get; set; }
-        public IEnumerable<AddressingsStockTaking> StockTaking { get; set; }
+        public IEnumerable<AddressingsInventoryStart> StockTaking { get; set; }
 
     }
 }
