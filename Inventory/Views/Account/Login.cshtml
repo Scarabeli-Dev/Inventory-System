@@ -1,4 +1,4 @@
-﻿ @model LoginViewModel
+﻿@model LoginViewModel
 
 @{
     Layout = null;
@@ -6,42 +6,71 @@
 <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/Inventory.styles.css" asp-append-version="true" />
-<table class="table">
-    <tr>
-        <td><img src="~/images/login1.jpg" class="img-fluid" asp-append-version="true"  alt="Fazer o Login" /></td>
-        <td>
-            <div class="row">
-                <div class="col-9 col-md-9 col-lg-9">
-                    <h4>Login</h4>
-                    <form asp-controller="Account" asp-action="Login" method="post" class="form-horizontal" role="form">
-                        <hr />
-                        <div asp-validation-summary="All" class="text-danger"></div>
-                        <input type="hidden" asp-for="ReturnUrl" />
-                        <div class="form-group">
-                            <label asp-for="UserName" class="col-md-2 control-label"></label>
-                            <div class="col-md-6">
-                                <input asp-for="UserName" class="form-control" />
-                                <span asp-validation-for="UserName" class="text-danger"></span>
+
+<main>
+    <div class="container">
+
+        <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
+
+                        <div class="d-flex justify-content-center py-4">
+                                <img style="width:150px" src="~/images/count.png" alt="">
+                        </div><!-- End Logo -->
+
+                        <div class="card mb-3">
+
+                            <div class="card-body">
+
+                                <div class="pt-4 pb-2">
+                                    <h5 class="card-title text-center pb-0 fs-4">Contagem de Estoque</h5>
+                                    <p class="text-center small">Entre com o seu nome de usuário e senha</p>
+                                </div>
+
+                                <form class="row g-3 needs-validation" novalidate asp-controller="Account" asp-action="Login" method="post" class="form-horizontal" role="form">
+
+                                    <div class="col-12">
+                                        <label for="yourUsername" class="form-label">Username</label>
+                                        <div class="input-group has-validation">
+                                            <input type="text" asp-for="UserName" name="username" class="form-control" id="yourUsername" required>
+                                            <span asp-validation-for="UserName" class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <label for="yourPassword" class="form-label">Password</label>
+                                        <input type="password" asp-for="Password" name="password" class="form-control" id="yourPassword" required>
+                                        <span asp-validation-for="Password" class="text-danger"></span>
+                                    </div>
+
+                                    <div class="col-12">
+                                        
+                                    </div>
+                                    <div class="col-12">
+                                        <input class="btn btn-primary w-100" type="submit" value="Login">
+                                    </div>
+                                </form>
+
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label asp-for="Password" class="col-md-2 control-label"></label>
-                            <div class="col-md-6">
-                                <input asp-for="Password" class="form-control" />
-                                <span asp-validation-for="Password" class="text-danger"></span>
-                            </div>
+
+                        <div class="credits">
+                            <!-- All the links in the footer should remain intact. -->
+                            <!-- You can delete the links only if you purchased the pro version. -->
+                            <!-- Licensing information: https://bootstrapmade.com/license/ -->
+                            <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
+                            Designed by <a href="https://rcproconsultoria.com.br/">RC Consultoria - @DateTime.Now.Year</a>
                         </div>
-                        <div class="form-group">
-                            <div class="col-md-8">
-                                <input type="submit" class="btn btn-success" value="Log in" />
-                            </div>
-                        </div>
-                    </form>
+
+                    </div>
                 </div>
             </div>
-        </td>
-    </tr>
-</table>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        </section>
+
+    </div>
+</main><!-- End #main -->
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

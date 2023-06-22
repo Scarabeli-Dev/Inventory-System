@@ -17,40 +17,46 @@
     </div>
 </form>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th class="col-4">
-                Realizar contagem
-            </th>
-            <th>
-                Código do Produto
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td class="col-4">
-                    <div class="d-grid gap-2 d-md-flex justify-content-center">
-                        <a href="@Url.Action("ItemCount", "StockTaking", new { itemId = item.Id })" class="btn btn-primary">Realizar Contagem</a>
-                    </div>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="col-4">
+                        Realizar contagem
+                    </th>
+                    <th>
+                        Código do Produto
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="col-4">
+                            <div class="d-grid gap-2 d-md-flex justify-content-center">
+                                <a href="@Url.Action("ItemCount", "StockTaking", new { itemId = item.Id })" class="btn btn-primary">Realizar Contagem</a>
+                            </div>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 @section Scripts{
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

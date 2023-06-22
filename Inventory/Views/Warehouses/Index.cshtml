@@ -19,7 +19,7 @@
 <ul class="d-flex flex-wrap">
     @foreach (var item in Model)
     {
-        <div class="mt-4" style="width:33%">
+        <div class="m-2" style="width:33%">
             <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">@Html.DisplayFor(modelItem => item.Name)</a>
         </div>
     }

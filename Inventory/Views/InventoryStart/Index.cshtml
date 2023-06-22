@@ -23,45 +23,49 @@
 </p>
 
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.IsCompleted)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.InventoryStartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StockTakingFinishDate)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.IsCompleted)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.InventoryStartDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StockTakingFinishDate)
-                </td>
-                <td>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" onclick="actionCreate(@item.Id)" data-bs-target="#edit-modal"> Editar</button>
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-success">Details</a>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" onclick="actionDelete(@item.Id)" data-bs-target="#delete-modal">Deletar</button>
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IsCompleted)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.InventoryStartDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.StockTakingFinishDate)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IsCompleted)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.InventoryStartDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StockTakingFinishDate)
+                        </td>
+                        <td>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" onclick="actionCreate(@item.Id)" data-bs-target="#edit-modal"> Editar</button>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-success">Details</a>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" onclick="actionDelete(@item.Id)" data-bs-target="#delete-modal">Deletar</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <div>
     <vc:pager paging-list="@Model"></vc:pager>

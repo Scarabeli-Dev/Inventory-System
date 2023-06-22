@@ -15,39 +15,43 @@
     </div>
 </form>
 
-    <form asp-controller="Addressings" asp-action="ImportAddressings" mothod="post" enctype="multipart/form-data">
-        <div class="input-group mb-3">
-            <input type="file" name="documentFile" class="form-control" />
-            <button type="submit" class="btn btn-group btn-success">Upload</button>
-        </div>
-    </form>
+<form asp-controller="Addressings" asp-action="ImportAddressings" mothod="post" enctype="multipart/form-data">
+    <div class="input-group mb-3">
+        <input type="file" name="documentFile" class="form-control" />
+        <button type="submit" class="btn btn-group btn-success">Upload</button>
+    </div>
+</form>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <a title="Editar Registro" data-toggle="modal" class=" btn btn-success pull-right sem_footer" onclick="actionEdit(@item.Id)" href="#modal-form"><i class="fa fa-pencil" /> Editar</a>
-                        <a href="@Url.Action("StockTakingReport", "StockTaking", new { addressingId = item.Id })" class="btn btn-primary">Fechamento</a>
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a title="Editar Registro" data-toggle="modal" class=" btn btn-success pull-right sem_footer" onclick="actionEdit(@item.Id)" href="#modal-form"><i class="fa fa-pencil" /> Editar</a>
+                                <a href="@Url.Action("StockTakingReport", "StockTaking", new { addressingId = item.Id })" class="btn btn-primary">Fechamento</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <div>
     <vc:pager paging-list="@Model"></vc:pager>

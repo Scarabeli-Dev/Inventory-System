@@ -137,7 +137,7 @@ namespace Inventory.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("Addressing");
+                    b.ToTable("Addressing", (string)null);
                 });
 
             modelBuilder.Entity("Inventory.Models.AddressingsInventoryStart", b =>
@@ -164,7 +164,7 @@ namespace Inventory.Migrations
 
                     b.HasIndex("InventoryStartId");
 
-                    b.ToTable("AddressingsInventoryStart");
+                    b.ToTable("AddressingsInventoryStart", (string)null);
                 });
 
             modelBuilder.Entity("Inventory.Models.InventoryMovement", b =>
@@ -197,7 +197,7 @@ namespace Inventory.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("InventoryMovement");
+                    b.ToTable("InventoryMovement", (string)null);
                 });
 
             modelBuilder.Entity("Inventory.Models.InventoryStart", b =>
@@ -217,7 +217,7 @@ namespace Inventory.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InventoryStart");
+                    b.ToTable("InventoryStart", (string)null);
                 });
 
             modelBuilder.Entity("Inventory.Models.Item", b =>
@@ -245,7 +245,7 @@ namespace Inventory.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Item");
+                    b.ToTable("Item", (string)null);
                 });
 
             modelBuilder.Entity("Inventory.Models.ItemsAddressings", b =>
@@ -266,7 +266,7 @@ namespace Inventory.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("ItemsAddressing");
+                    b.ToTable("ItemsAddressing", (string)null);
                 });
 
             modelBuilder.Entity("Inventory.Models.ItemsStockTaking", b =>
@@ -293,7 +293,7 @@ namespace Inventory.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("ItemsStockTaking");
+                    b.ToTable("ItemsStockTaking", (string)null);
                 });
 
             modelBuilder.Entity("Inventory.Models.StockTaking", b =>
@@ -338,7 +338,7 @@ namespace Inventory.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("StockTaking");
+                    b.ToTable("StockTaking", (string)null);
                 });
 
             modelBuilder.Entity("Inventory.Models.Warehouse", b =>
@@ -354,7 +354,7 @@ namespace Inventory.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Warehouse");
+                    b.ToTable("Warehouse", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

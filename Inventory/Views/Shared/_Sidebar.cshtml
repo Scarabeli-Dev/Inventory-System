@@ -1,0 +1,74 @@
+﻿<ul class="sidebar-nav" id="sidebar-nav">
+
+    @if (User.IsInRole("Member"))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Warehouses" asp-action="Index">Contagem de Depósito</a>
+        </li>
+    }
+    @if (User.IsInRole("Admin"))
+    {
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#warehouse-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-journal-text"></i><span>Depósitos</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="warehouse-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Warehouses" asp-action="Index">
+                        <i class="bi bi-pencil-square"></i>Contagem de Depósito
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Warehouses" asp-action="IndexTable">
+                        <i class="bi bi-list-check"></i>Lista de Depósito
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" asp-area="" asp-controller="Addressings" asp-action="Index">
+                <i class="bi bi-inboxes"></i>
+                Endereçamentos
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" asp-area="" asp-controller="Items" asp-action="Index">
+                <i class="bi bi-minecart-loaded"></i>
+                <span>Produtos</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" asp-area="" asp-controller="InventoryStart" asp-action="Index">
+                <i class="bi bi-card-checklist"></i>
+                <span>Inventários</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#user-nav" data-bs-toggle="collapse" href="#">
+                <i class="bi bi-people"></i><span>Usuários</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="user-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+                <li>
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">
+                        <i class="bi bi-person-badge"></i>
+                        Cadastrar Usuário
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">
+                        <i class="bi bi-list-check"></i>
+                        Lista de Usuários
+                    </a>
+                </li>
+            </ul>
+        </li>
+    }
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">
+            <i class="bi bi-grid"></i>
+            Privacy
+        </a>
+    </li>
+
+</ul>
