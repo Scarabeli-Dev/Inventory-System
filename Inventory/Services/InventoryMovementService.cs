@@ -47,7 +47,7 @@ namespace Inventory.Services
                 inventoryInsert.ImportDate = importDate;
 
                 _context.InventoryMovement.Add(inventoryInsert);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 inventoryReturn.Add(inventoryInsert);
             }

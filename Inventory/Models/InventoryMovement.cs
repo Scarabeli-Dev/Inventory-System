@@ -1,4 +1,5 @@
 ﻿using Inventory.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace Inventory.Models
 {
@@ -11,7 +12,13 @@ namespace Inventory.Models
         public int WarehouseId { get; set; }
         public Warehouse Warehouse { get; set; }
         public double Amount { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime MovementDate { get; set; }
+
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime ImportDate { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Inventory.Helpers
+﻿namespace Inventory.Helpers.Interfaces
 {
     public interface IUtil
     {

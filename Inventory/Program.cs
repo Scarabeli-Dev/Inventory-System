@@ -1,5 +1,6 @@
 using Inventory.Data;
 using Inventory.Helpers;
+using Inventory.Helpers.Interfaces;
 using Inventory.Models.Account;
 using Inventory.Services;
 using Inventory.Services.Interfaces;

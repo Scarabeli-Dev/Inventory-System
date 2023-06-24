@@ -1,4 +1,4 @@
-﻿using Inventory.Helpers;
+﻿using Inventory.Helpers.Interfaces;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;

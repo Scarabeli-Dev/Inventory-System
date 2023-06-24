@@ -1,10 +1,12 @@
 ﻿using CsvHelper;
 using Inventory.Data;
+using Inventory.Helpers.Exceptions;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Inventory.ViewModels.Imports;
 using Microsoft.EntityFrameworkCore;
 using ReflectionIT.Mvc.Paging;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Inventory.Services
@@ -111,27 +113,131 @@ namespace Inventory.Services
                     items.Add(item);
                 }
             }
-            List<Item> itemReturn = new List<Item>();
+
+            // Listas para adicionar
+            List<Item> itemInsert = new List<Item>();
+            List<ItemsAddressings> itemsAddressingsInsert = new List<ItemsAddressings>();
+
+            // Listas para duplicados
+            List<string> duplicateIds = GetDuplicateIds(items);
+            List<string> fisrtOccurrence = new List<string>();
 
             foreach (var item in items)
             {
-                Item itemInsert = new Item();
-                itemInsert.Id = item.Id;
-                itemInsert.Name = item.Name;
-                itemInsert.UnitOfMeasurement = item.UnitOfMeasurement;
-                itemInsert.Quantity = item.Quantity;
 
-                _context.Item.Add(itemInsert);
-                _context.SaveChanges();
+                if (duplicateIds.Contains(item.Id))
+                {
+                    if (fisrtOccurrence.Contains(item.Id))
+                    {
+                        itemsAddressingsInsert.Add(await InsertOnlyItemAddressingImportItemAsync(item, null));
+                        continue;
+                    }
+                    itemInsert.Add(await InsertImportItemAsync(item));
+                    itemsAddressingsInsert.Add(await InsertOnlyItemAddressingImportItemAsync(item, null));
+                    fisrtOccurrence.Add(item.Id);
+                    continue;
+                }
+                itemInsert.Add(await InsertImportItemAsync(item));
+                itemsAddressingsInsert.Add(await InsertOnlyItemAddressingImportItemAsync(null, item));
 
-                ItemsAddressings itemsAddressings = new ItemsAddressings();
-                itemsAddressings.ItemId = itemInsert.Id;
-                itemsAddressings.AddressingId = item.AddressingId;
-
-                _context.ItemsAddressing.Add(itemsAddressings);
-                _context.SaveChanges();
             }
+
+
+            await _context.Item.AddRangeAsync(itemInsert);
+            await _context.ItemsAddressing.AddRangeAsync(itemsAddressingsInsert);
+            await _context.SaveChangesAsync();
+
+            //if (!await InsertRangeAsync(_context.Item, itemInsert))
+            //{
+            //    return false;
+            //}
+            //await InsertRangeAsync(_context.ItemsAddressing, itemsAddressingsInsert);
             return true;
+        }
+
+        private List<string> GetDuplicateIds(List<ItemImport> items)
+        {
+            List<string> duplicateIds = new List<string>();
+            HashSet<string> uniqueIds = new HashSet<string>();
+
+            foreach (var item in items)
+            {
+                if (!uniqueIds.Add(item.Id))
+                {
+                    // O ID já existe, adiciona à lista de IDs duplicados
+                    duplicateIds.Add(item.Id);
+                }
+            }
+
+            return duplicateIds;
+        }
+
+        private async Task<Item> InsertImportItemAsync(ItemImport item)
+        {
+            Item itemReturn = new Item();
+            itemReturn.Id = item.Id;
+            itemReturn.Name = item.Name;
+            itemReturn.UnitOfMeasurement = item.UnitOfMeasurement;
+
+            return itemReturn;
+        }
+
+        private async Task<ItemsAddressings> InsertOnlyItemAddressingImportItemAsync(ItemImport item, ItemImport itemReturn)
+        {
+            ItemsAddressings itemsAddressings = new ItemsAddressings();
+            if (itemReturn != null)
+            {
+                itemsAddressings.ItemId = itemReturn.Id;
+                itemsAddressings.AddressingId = itemReturn.AddressingId;
+                itemsAddressings.Quantity = itemReturn.Quantity;
+            }
+            else
+            {
+                itemsAddressings.ItemId = item.Id;
+                itemsAddressings.AddressingId = item.AddressingId;
+                itemsAddressings.Quantity = item.Quantity;
+            }
+
+            return itemsAddressings;
+        }
+
+        private async Task<bool> InsertRangeAsync<T>(DbSet<T> dbSet, List<T> entities) where T : class
+        {
+            try
+            {
+                foreach (var entity in entities)
+                {
+                    var entry = _context.Entry(entity);
+                    if (entry.State == EntityState.Detached)
+                    {
+                        dbSet.Add(entity);
+                    }
+                    else
+                    {
+                        dbSet.Update(entity);
+                    }
+                }
+                await _context.SaveChangesAsync();
+                return true;
+
+            }
+            catch (DbUpdateConcurrencyException e)
+            {
+                throw new DbConcurrencyException(e.Message);
+            }
+        }
+
+        private List<string> GetDuplicateIdsDataBase()
+        {
+            List<Item> result = _context.Item.ToList();
+            List<string> duplicateIds = new List<string>();
+
+            foreach (var item in result)
+            {
+                duplicateIds.Add(item.Id);
+            }
+
+            return duplicateIds;
         }
     }
 }

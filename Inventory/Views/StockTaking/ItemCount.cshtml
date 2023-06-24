@@ -9,18 +9,19 @@
 }
 <link rel="stylesheet" href="/css/chosen.min.css">
 
-
-<h3>O item sendo contado é o: @itemCount.Name</h3>
+<div class="text-center">
+    <h3>O item sendo contado é o: <strong>@itemCount.Name</strong></h3>
+</div>
 <hr />
-<div class="row">
-    <div class="col-md-12">
-        <form asp-action="ItemCount">
+<div class="card">
+    <div class="card-body">
+        <form class="row g-3" asp-action="ItemCount">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="row">
-                <div class="form-group">
+                <div class="form-group col-md-6">
                     <h2>Confirme o endereçamento: <strong>@addressing.Name</strong></h2>
-                    <div id="stockTakingList">
-                        <select asp-for="AddressingsInventoryStartId" name="AddressingsInventoryStartId"  class="chosen-select col-6 form-control" tabindex="17" id="addressing-select">
+                    <div class=" input-group mb-3">
+                        <select asp-for="AddressingsInventoryStartId" name="AddressingsInventoryStartId" class="chosen-select form-control" tabindex="17" id="addressing-select">
                             @foreach (var item in addressingsList)
                             {
                                 if (addressing.Id == item.Id)
@@ -33,9 +34,8 @@
                                 }
                             }
                         </select>
+                        <button type="button" class="btn btn-success" onclick="showStockTaking()">Confirmar Endereçamento</button>
                     </div>
-                    <button type="button" class="btn btn-success" onclick="showStockTaking()">Confirmar Endereçamento</button>
-                    <button type="button" class="btn btn-danger" onclick="changeAddressing()">Mudar Endereçamento</button>
                 </div>
             </div>
             <div id="stockTaking" style="display: none;">
@@ -46,7 +46,7 @@
                 </div>
 
                 <div class="form-group col-12 form-check form-switch">
-                    <input type="checkbox" class="form-control form-check-input" role="switch" id="flexSwitchCheckDefault" />
+                    <input type="checkbox" class="form-control form-check-input" id="flexSwitchCheckDefault" />
                     <label class="control-label form-check-label" for="flexSwitchCheckDefault">Item Perecível</label>
                     <span class="text-danger"></span>
                 </div>
@@ -125,11 +125,11 @@
         // Vincula o evento de mudança (change) do switch à função toggleDates
         document.getElementById("flexSwitchCheckDefault").addEventListener("change", toggleDates);
 
-        //function formatDecimalInput(input) {
-        //    var value = input.value;
-        //    var formattedValue = parseFloat(value.replace(',', '.')).toLocaleString('pt-BR');
-        //    input.value = formattedValue;
-        //}
+                //function formatDecimalInput(input) {
+                //    var value = input.value;
+                //    var formattedValue = parseFloat(value.replace(',', '.')).toLocaleString('pt-BR');
+                //    input.value = formattedValue;
+                //}
 
     </script>
 }

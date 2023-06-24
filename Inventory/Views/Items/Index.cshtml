@@ -1,6 +1,7 @@
 ﻿@model PagingList<Item>
 
 @{
+    decimal quantity = 0;
     ViewData["Title"] = "Produtos";
 }
 
@@ -40,7 +41,7 @@
                         @Html.DisplayNameFor(model => model.Name)
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Quantity)
+                        Quantidade
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.UnitOfMeasurement)
@@ -63,8 +64,12 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.Name)
                         </td>
+                        @foreach (var result in item.Addressings)
+                        {
+                            quantity = quantity + result.Quantity;
+                        }
                         <td>
-                            @Html.DisplayFor(modelItem => item.Quantity)
+                            @quantity
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.UnitOfMeasurement)
@@ -88,38 +93,14 @@
     <vc:pager paging-list="@Model"></vc:pager>
 </div>
 
-<!--Modal Create-->
-@*<div class="modal fade" id="create-modal" tabindex="-1" aria-labelledby="create-modalLabel" aria-hidden="true">
-    @await Html.PartialAsync("~/Views/Items/Create.cshtml", new Item())
-</div>*@
-
-<!--Modal Edit-->
-@*<div class="modal fade" id="edit-modal" tabindex="-1" aria-labelledby="create-modalLabel" aria-hidden="true">
-    @await Html.PartialAsync("~/Views/Items/Edit.cshtml", new Item())
-</div>*@
-
 <!--Modal Delete-->
-<div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="create-modalLabel" aria-hidden="true">
+@*<div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="create-modalLabel" aria-hidden="true">
     @await Html.PartialAsync("~/Views/Items/Delete.cshtml", new Item())
-</div>
+</div>*@
 
 @section Scripts{
 
     <script type="text/javascript">
-
-        function actionEdit(id) {
-            $.ajax({
-                type: 'GET',
-                url: '@Url.Action("Edit")',
-                dataType: 'html',
-                data: { id: id },
-                cache: false,
-                async: true,
-                success: function (data) {
-                    $('#edit-modal').html(data);
-                }
-            });
-        }
 
         function actionDelete(id) {
             $.ajax({

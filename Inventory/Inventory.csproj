@@ -25,7 +25,9 @@
 
   <ItemGroup>
     <Folder Include="Resources\" />
+    <Folder Include="Resources\Adressing\" />
     <Folder Include="Resources\InventoryMovement\" />
+    <Folder Include="Resources\Item\" />
   </ItemGroup>
 
 </Project>

@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
-using Inventory.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Inventory.Helpers.Interfaces;
 
 namespace Inventory.Controllers
 {

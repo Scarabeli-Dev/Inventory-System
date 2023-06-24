@@ -1,6 +1,7 @@
 ﻿@model Item
 
 @{
+    decimal quantity = 0;
     ViewData["Title"] = "Delete";
 }
 
@@ -23,11 +24,15 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.UnitOfMeasurement)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Quantity)
+        <dt class="col-sm-2">
+            Quantidade
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Quantity)
+        <dd class="col-sm-10">
+            @foreach (var item in Model.Addressings)
+            {
+                quantity = quantity + item.Quantity;
+            }
+            @quantity
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Observation)

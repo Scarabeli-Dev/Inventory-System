@@ -9,6 +9,8 @@ namespace Inventory.Models
         public int Id { get; set; }
 
         [Display(Name = "Data da contagem")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime? StockTakingDate { get; set; }
 
         [Display(Name = "Item")]
@@ -27,9 +29,13 @@ namespace Inventory.Models
         public decimal StockTakingQuantity { get; set; }
 
         [Display(Name = "Data de Fabricação")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime? FabricationDate { get; set; }
 
         [Display(Name = "Data de Validade")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
         public DateTime? ExpirationDate { get; set; }
 
         [Display(Name = "Lote")]

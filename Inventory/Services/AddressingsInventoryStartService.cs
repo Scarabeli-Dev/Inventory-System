@@ -42,6 +42,7 @@ namespace Inventory.Services
         {
             var addressings = await _addressingService.GetAllAsync<Addressing>();
 
+            List<AddressingsInventoryStart> addressingsStockTakingRange = new List<AddressingsInventoryStart>();
 
             foreach (var item in addressings)
             {
@@ -52,10 +53,11 @@ namespace Inventory.Services
                 addressingsStockTaking.AddressingCountEnded = false;
                 addressingsStockTaking.AddressingCountRealized = false;
 
+                addressingsStockTakingRange.Add(addressingsStockTaking);
 
-                _context.Add(addressingsStockTaking);
-                _context.SaveChanges();
             }
+                _context.AddRange(addressingsStockTakingRange);
+                _context.SaveChanges();
         }
 
         public async Task<AddressingsInventoryStart> GetAddressingsStockTakingAddressingByIdAsync(int addressingId)

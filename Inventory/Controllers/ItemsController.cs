@@ -4,15 +4,15 @@ using Inventory.Data;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Microsoft.Extensions.Hosting;
-using Inventory.Helpers;
 using Microsoft.AspNetCore.Authorization;
+using Inventory.Helpers.Interfaces;
+using Inventory.ViewModels;
 
 namespace Inventory.Controllers
 {
     [Authorize]
     public class ItemsController : Controller
     {
-        private readonly InventoryContext _context;
         private readonly IItemService _itemService;
         private readonly IAddressingService _addressingService;
         private readonly IWarehouseService _warehouseService;
@@ -20,9 +20,8 @@ namespace Inventory.Controllers
         private readonly IUtil _util;
         private string _destiny = "Item";
 
-        public ItemsController(InventoryContext context, IItemService itemService, IAddressingService addressingService, IWarehouseService warehouseService, IWebHostEnvironment hostEnvironment, IUtil util)
+        public ItemsController(IItemService itemService, IAddressingService addressingService, IWarehouseService warehouseService, IWebHostEnvironment hostEnvironment, IUtil util)
         {
-            _context = context;
             _itemService = itemService;
             _addressingService = addressingService;
             _warehouseService = warehouseService;
@@ -67,6 +66,9 @@ namespace Inventory.Controllers
         // GET: Items/Create
         public IActionResult Create()
         {
+            var locations = _addressingService.GetAllAsync<Addressing>();
+            ViewBag.Addressing = locations;
+
             return View();
         }
 
@@ -75,15 +77,14 @@ namespace Inventory.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,UnitOfMeasurement,Quantity,ExpirationDate,FabricationDate,Observation")] Item item)
+        public async Task<IActionResult> Create([Bind("Id,Name,UnitOfMeasurement,Quantity,ExpirationDate,FabricationDate,Observation")] ItemCreateViewModel itemVm)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(item);
-                await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
-            return View(item);
+            return View();
         }
 
         // GET: Items/Edit/5
@@ -158,7 +159,7 @@ namespace Inventory.Controllers
             var item = await _itemService.GetItemByIdAsync(id);
             if (item != null)
             {
-                _context.Item.Remove(item);
+                _itemService.Delete(item);
             }
             
             await _itemService.SaveChangesAsync();

@@ -137,7 +137,7 @@ namespace Inventory.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("Addressing", (string)null);
+                    b.ToTable("Addressing");
                 });
 
             modelBuilder.Entity("Inventory.Models.AddressingsInventoryStart", b =>
@@ -164,7 +164,7 @@ namespace Inventory.Migrations
 
                     b.HasIndex("InventoryStartId");
 
-                    b.ToTable("AddressingsInventoryStart", (string)null);
+                    b.ToTable("AddressingsInventoryStart");
                 });
 
             modelBuilder.Entity("Inventory.Models.InventoryMovement", b =>
@@ -180,7 +180,7 @@ namespace Inventory.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("ItemId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(150)");
 
                     b.Property<DateTime>("MovementDate")
                         .HasColumnType("datetime(6)");
@@ -197,7 +197,7 @@ namespace Inventory.Migrations
 
                     b.HasIndex("WarehouseId");
 
-                    b.ToTable("InventoryMovement", (string)null);
+                    b.ToTable("InventoryMovement");
                 });
 
             modelBuilder.Entity("Inventory.Models.InventoryStart", b =>
@@ -217,35 +217,33 @@ namespace Inventory.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InventoryStart", (string)null);
+                    b.ToTable("InventoryStart");
                 });
 
             modelBuilder.Entity("Inventory.Models.Item", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
 
                     b.Property<string>("Observation")
                         .HasMaxLength(250)
                         .HasColumnType("varchar(250)");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(65,30)");
 
                     b.Property<int>("UnitOfMeasurement")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Item", (string)null);
+                    b.ToTable("Item");
                 });
 
             modelBuilder.Entity("Inventory.Models.ItemsAddressings", b =>
@@ -258,7 +256,10 @@ namespace Inventory.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ItemId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(150)");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 
@@ -266,7 +267,7 @@ namespace Inventory.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("ItemsAddressing", (string)null);
+                    b.ToTable("ItemsAddressing");
                 });
 
             modelBuilder.Entity("Inventory.Models.ItemsStockTaking", b =>
@@ -285,7 +286,7 @@ namespace Inventory.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("ItemId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(150)");
 
                     b.HasKey("Id");
 
@@ -293,7 +294,7 @@ namespace Inventory.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("ItemsStockTaking", (string)null);
+                    b.ToTable("ItemsStockTaking");
                 });
 
             modelBuilder.Entity("Inventory.Models.StockTaking", b =>
@@ -317,7 +318,7 @@ namespace Inventory.Migrations
 
                     b.Property<string>("ItemId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(150)");
 
                     b.Property<int>("NumberOfCount")
                         .HasColumnType("int");
@@ -338,7 +339,7 @@ namespace Inventory.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("StockTaking", (string)null);
+                    b.ToTable("StockTaking");
                 });
 
             modelBuilder.Entity("Inventory.Models.Warehouse", b =>
@@ -354,7 +355,7 @@ namespace Inventory.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Warehouse", (string)null);
+                    b.ToTable("Warehouse");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

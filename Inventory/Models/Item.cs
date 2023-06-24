@@ -6,10 +6,12 @@ namespace Inventory.Models
     public class Item
     {
         [Key]
+        [Display(Name = "Código")]
+        [StringLength(150, ErrorMessage = "Máximo de {1} caracteres!")]
         public string Id { get; set; }
 
         [Display(Name = "Nome")]
-        [StringLength(50, ErrorMessage = "Máximo de {1} caracteres!")]
+        [StringLength(150, ErrorMessage = "Máximo de {1} caracteres!")]
         [Required(ErrorMessage = "{0} é obrigatório")]
         public string Name { get; set; }
 
@@ -20,9 +22,6 @@ namespace Inventory.Models
         [Display(Name = "Prateleira")]
         [Required(ErrorMessage = "{0} é obrigatório")]
         public IEnumerable<ItemsAddressings> Addressings { get; set; }
-
-        [Display(Name = "Quantidade de Itens")]
-        public decimal Quantity { get; set; }
 
         [Display(Name = "Observação")]
         [StringLength(250, ErrorMessage = "Máximo de {1} caracteres!")]

@@ -10,5 +10,9 @@ namespace Inventory.Models
 
         public string ItemId { get; set; }
         public Item Item { get; set; }
+
+        [Display(Name = "Quantidade de Itens")]
+        [DisplayFormat(DataFormatString = "{0:F2}")]
+        public decimal Quantity { get; set; }
     }
 }

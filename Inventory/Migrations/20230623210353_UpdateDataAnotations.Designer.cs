@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inventory.Migrations
 {
     [DbContext(typeof(InventoryContext))]
-    [Migration("20230621134722_FristMigration")]
-    partial class FristMigration
+    [Migration("20230623210353_UpdateDataAnotations")]
+    partial class UpdateDataAnotations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -182,7 +182,7 @@ namespace Inventory.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("ItemId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(150)");
 
                     b.Property<DateTime>("MovementDate")
                         .HasColumnType("datetime(6)");
@@ -225,22 +225,20 @@ namespace Inventory.Migrations
             modelBuilder.Entity("Inventory.Models.Item", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
 
                     b.Property<string>("Observation")
                         .HasMaxLength(250)
                         .HasColumnType("varchar(250)");
-
-                    b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(65,30)");
 
                     b.Property<int>("UnitOfMeasurement")
                         .HasColumnType("int");
@@ -260,7 +258,10 @@ namespace Inventory.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ItemId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(150)");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(65,30)");
 
                     b.HasKey("Id");
 
@@ -287,7 +288,7 @@ namespace Inventory.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("ItemId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(150)");
 
                     b.HasKey("Id");
 
@@ -319,7 +320,7 @@ namespace Inventory.Migrations
 
                     b.Property<string>("ItemId")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(150)");
 
                     b.Property<int>("NumberOfCount")
                         .HasColumnType("int");

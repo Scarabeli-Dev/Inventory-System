@@ -44,7 +44,7 @@ namespace Inventory.Controllers
         {
             var checkStockTacking = await _stockTakingService.GetAllStockTakingByItemIdAsync(itemId);
 
-            if (checkStockTacking != null && stockTakingCheched == false)
+            if (checkStockTacking.Count() > 0 && stockTakingCheched == false)
                 return RedirectToAction("CheckStockTaking", "StockTaking", new { itemId = itemId });
 
 
@@ -160,7 +160,8 @@ namespace Inventory.Controllers
                     model.ItemInitialQuantity = 0;
                 }
 
-                model.ItemInitialQuantity = item.Item.Quantity;
+                model.ItemInitialQuantity = itemVerify.Addressings.FirstOrDefault(a => a.AddressingId == item.AddressingsInventoryStart.AddressingId).Quantity;
+
 
                 var stockTaking = await _stockTakingService.GetStockTakingByAddressingAndItemIdAsync(addressingId, item.ItemId);
 

@@ -47,7 +47,7 @@ namespace Inventory.Controllers
             if (user != null)
             {
                 var result = await _signInManager.PasswordSignInAsync(user,
-                    loginVM.Password, false, false);
+                    loginVM.Password, true, false);
 
                 if (result.Succeeded)
                 {
@@ -78,7 +78,7 @@ namespace Inventory.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = _accountService.CreateUser(userVM);
+                var user = await _accountService.CreateUser(userVM);
 
                 if (user != null)
                 {

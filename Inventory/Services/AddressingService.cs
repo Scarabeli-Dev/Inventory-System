@@ -90,6 +90,7 @@ namespace Inventory.Services
 
             return result;
         }
+
         public async Task<bool> ImportAddressingAsync(string fileName, string destiny)
         {
             List<AddressingImport> addressings = new List<AddressingImport>();
@@ -103,23 +104,29 @@ namespace Inventory.Services
                 csv.ReadHeader();
                 while (csv.Read())
                 {
-                    var addressing = csv.GetRecord<AddressingImport>();
-                    addressings.Add(addressing);
+                    var item = csv.GetRecord<AddressingImport>();
+                    addressings.Add(item);
                 }
             }
-            List<Addressing> addressingReturn = new List<Addressing>();
+
+            // Listas para adicionar
+            List<Addressing> addressingInsert = new List<Addressing>();
 
             foreach (var item in addressings)
             {
-                Addressing addressingInsert = new Addressing();
-                addressingInsert.Name = item.Name;
-                addressingInsert.WarehouseId = item.WarehouseId;
 
-                _context.Addressing.Add(addressingInsert);
-                _context.SaveChanges();
+                Addressing addressingReturn = new Addressing();
+                addressingReturn.Name = item.Name;
+                addressingReturn.WarehouseId = item.WarehouseId;
+
+                addressingInsert.Add(addressingReturn);
             }
+
+            await _context.Addressing.AddRangeAsync(addressingInsert);
+            await _context.SaveChangesAsync();
 
             return true;
         }
+
     }
 }

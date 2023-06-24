@@ -61,21 +61,28 @@ namespace Inventory.Services
                 csv.ReadHeader();
                 while (csv.Read())
                 {
-                    var warehouse = csv.GetRecord<WarehouseImport>();
-                    warehouses.Add(warehouse);
+                    var item = csv.GetRecord<WarehouseImport>();
+                    warehouses.Add(item);
                 }
             }
-            List<Warehouse> warehouseReturn = new List<Warehouse>();
+
+            // Listas para adicionar
+            List<Warehouse> warehouseInsert = new List<Warehouse>();
 
             foreach (var item in warehouses)
             {
-                Warehouse warehouseInsert = new Warehouse();
-                warehouseInsert.Name = item.Name;
 
-                _context.Warehouse.Add(warehouseInsert);
-                _context.SaveChanges();
+                Warehouse warehouseReturn = new Warehouse();
+                warehouseReturn.Name = item.Name;
+
+                warehouseInsert.Add(warehouseReturn);
             }
+
+            await _context.Warehouse.AddRangeAsync(warehouseInsert);
+            await _context.SaveChangesAsync();
+
             return true;
         }
+
     }
 }

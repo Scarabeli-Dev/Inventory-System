@@ -16,14 +16,12 @@
     </div>
 </form>
 
-<ul class="d-flex flex-wrap">
+<div class="d-grid gap-2 d-flex flex-wrap justify-content-center">
     @foreach (var item in Model)
     {
-        <div class="m-2" style="width:33%">
-            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">@Html.DisplayFor(modelItem => item.Name)</a>
-        </div>
+        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary col-4" role="button">@Html.DisplayFor(modelItem => item.Name)</a>
     }
-</ul>
+</div>
 
 
 <div>
@@ -32,5 +30,7 @@
 
 
 @section Scripts{
-
+        @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     }
