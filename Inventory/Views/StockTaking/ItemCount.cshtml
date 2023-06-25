@@ -17,25 +17,23 @@
     <div class="card-body">
         <form class="row g-3" asp-action="ItemCount">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="row">
-                <div class="form-group col-md-6">
-                    <h2>Confirme o endereçamento: <strong>@addressing.Name</strong></h2>
-                    <div class=" input-group mb-3">
-                        <select asp-for="AddressingsInventoryStartId" name="AddressingsInventoryStartId" class="chosen-select form-control" tabindex="17" id="addressing-select">
-                            @foreach (var item in addressingsList)
+            <div class="form-group col-md-6">
+                <h2>Confirme o endereçamento: <strong>@addressing.Name</strong></h2>
+                <div class=" input-group mb-3">
+                    <select asp-for="AddressingsInventoryStartId" name="AddressingsInventoryStartId" class="chosen-select form-control" tabindex="17" id="addressing-select">
+                        @foreach (var item in addressingsList)
+                        {
+                            if (addressing.Id == item.Id)
                             {
-                                if (addressing.Id == item.Id)
-                                {
-                                    <option selected value="@item.Id">@item.Name</option>
-                                }
-                                else
-                                {
-                                    <option value="@item.Id">@item.Name</option>
-                                }
+                                <option selected value="@item.Id">@item.Name</option>
                             }
-                        </select>
-                        <button type="button" class="btn btn-success" onclick="showStockTaking()">Confirmar Endereçamento</button>
-                    </div>
+                            else
+                            {
+                                <option value="@item.Id">@item.Name</option>
+                            }
+                        }
+                    </select>
+                    <button type="button" class="btn btn-success" onclick="showStockTaking()">Confirmar Endereçamento</button>
                 </div>
             </div>
             <div id="stockTaking" style="display: none;">
@@ -125,11 +123,11 @@
         // Vincula o evento de mudança (change) do switch à função toggleDates
         document.getElementById("flexSwitchCheckDefault").addEventListener("change", toggleDates);
 
-                //function formatDecimalInput(input) {
-                //    var value = input.value;
-                //    var formattedValue = parseFloat(value.replace(',', '.')).toLocaleString('pt-BR');
-                //    input.value = formattedValue;
-                //}
+                        //function formatDecimalInput(input) {
+                        //    var value = input.value;
+                        //    var formattedValue = parseFloat(value.replace(',', '.')).toLocaleString('pt-BR');
+                        //    input.value = formattedValue;
+                        //}
 
     </script>
 }

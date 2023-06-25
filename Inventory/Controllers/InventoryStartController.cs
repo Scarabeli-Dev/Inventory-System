@@ -91,7 +91,7 @@ namespace Inventory.Controllers
 
         public async Task<IActionResult> AddressingCount(int inventaryStartId, string filter, int pageindex = 1, string sort = "Id")
         {
-            return View(await _addressingsStockTakingService.GetAllAddressingsStockTakingsByPageList(inventaryStartId, filter, pageindex, sort));
+            return View(await _addressingsStockTakingService.GetAddressingsStockTakingsPagingAsync(inventaryStartId, filter, pageindex, sort));
         }
     }
 }

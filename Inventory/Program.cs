@@ -83,12 +83,13 @@ builder.Services.AddScoped<IItemsStockTakingService, ItemsStockTakingService>();
 builder.Services.AddScoped<IStockTakingService, StockTakingService>();
 builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IItemAddressingService, ItemAddressingService>();
 builder.Services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
 
 // Add Paging List
 builder.Services.AddPaging(options =>
 {
-    options.ViewName = "Bootstrap4";
+    options.ViewName = "Bootstrap5";
     options.PageParameterName = "pageindex";
 });
 

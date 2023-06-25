@@ -78,11 +78,11 @@ namespace Inventory.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = await _accountService.CreateUser(userVM);
+                var user = _accountService.CreateUser(userVM);
 
                 if (user != null)
                 {
-                    return RedirectToAction("Index", "Warehouses");
+                    return RedirectToAction("Index", "Account");
                 }
                 else
                 {

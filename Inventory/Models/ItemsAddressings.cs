@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Inventory.Models
 {
@@ -13,6 +15,7 @@ namespace Inventory.Models
 
         [Display(Name = "Quantidade de Itens")]
         [DisplayFormat(DataFormatString = "{0:F2}")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal Quantity { get; set; }
     }
 }

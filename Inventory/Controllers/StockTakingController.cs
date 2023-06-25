@@ -1,11 +1,10 @@
-﻿using Inventory.Helpers.Exceptions;
-using Inventory.Models;
+﻿using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Inventory.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MySqlX.XDevAPI.Relational;
+using MySqlX.XDevAPI.Common;
 using System.Globalization;
 
 namespace Inventory.Controllers
@@ -18,26 +17,24 @@ namespace Inventory.Controllers
         private readonly IAddressingService _addressingService;
         private readonly IWarehouseService _warehouseService;
         private readonly IInventoryStartService _inventoryStartService;
-        private readonly IAddressingsInventoryStartService _addressingsStockTakingService;
+        private readonly IAddressingsInventoryStartService _addressingsInventoryStartService;
+        private readonly IItemAddressingService _itemAddressingService;
 
         public StockTakingController(IStockTakingService stockTakingService,
                                      IItemService itemService,
                                      IAddressingService addressingService,
                                      IWarehouseService warehouseService,
                                      IInventoryStartService inventoryStartService,
-                                     IAddressingsInventoryStartService addressingsStockTakingService)
+                                     IAddressingsInventoryStartService addressingsInventoryStartService,
+                                     IItemAddressingService itemAddressingService)
         {
             _stockTakingService = stockTakingService;
             _itemService = itemService;
             _addressingService = addressingService;
             _warehouseService = warehouseService;
             _inventoryStartService = inventoryStartService;
-            _addressingsStockTakingService = addressingsStockTakingService;
-        }
-
-        public IActionResult Index()
-        {
-            return View();
+            _addressingsInventoryStartService = addressingsInventoryStartService;
+            _itemAddressingService = itemAddressingService;
         }
 
         public async Task<IActionResult> ItemCount(string itemId, bool stockTakingCheched)
@@ -104,23 +101,11 @@ namespace Inventory.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _stockTakingService.UpdateStockTaking(stockTaking);
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    var result = await _stockTakingService.GetStockTakingByIdAsync(stockTaking.Id);
-                    if (result == null)
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction("Details", "Warehouses", new { id = stockTaking.AddressingsInventoryStart.Addressing.WarehouseId });
+                _stockTakingService.UpdateStockTaking(stockTaking);
+
+                var result = await _stockTakingService.GetStockTakingByIdAsync(stockTaking.Id);
+
+                return RedirectToAction("Details", "Warehouses", new { id = result.AddressingsInventoryStart.Addressing.WarehouseId });
             }
             return View(stockTaking);
         }
@@ -134,33 +119,45 @@ namespace Inventory.Controllers
             return View(itemStockTaking);
         }
 
+        public async Task<IActionResult> Index(int inventaryStartId, string filter, int pageindex = 1, string sort = "AddressingCountRealized")
+        {
+            return View(await _addressingsInventoryStartService.GetAddressingsStockTakingsPagingAsync(1, filter, pageindex, sort));
+        }
+
 
         public async Task<IActionResult> StockTakingReport(int addressingId)
         {
-            var stockTakingAddressing = await _addressingsStockTakingService.GetAddressingsStockTakingAddressingByIdAsync(addressingId);
+            // Local Variable
+            List<StockTakingReportAddressing> result = new List<StockTakingReportAddressing>();
 
+            List<string> itemStockTakingVerify = new List<string>();
+
+            // Get
+            var stockTakingAddressing = await _addressingsInventoryStartService.GetAddressingsStockTakingAddressingByIdAsync(addressingId);
+            ViewBag.AddressingInfo = stockTakingAddressing;
 
             var stockTakingItems = await _stockTakingService.GetStockTakingByAddressingAsync(addressingId);
 
-
-            List<StockTakingReportAddressing> result = new List<StockTakingReportAddressing>();
+            var itemsAddressing = await _itemService.GetAllItemsByAddressingAsync(addressingId);
 
             foreach (var item in stockTakingItems)
             {
                 StockTakingReportAddressing model = new StockTakingReportAddressing();
 
+                itemStockTakingVerify.Add(item.ItemId);
+
                 model.StockTakingId = item.Id;
                 model.ItemId = item.ItemId;
                 model.ItemName = item.Item.Name;
 
-                var itemVerify = await _itemService.GetItemByIdAsync(item.ItemId);
+                var itemAddressingVerify = await _itemService.GetItemByIdAsync(item.ItemId);
 
-                if (!itemVerify.Addressings.Any(a => a.Addressing.Id == addressingId))
+                if (!itemAddressingVerify.Addressings.Any(a => a.Addressing.Id == addressingId))
                 {
                     model.ItemInitialQuantity = 0;
                 }
 
-                model.ItemInitialQuantity = itemVerify.Addressings.FirstOrDefault(a => a.AddressingId == item.AddressingsInventoryStart.AddressingId).Quantity;
+                model.ItemInitialQuantity = itemAddressingVerify.Addressings.FirstOrDefault(a => a.AddressingId == item.AddressingsInventoryStart.AddressingId).Quantity;
 
 
                 var stockTaking = await _stockTakingService.GetStockTakingByAddressingAndItemIdAsync(addressingId, item.ItemId);
@@ -179,7 +176,20 @@ namespace Inventory.Controllers
                 result.Add(model);
             }
 
-            ViewBag.AddressingInfo = stockTakingAddressing;
+            foreach (var itemWithOutStockTaking in itemsAddressing)
+            {
+                if (!itemStockTakingVerify.Contains(itemWithOutStockTaking.Id))
+                {
+                    StockTakingReportAddressing model = new StockTakingReportAddressing();
+                    var itemAddresing = await _itemAddressingService.GetItemAddressingByIdsAsync(itemWithOutStockTaking.Id, addressingId);
+                    model.ItemId = itemWithOutStockTaking.Id;
+                    model.ItemName = itemWithOutStockTaking.Name;
+                    model.ItemInitialQuantity = itemAddresing.Quantity;
+                    model.ItemStockTakingQuantity = 0;
+                    model.NumberOfCount = 0;
+                    result.Add(model);
+                }
+            }
 
             return View(result);
         }

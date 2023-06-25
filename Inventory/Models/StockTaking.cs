@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Inventory.Models
 {
@@ -26,6 +27,7 @@ namespace Inventory.Models
         [Display(Name = "Quantidade na Contagem")]
         [Required(ErrorMessage = "{0} é obrigatório")]
         [DisplayFormat(DataFormatString = "{0:F2}")]
+        [Column(TypeName = "decimal(18,2)")]
         public decimal StockTakingQuantity { get; set; }
 
         [Display(Name = "Data de Fabricação")]

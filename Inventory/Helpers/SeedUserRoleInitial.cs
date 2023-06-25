@@ -2,6 +2,7 @@
 using Inventory.Helpers.Interfaces;
 using Inventory.Models.Account;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Inventory.Helpers
 {

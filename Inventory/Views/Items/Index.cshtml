@@ -1,7 +1,6 @@
 ﻿@model PagingList<Item>
 
 @{
-    decimal quantity = 0;
     ViewData["Title"] = "Produtos";
 }
 
@@ -24,7 +23,7 @@
             <button type="submit" class="btn btn-group btn-success">Upload</button>
         </div>
     </form>
-    <a asp-action="Create" class="btn btn-primary">Novo Item</a>
+    @*<a asp-action="Create" class="btn btn-primary">Novo Item</a>*@
 </p>
 <div class="card">
     <div class="card-body">
@@ -52,9 +51,11 @@
             <tbody>
                 @foreach (var item in Model)
                 {
+                    decimal quantity = 0;
+
                     <tr>
                         <td>
-                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
                                 <a href="@Url.Action("ItemCount", "StockTaking", new { itemId = item.Id })" class="btn btn-primary">Realizar Contagem</a>
                             </div>
                         </td>
@@ -66,19 +67,28 @@
                         </td>
                         @foreach (var result in item.Addressings)
                         {
+
                             quantity = quantity + result.Quantity;
                         }
                         <td>
-                            @quantity
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                @quantity
+                            </div>
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.UnitOfMeasurement)
                         </td>
                         <td>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-success">Details</a>
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" onclick="actionDelete(@item.Id)" data-bs-target="#delete-modal">Deletar</button>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-success">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" onclick="actionDelete(@item.Id)" data-bs-target="#delete-modal">
+                                    <i class="bi bi-trash"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>

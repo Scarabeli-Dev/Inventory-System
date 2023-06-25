@@ -1,0 +1,109 @@
+﻿@model PagingList<AddressingsInventoryStart>
+
+@{
+    ViewData["Title"] = "Produtos";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form method="get" class="nput-group mb-3">
+
+    <div class="input-group mb-3">
+        <input name="filter" class="form-control" placeholder="filtro"
+               value="@Model.RouteValue["Filter"]" />
+
+        <button type="submit" class="btn btn-info">Procurar</button>
+    </div>
+</form>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        Status
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Addressing.Name)
+                    </th>
+                    <th>
+                        Total de Itens
+                    </th>
+                    <th>
+                        Total de Items Contados
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    int itemQuantity = 0;
+                    int itemStockTaking = 0;
+
+                    if (item.StockTaking != null)
+                    {
+                        foreach (var result in item.StockTaking)
+                        {
+                            itemStockTaking = item.StockTaking.Count();
+                        }
+                    }
+
+                    if (item.Addressing.Item != null)
+                    {
+                        foreach (var result in item.Addressing.Item)
+                        {
+                            itemQuantity = item.Addressing.Item.Count();
+                        }
+                    }
+
+                    <tr>
+                        @if (item.AddressingCountRealized == true && item.AddressingCountEnded == true)
+                        {
+                            <td>
+                                Finalizado
+                            </td>
+                        }
+                        else if (item.AddressingCountRealized == true && item.AddressingCountEnded == false)
+                        {
+                            <td>
+                                Contado
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                Pendente
+                            </td>
+                        }
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Addressing.Name)
+                        </td>
+                        <td>
+                            @itemQuantity
+                        </td>
+                        <td>
+                            @itemStockTaking
+                        </td>
+                        <td>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a href="@Url.Action("StockTakingReport", "StockTaking", new { addressingId = item.AddressingId })" class="btn btn-success">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                @*                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">
+                            <i class="bi bi-pencil-square"></i>
+                            </a>*@
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div>
+    <vc:pager paging-list="@Model"></vc:pager>
+</div>

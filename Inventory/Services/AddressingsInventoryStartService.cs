@@ -1,6 +1,7 @@
 ﻿using Inventory.Data;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
+using Inventory.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using ReflectionIT.Mvc.Paging;
 
@@ -18,17 +19,28 @@ namespace Inventory.Services
             _addressingService = addressingService;
         }
 
-        public async Task<PagingList<AddressingsInventoryStart>> GetAllAddressingsStockTakingsByPageList(int inventaryStartId, string filter, int pageindex = 1, string sort = "Id")
+        public async Task<PagingList<AddressingsInventoryStart>> GetAddressingsStockTakingsPagingAsync(int inventaryStartId, string filter, int pageindex = 1, string sort = "Id")
         {
             var result = _context.AddressingsInventoryStart.Include(l => l.Addressing)
-                                                        .Where(s => s.InventoryStartId == inventaryStartId)
-                                                        .OrderBy(l => l.AddressingCountRealized)
-                                                        .ThenBy(l => l.AddressingCountEnded)
-                                                        .AsNoTracking()
-                                                        .AsQueryable();
+                                                           .ThenInclude(i => i.Item)
+                                                           .ThenInclude(i => i.Item)
+                                                           .Include(s => s.StockTaking)
+                                                           .Where(s => s.InventoryStartId == inventaryStartId)
+                                                           .OrderBy(l => l.AddressingCountRealized)
+                                                           .ThenBy(l => l.AddressingCountEnded)
+                                                           .AsNoTracking()
+                                                           .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(filter))
             {
+                if (filter == "Realizado")
+                {
+                    result = result.Where(p => p.AddressingCountRealized == true);
+                }
+                if (filter == "Finalizado")
+                {
+                    result = result.Where(p => p.AddressingCountRealized == true);
+                }
                 result = result.Where(p => p.Addressing.Name.ToLower().Contains(filter.ToLower()));
             }
 
@@ -56,8 +68,8 @@ namespace Inventory.Services
                 addressingsStockTakingRange.Add(addressingsStockTaking);
 
             }
-                _context.AddRange(addressingsStockTakingRange);
-                _context.SaveChanges();
+            _context.AddRange(addressingsStockTakingRange);
+            _context.SaveChanges();
         }
 
         public async Task<AddressingsInventoryStart> GetAddressingsStockTakingAddressingByIdAsync(int addressingId)

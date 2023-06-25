@@ -40,7 +40,7 @@ namespace Inventory.Services
 
         public async Task<List<T>> GetAllAsync<T>() where T : class
         {
-        return await _context.Set<T>().ToListAsync();
+            return await _context.Set<T>().ToListAsync();
         }
 
     }

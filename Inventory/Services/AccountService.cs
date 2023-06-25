@@ -37,15 +37,8 @@ namespace Inventory.Services
 
             if (result.Succeeded)
             {
-                var role = await GetRoleByNameAsync(userVM.Role);
-                var userReturn = await GetUserByUserNameAsync(user.UserName);
-
-                UserRole userRole = new UserRole();
-                userRole.UserId = userReturn.Id;
-                userRole.RoleId = role.Id;
-
-                _context.UserRoles.Add(userRole);
-                _context.SaveChanges();
+                _userManager.AddToRoleAsync(user, userVM.Role).Wait();
+                await _context.SaveChangesAsync();
             }
 
             return user;
@@ -73,17 +66,6 @@ namespace Inventory.Services
         public async Task<User> GetUserByIdAsync(int userId)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
-        }
-
-        //Private
-        private async Task<User> GetUserByUserNameAsync(string userName)
-        {
-            return await _context.Users.FirstOrDefaultAsync(r => r.UserName == userName);
-        }
-
-        private async Task<Role> GetRoleByNameAsync(string name)
-        {
-            return await _context.Roles.FirstOrDefaultAsync(r => r.Name == name);
         }
     }
 }

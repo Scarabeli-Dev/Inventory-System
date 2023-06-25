@@ -259,7 +259,7 @@ namespace Inventory.Migrations
                         .HasColumnType("varchar(150)");
 
                     b.Property<decimal>("Quantity")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -331,7 +331,7 @@ namespace Inventory.Migrations
                         .HasColumnType("varchar(250)");
 
                     b.Property<decimal>("StockTakingQuantity")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 

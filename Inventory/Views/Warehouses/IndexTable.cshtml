@@ -28,34 +28,43 @@
     </button>
 </p>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-success">
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </a>
-                </td>
-                <td>
-                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" onclick="actionEdit(@item.Id)" data-bs-target="#edit-modal"> Editar</button>
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" onclick="actionDelete(@item.Id)" data-bs-target="#delete-modal">Deletar</button>
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-success">
+                                    <i class="bi bi-info-circle"></i>
+                                </a>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" onclick="actionEdit(@item.Id)" data-bs-target="#edit-modal">
+                                    <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" onclick="actionDelete(@item.Id)" data-bs-target="#delete-modal">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <div>
     <vc:pager paging-list="@Model"></vc:pager>
