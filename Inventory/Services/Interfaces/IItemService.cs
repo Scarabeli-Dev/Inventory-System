@@ -5,6 +5,7 @@ namespace Inventory.Services.Interfaces
 {
     public interface IItemService : IGeralService
     {
+        IEnumerable<Item> Items { get; }
         Task<PagingList<Item>> GetAllItemsPagingAsync(string filter, int pageindex = 1, string sort = "Name");
         Task<PagingList<Item>> GetItemsByAddressingPagingAsync(int addressingId, string filter, int pageindex = 1, string sort = "Name");
         Task<List<Item>> GetAllItemsByAddressingAsync(int addressingnId);

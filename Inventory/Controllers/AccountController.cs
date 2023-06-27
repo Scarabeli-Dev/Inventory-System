@@ -1,4 +1,5 @@
-﻿using Inventory.Models.Account;
+﻿using Inventory.Models;
+using Inventory.Models.Account;
 using Inventory.Services.Interfaces;
 using Inventory.ViewModels.AccountVM;
 using Microsoft.AspNetCore.Authorization;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Inventory.Controllers
 {
+    //[Route("Usuario")]
     public class AccountController : Controller
     {
         private readonly UserManager<User> _userManager;
@@ -22,6 +24,7 @@ namespace Inventory.Controllers
             _accountService = accountService;
         }
 
+        //[Route("Lista")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index(string filter, int pageindex = 1, string sort = "Name")
         {
@@ -58,10 +61,11 @@ namespace Inventory.Controllers
                     return Redirect(loginVM.ReturnUrl);
                 }
             }
-            ModelState.AddModelError("", "Falha ao realizar o login!!");
+            TempData["errorMessage"] = "Usuário ou senha invalidos";
             return View(loginVM);
         }
 
+        //[Route("Cadastro")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Register()
         {
@@ -72,6 +76,7 @@ namespace Inventory.Controllers
             return View();
         }
 
+        //[Route("Cadastro")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel userVM)
@@ -82,6 +87,7 @@ namespace Inventory.Controllers
 
                 if (user != null)
                 {
+                    TempData["successMessage"] = "Usuário " + userVM.UserName;
                     return RedirectToAction("Index", "Account");
                 }
                 else
@@ -89,6 +95,7 @@ namespace Inventory.Controllers
                     this.ModelState.AddModelError("Registro", "Falha ao registrar o usuário");
                 }
             }
+            TempData["errorMessage"] = "Usuário " + userVM.UserName;
             return View(userVM);
         }
 

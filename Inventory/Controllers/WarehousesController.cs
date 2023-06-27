@@ -32,6 +32,7 @@ namespace Inventory.Controllers
             return View(model);
         }
 
+        //[Route("Deposito/Lista")]
         public async Task<IActionResult> IndexTable(string filter, int pageindex = 1, string sort = "Name")
         {
             var model = await _warehouseService.GetAllWarehousesAsync(filter, pageindex, sort);
@@ -40,6 +41,7 @@ namespace Inventory.Controllers
         }
 
         // GET: Warehouses/Details/5
+        //[Route("Deposito/Detalhes")]
         public async Task<IActionResult> Details(int? id, string filter)
         {
             var warehouse = await _warehouseService.GetWarehouseByIdAsync(id);
@@ -54,6 +56,7 @@ namespace Inventory.Controllers
         }
 
         // GET: Warehouses/Create
+        //[Route("Deposito/Cadastro")]
         public IActionResult Create()
         {
             return View();
@@ -63,6 +66,7 @@ namespace Inventory.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        //[Route("Deposito/Cadastro")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Warehouse warehouse)
         {
@@ -70,12 +74,16 @@ namespace Inventory.Controllers
             {
                 _warehouseService.Add(warehouse);
                 await _warehouseService.SaveChangesAsync();
+                TempData["successMessage"] = "Depósito " + warehouse.Name;
                 return RedirectToAction(nameof(Index));
             }
+
+            TempData["errorMessage"] = "depósito " + warehouse.Name;
             return View(warehouse);
         }
 
         // GET: Warehouses/Edit/5
+        //[Route("Deposito/Editar")]
         public async Task<IActionResult> Edit(int? id)
         {
             var warehouse = await _warehouseService.GetWarehouseByIdAsync(id);
@@ -93,6 +101,7 @@ namespace Inventory.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        //[Route("Deposito/Editar")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Warehouse warehouse)
         {
@@ -120,12 +129,15 @@ namespace Inventory.Controllers
                         throw;
                     }
                 }
+                TempData["successMessage"] = "Depósito " + warehouse.Name;
                 return RedirectToAction(nameof(Index));
             }
+            TempData["errorMessage"] = "depósito " + warehouse.Name;
             return View(warehouse);
         }
 
         // GET: Warehouses/Delete/5
+        //[Route("Deposito/Deletar")]
         public async Task<IActionResult> Delete(int? id)
         {
 
@@ -140,6 +152,7 @@ namespace Inventory.Controllers
 
         // POST: Warehouses/Delete/5
         [HttpPost, ActionName("Delete")]
+        //[Route("Deposito/Deletar")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -154,6 +167,7 @@ namespace Inventory.Controllers
         }
 
         [HttpPost]
+        //[Route("Deposito/Importacao")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ImportWareHouses(IFormFile documentFile)
         {
@@ -172,11 +186,13 @@ namespace Inventory.Controllers
                     _util.DeleteDocument(documentName, _destiny);
 
                     // Retorna uma resposta de sucesso ou redireciona para outra página
+                    TempData["successMessage"] = "Depósitos ";
                     return RedirectToAction(nameof(Index));
 
                 }
             }
             // Retorna uma resposta de erro ou redireciona para outra página
+            TempData["errorMessage"] = "depósitos";
             return BadRequest("Nenhum documento foi enviado.");
         }
     }

@@ -1,3 +1,4 @@
+using FastReport.Data;
 using Inventory.Data;
 using Inventory.Helpers;
 using Inventory.Helpers.Interfaces;
@@ -68,23 +69,27 @@ builder.Services.AddAuthorization(options =>
         });
 });
 
+
+FastReport.Utils.RegisteredObjects.AddConnection(typeof(MySqlDataConnection));
+
+
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 // Add Helpers
 builder.Services.AddScoped<IUtil, Util>();
 
 // Add Services
-builder.Services.AddScoped<IWarehouseService, WarehouseService>();
 builder.Services.AddScoped<IAddressingService, AddressingService>();
-builder.Services.AddScoped<IInventoryStartService, InventoryStartService>();
-builder.Services.AddScoped<IInventoryMovementService, InventoryMovementService>();
-builder.Services.AddScoped<IAddressingsInventoryStartService, AddressingsInventoryStartService>();
-builder.Services.AddScoped<IItemsStockTakingService, ItemsStockTakingService>();
-builder.Services.AddScoped<IStockTakingService, StockTakingService>();
-builder.Services.AddScoped<IItemService, ItemService>();
-builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IItemAddressingService, ItemAddressingService>();
+builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IInventoryStartService, InventoryStartService>();
+builder.Services.AddScoped<IAddressingsInventoryStartService, AddressingsInventoryStartService>();
+builder.Services.AddScoped<IInventoryMovementService, InventoryMovementService>();
+builder.Services.AddScoped<IStockTakingService, StockTakingService>();
+builder.Services.AddScoped<IWarehouseService, WarehouseService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
+builder.Services.AddScoped<HelperFastReport>();
 
 // Add Paging List
 builder.Services.AddPaging(options =>
@@ -117,9 +122,10 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+app.UseFastReport();
 app.UseRouting();
 
-CriarPerfisUsuarios(app);
+//CriarPerfisUsuarios(app);
 
 app.UseAuthentication();
 app.UseCookiePolicy();
@@ -147,13 +153,13 @@ app.MapRazorPages();
 
 app.Run();
 
-void CriarPerfisUsuarios(WebApplication app)
-{
-    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
-    using (var scope = scopedFactory.CreateScope())
-    {
-        var service = scope.ServiceProvider.GetService<ISeedUserRoleInitial>();
-        service.SeedRoles();
-        service.SeedUsers();
-    }
-}
+//void CriarPerfisUsuarios(WebApplication app)
+//{
+//    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+//    using (var scope = scopedFactory.CreateScope())
+//    {
+//        var service = scope.ServiceProvider.GetService<ISeedUserRoleInitial>();
+//        service.SeedRoles();
+//        service.SeedUsers();
+//    }
+//}

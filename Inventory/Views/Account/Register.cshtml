@@ -4,52 +4,48 @@
     List<Role> roles = ViewBag.Roles;
 }
 
-<table class="table">
-    <tr>
-        <td><img src="~/images/registro1.jpg" class="img-fluid" asp-append-version="true" alt="Registrar Usuário" /></td>
-        <td>
-            <div class="row">
-                <div class="col-9 col-md-9 col-lg-9">
-                    <h4>Registrar usuário</h4>
-                    <form asp-controller="Account" asp-action="Register" method="post">
-                        <hr />
-                        <div asp-validation-summary="All" class="text-danger"></div>
-                        <div class="form-group">
-                            <label asp-for="Name"> </label>
-                            <input asp-for="Name" class="form-control" />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="UserName"> </label>
-                            <input asp-for="UserName" class="form-control" />
-                            <span asp-validation-for="UserName" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Email"></label>
-                            <input asp-for="Email" class="form-control" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Password"></label>
-                            <input asp-for="Password" class="form-control" />
-                            <span asp-validation-for="Password" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Role"></label>
-                            <select asp-for="Role" name="Role"  class="chosen-select col-6 form-control" tabindex="17" id="addressing-select">
-                                @foreach (var item in roles)
-                                {
-                                    <option value="@item.Name">@item.Name</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <input type="submit" class="btn btn-success " value="Registrar" />
-                        </div>
-                    </form>
-                </div>
+<div class="text-center">
+    <h3>Cadastrar novo usuário</h3>
+</div>
+<div class="card">
+    <div class="card-body">
+        <form class="row g-3" asp-controller="Account" asp-action="Register" method="post">
+            <hr />
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="col-6">
+                <label asp-for="Name"> </label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-        </td>
-    <tr>
-</table>
+            <div class="col-6">
+                <label asp-for="UserName"> </label>
+                <input asp-for="UserName" class="form-control" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+            <div class="col-4">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="col-4">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="col-4">
+                <label asp-for="Role"></label>
+                <select asp-for="Role" name="Role" class="chosen-select col-6 form-control" tabindex="17" id="addressing-select">
+                    @foreach (var item in roles)
+                    {
+                        <option value="@item.Name">@item.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-success " value="Registrar" />
+            </div>
+        </form>
+    </div>
+</div>
+
 

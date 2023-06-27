@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "UxbV9VywKXmRlho2snIeBQx8TJFSYs1JaBN5303+Jgs=",
+  "Hash": "pH5NFjEv47KxH1XHKWPIrE6g15E2rzK42MWq+NQ+xDA=",
   "Source": "Inventory",
   "BasePath": "_content/Inventory",
   "Mode": "Default",
@@ -8413,6 +8413,40 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\lib\\jquery-validation-unobtrusive\\LICENSE.txt"
+    },
+    {
+      "Identity": "C:\\Systems\\Inventory\\Inventory\\wwwroot\\reports\\BaseReport.frx",
+      "SourceId": "Inventory",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Systems\\Inventory\\Inventory\\wwwroot\\",
+      "BasePath": "_content/Inventory",
+      "RelativePath": "reports/BaseReport.frx",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\reports\\BaseReport.frx"
+    },
+    {
+      "Identity": "C:\\Systems\\Inventory\\Inventory\\wwwroot\\reports\\StockTaking.frx",
+      "SourceId": "Inventory",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Systems\\Inventory\\Inventory\\wwwroot\\",
+      "BasePath": "_content/Inventory",
+      "RelativePath": "reports/StockTaking.frx",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\reports\\StockTaking.frx"
     },
     {
       "Identity": "C:\\Users\\elana\\.nuget\\packages\\microsoft.aspnetcore.identity.ui\\6.0.14\\staticwebassets\\V5\\css\\site.css",

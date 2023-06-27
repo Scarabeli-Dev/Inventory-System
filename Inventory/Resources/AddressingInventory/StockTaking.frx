@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="06/27/2023 08:13:34" ReportInfo.Modified="06/27/2023 08:13:34" ReportInfo.CreatorVersion="2023.2.18.0">
+  <Dictionary>
+    <BusinessObjectDataSource Name="stockTakingList" ReferenceName="stockTakingList" DataType="System.Collections.Generic.List`1[[Inventory.ViewModels.StockTakingList, Inventory, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]" Enabled="true">
+      <Column Name="AddressingName" DataType="System.String"/>
+      <Column Name="TotalItems" DataType="System.Int32"/>
+      <Column Name="ItemsCount" DataType="System.Int32"/>
+      <Column Name="IsRealized" DataType="System.Boolean" BindableControl="CheckBox"/>
+      <Column Name="IsCompleted" DataType="System.Boolean" BindableControl="CheckBox"/>
+    </BusinessObjectDataSource>
+  </Dictionary>
+</Report>

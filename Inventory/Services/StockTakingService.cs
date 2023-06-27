@@ -4,6 +4,7 @@ using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using ReflectionIT.Mvc.Paging;
+using System.Collections.Immutable;
 
 namespace Inventory.Services
 {
@@ -48,6 +49,7 @@ namespace Inventory.Services
             stockTaking.NumberOfCount++;
 
             _context.StockTaking.Update(stockTaking);
+            _addressingsStockTakingService.SetAddressingCountRealizedTrueAsync(stockTaking.AddressingsInventoryStartId);
             _context.SaveChanges();
 
             return true;
@@ -59,6 +61,11 @@ namespace Inventory.Services
                                              .Include(a => a.AddressingsInventoryStart).ThenInclude(a => a.Addressing)
                                              .Include(i => i.AddressingsInventoryStart).ThenInclude(a => a.InventoryStart)
                                              .FirstOrDefaultAsync(st => st.Id == stockTakingId);
+        }
+
+        public IEnumerable<StockTaking> GetStockTakingsEnumerableAsync()
+        {
+            return _context.StockTaking.ToList();
         }
 
         public async Task<List<StockTaking>> GetAllStockTakingByItemIdAsync(string itemId)

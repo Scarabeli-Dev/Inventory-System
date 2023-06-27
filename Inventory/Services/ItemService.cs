@@ -6,7 +6,6 @@ using Inventory.Services.Interfaces;
 using Inventory.ViewModels.Imports;
 using Microsoft.EntityFrameworkCore;
 using ReflectionIT.Mvc.Paging;
-using System.Collections.Generic;
 using System.Globalization;
 
 namespace Inventory.Services
@@ -19,6 +18,9 @@ namespace Inventory.Services
         {
             _context = context;
         }
+
+        public IEnumerable<Item> Items => _context.Item.Include(l => l.Addressings)
+                                                       .ThenInclude(l => l.Addressing);
 
         public async Task<PagingList<Item>> GetAllItemsPagingAsync(string filter, int pageindex = 1, string sort = "Name")
         {

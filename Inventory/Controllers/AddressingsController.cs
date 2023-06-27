@@ -9,6 +9,7 @@ using Inventory.Helpers.Interfaces;
 
 namespace Inventory.Controllers
 {
+    //[Route("Enderecamento")]
     [Authorize]
     public class AddressingsController : Controller
     {
@@ -27,6 +28,7 @@ namespace Inventory.Controllers
         }
 
         // GET: Addressings
+        //[Route("Lista")]
         public async Task<IActionResult> Index(string filter, int pageindex = 1, string sort = "Name")
         {
             var addressings = await _addressingService.GetAllAddressingsByPagingAsync(filter, pageindex = 1, sort = "Name");
@@ -34,6 +36,7 @@ namespace Inventory.Controllers
             return View(addressings);
         }
 
+        //[Route("Lista/Deposito")]
         public async Task<IActionResult> AddressingByWarehouse(int warehouseId, string filter, int pageindex = 1, string sort = "Name")
         {
             var addressings = await _addressingService.GetAddressingsByWarehouseIdAsync(warehouseId, filter, pageindex = 1, sort = "Name");
@@ -44,6 +47,7 @@ namespace Inventory.Controllers
         }
 
         // GET: Addressings/Details/5
+        //[Route("Detalhes")]
         public async Task<IActionResult> Details(int id)
         {
             var addressing = await _addressingService.GetAddressingByIdAsync(id);
@@ -57,6 +61,7 @@ namespace Inventory.Controllers
         }
 
         // GET: Addressings/Create
+        //[Route("Cadastro")]
         public IActionResult Create()
         {
             ViewData["WarehouseId"] = new SelectList(_context.Warehouse, "Id", "Name");
@@ -67,6 +72,7 @@ namespace Inventory.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        //[Route("Cadastro")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Addressing addressing)
         {
@@ -75,13 +81,15 @@ namespace Inventory.Controllers
                 _addressingService.Add(addressing);
 
                 await _addressingService.SaveChangesAsync();
+                TempData["successMessage"] = "Endereçamento " + addressing.Name;
                 return RedirectToAction("Details", "Warehouses", new { id = addressing.WarehouseId });
             }
-            //ViewData["WarehouseId"] = new SelectList(_context.Warehouse, "Id", "Name", addressing.WarehouseId);
+            TempData["errorMessage"] = "endereçamento " + addressing.Name;
             return RedirectToAction("Details", "Warehouses", new { id = addressing.WarehouseId });
-            }
+        }
 
         // GET: Addressings/Edit/5
+        //[Route("Editar")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Addressing == null)
@@ -102,6 +110,7 @@ namespace Inventory.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        //[Route("Editar")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,WarehouseId")] Addressing addressing)
         {
@@ -128,13 +137,16 @@ namespace Inventory.Controllers
                         throw;
                     }
                 }
+                TempData["successMessage"] = "endereçamento " + addressing.Name;
                 return RedirectToAction(nameof(Index));
             }
             ViewData["WarehouseId"] = new SelectList(_context.Warehouse, "Id", "Name", addressing.WarehouseId);
+            TempData["errorMessage"] = "endereçamento " + addressing.Name;
             return View(addressing);
         }
 
         // GET: Addressings/Delete/5
+        //[Route("Deletar")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Addressing == null)
@@ -155,6 +167,7 @@ namespace Inventory.Controllers
 
         // POST: Addressings/Delete/5
         [HttpPost, ActionName("Delete")]
+        //[Route("Deletar")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -167,17 +180,18 @@ namespace Inventory.Controllers
             {
                 _context.Addressing.Remove(addressing);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool AddressingExists(int id)
         {
-          return _context.Addressing.Any(e => e.Id == id);
+            return _context.Addressing.Any(e => e.Id == id);
         }
 
         [HttpPost]
+        //[Route("Importacao")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ImportAddressings(IFormFile documentFile)
         {

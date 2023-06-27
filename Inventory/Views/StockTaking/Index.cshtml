@@ -1,10 +1,19 @@
 ﻿@model PagingList<AddressingsInventoryStart>
 
 @{
-    ViewData["Title"] = "Produtos";
+    ViewData["Title"] = "Selecione o endereçamento para ver os detalhes";
 }
 
-<h1>@ViewData["Title"]</h1>
+<h2>@ViewData["Title"]</h2>
+@*<div class="progress mt-3" id="generalProgress">
+    @{
+        var progressWidthAddressing = (adressingsQtd * 100) / Model.Count();
+        var progressPercentageAdressing = $"{progressWidthAddressing}%";
+    }
+    <div class="progress-bar" role="progressbar" style="width: @progressWidthAddressing%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+        @progressPercentageAdressing Concluídos!
+    </div>
+</div>*@
 
 <form method="get" class="nput-group mb-3">
 
@@ -33,6 +42,7 @@
                     <th>
                         Total de Items Contados
                     </th>
+                    <th>Quantidade Concluída</th>
                     <th></th>
                 </tr>
             </thead>
@@ -59,7 +69,7 @@
                     }
 
                     <tr>
-                        @if (item.AddressingCountRealized == true && item.AddressingCountEnded == true)
+                        @if (item.AddressingCountEnded == true)
                         {
                             <td>
                                 Finalizado
@@ -86,15 +96,24 @@
                         <td>
                             @itemStockTaking
                         </td>
+                        <td class="col-4">
+                            <div class="progress mt-3">
+                                @{
+                                    var progressWidth = (itemStockTaking * 100) / itemQuantity;
+                                    var progressPercentage = $"{progressWidth}%";
+                                }
+                                <div class="progress-bar" role="progressbar" style="width: @progressWidth%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+                                    @progressPercentage
+                                </div>
+                            </div><!-- End Progress Bars with labels -->
+                        </td>
                         <td>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                                 <a href="@Url.Action("StockTakingReport", "StockTaking", new { addressingId = item.AddressingId })" class="btn btn-success">
                                     <i class="bi bi-info-circle"></i>
                                 </a>
-                                @*                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">
-                            <i class="bi bi-pencil-square"></i>
-                            </a>*@
                             </div>
+
                         </td>
                     </tr>
                 }

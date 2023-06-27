@@ -2,6 +2,7 @@
 
 @{
     var addressing = ViewBag.AddressingInfo;
+    bool recount = false;
     ViewData["Title"] = "Apuração de Contagem";
 }
 
@@ -53,7 +54,13 @@
 
                         @if (item.ItemInitialQuantity != item.ItemStockTakingQuantity && item.NumberOfCount < 2)
                         {
-                            <td class="table-danger">Sim</td>
+                            <td class="table-danger">
+
+                                <div class="d-grid gap-2 d-md-flex justify-content-center">
+                                    <a href="@Url.Action("ItemCount", "StockTaking", new { itemId = item.ItemId })" class="btn btn-danger">Sim</a>
+                                </div>
+                            </td>
+                            recount = true;
                         }
                         else
                         {
@@ -64,5 +71,48 @@
                 }
             </tbody>
         </table>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addressingCountEnded">
+            Encerrar Contagem
+        </button>
     </div>
 </div>
+
+
+<!-- Basic Modal -->
+<div class="modal fade" id="addressingCountEnded" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Fechamento</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            @if (recount)
+            {
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="hidden" name="addressingId" value="@addressing.Id" />
+                    </div>
+                    Não é possivel encerrar a contagem, pois existem itens pendentes de recontagem
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
+                </div>
+            }
+            else
+            {
+                <form class="row g-3" asp-action="CloseAddressingInventory" method="post">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="hidden" name="addressingId" value="@addressing.Id" />
+                        </div>
+                        Deseja realmente encerrar a contagem o endereçamento <strong>@addressing.Addressing.Name</strong>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <input type="submit" value="Encerrar Contagem" class="btn btn-primary" />
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
+</div><!-- End Basic Modal-->

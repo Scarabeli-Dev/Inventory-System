@@ -1,7 +1,6 @@
 ﻿using Inventory.Data;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
-using Inventory.ViewModels;
 using Microsoft.EntityFrameworkCore;
 using ReflectionIT.Mvc.Paging;
 
@@ -19,32 +18,40 @@ namespace Inventory.Services
             _addressingService = addressingService;
         }
 
-        public async Task<PagingList<AddressingsInventoryStart>> GetAddressingsStockTakingsPagingAsync(int inventaryStartId, string filter, int pageindex = 1, string sort = "Id")
+        public IEnumerable<AddressingsInventoryStart> AddressingsInventoryStarts => _context.AddressingsInventoryStart
+                                                                                            .Include(l => l.Addressing)
+                                                                                            .ThenInclude(i => i.Item)
+                                                                                            .Include(s => s.StockTaking)
+                                                                                            .ThenInclude(i => i.Item);
+
+        public async Task<PagingList<AddressingsInventoryStart>> GetAddressingsStockTakingsPagingAsync(int inventaryStartId, string filter, int pageindex = 1, string sort = "AddressingCountRealized")
         {
             var result = _context.AddressingsInventoryStart.Include(l => l.Addressing)
                                                            .ThenInclude(i => i.Item)
                                                            .ThenInclude(i => i.Item)
                                                            .Include(s => s.StockTaking)
                                                            .Where(s => s.InventoryStartId == inventaryStartId)
-                                                           .OrderBy(l => l.AddressingCountRealized)
-                                                           .ThenBy(l => l.AddressingCountEnded)
+
                                                            .AsNoTracking()
                                                            .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(filter))
             {
-                if (filter == "Realizado")
+                if ("Contado".ToLower().Contains(filter.ToLower()))
                 {
                     result = result.Where(p => p.AddressingCountRealized == true);
                 }
-                if (filter == "Finalizado")
+                else if ("Finalizado".ToLower().Contains(filter.ToLower()))
                 {
-                    result = result.Where(p => p.AddressingCountRealized == true);
+                    result = result.Where(p => p.AddressingCountEnded == true);
                 }
-                result = result.Where(p => p.Addressing.Name.ToLower().Contains(filter.ToLower()));
+                else
+                {
+                    result = result.Where(p => p.Addressing.Name.ToLower().Contains(filter.ToLower()));
+                }
             }
 
-            var model = await PagingList.CreateAsync(result, 10, pageindex, sort, "Id");
+            var model = await PagingList.CreateAsync(result, 10, pageindex, sort, "AddressingCountRealized");
             model.RouteValue = new RouteValueDictionary { { "filter", filter } };
 
             return model;
@@ -83,11 +90,15 @@ namespace Inventory.Services
         {
             var addressingsStockTaking = await GetAddressingsStockTakingAddressingByIdAsync(addressingId);
 
-            int itemsCount = _context.AddressingsInventoryStart.Include(s => s.StockTaking).Count();
+            int itemsCount = _context.AddressingsInventoryStart.Where(s => s.Id == addressingsStockTaking.Id)
+                                                               .SelectMany(s => s.StockTaking)
+                                                               .Count();
 
-            int itemsInAddressing = 0;
+            int itemsInAddressing = _context.AddressingsInventoryStart.Where(s => s.AddressingId == addressingId)
+                                                               .SelectMany(s => s.Addressing.Item)
+                                                               .Count();
 
-            if (itemsCount == itemsInAddressing)
+            if (itemsCount >= itemsInAddressing)
             {
                 addressingsStockTaking.AddressingCountRealized = true;
 
@@ -97,6 +108,19 @@ namespace Inventory.Services
                 return true;
             }
 
+            return false;
+        }
+
+        public async Task<bool> SetAddressingCountEndedTrueAsync(int addressingId)
+        {
+            var addressingsStockTaking = await GetAddressingsStockTakingAddressingByIdAsync(addressingId);
+            if (addressingsStockTaking != null)
+            {
+                addressingsStockTaking.AddressingCountEnded = true;
+                _context.Update(addressingsStockTaking);
+                await _context.SaveChangesAsync();
+                return true;
+            }
             return false;
         }
     }
