@@ -7,11 +7,8 @@
 <h1>Selecione o @ViewData["Title"] para contagem</h1>
 
 <form method="get" class="nput-group mb-3">
-
     <div class="input-group mb-3">
-        <input name="filter" class="form-control" placeholder="filtro"
-               value="@Model.RouteValue["Filter"]" />
-
+        <input name="filter" class="form-control" placeholder="filtro" value="@Model.RouteValue["Filter"]" />
         <button type="submit" class="btn btn-info">Procurar</button>
     </div>
 </form>
@@ -31,6 +28,7 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Email)
                     </th>
+                    <th>Tipo de Usuário</th>
                     <th></th>
                 </tr>
             </thead>
@@ -43,6 +41,9 @@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Email)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UserRole)
                         </td>
                         <td>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">

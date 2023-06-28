@@ -1,5 +1,4 @@
-﻿using Inventory.Models;
-using Inventory.Models.Account;
+﻿using Inventory.Models.Account;
 using Inventory.Services.Interfaces;
 using Inventory.ViewModels.AccountVM;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Inventory.Controllers
 {
-    //[Route("Usuario")]
+    [Route("Usuario")]
     public class AccountController : Controller
     {
         private readonly UserManager<User> _userManager;
@@ -24,13 +23,13 @@ namespace Inventory.Controllers
             _accountService = accountService;
         }
 
-        //[Route("Lista")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index(string filter, int pageindex = 1, string sort = "Name")
         {
             return View(await _accountService.GetUsersByPaggingList(filter, pageindex, sort));
         }
 
+        [Route("Login/")]
         public IActionResult Login(string returnUrl)
         {
             return View(new LoginViewModel()
@@ -40,6 +39,7 @@ namespace Inventory.Controllers
         }
 
         [HttpPost]
+        [Route("Login/")]
         public async Task<IActionResult> Login(LoginViewModel loginVM)
         {
             if (!ModelState.IsValid)
@@ -65,7 +65,7 @@ namespace Inventory.Controllers
             return View(loginVM);
         }
 
-        //[Route("Cadastro")]
+        [Route("Cadastro/")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Register()
         {
@@ -76,8 +76,8 @@ namespace Inventory.Controllers
             return View();
         }
 
-        //[Route("Cadastro")]
         [HttpPost]
+        [Route("Cadastro/")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel userVM)
         {
@@ -100,6 +100,7 @@ namespace Inventory.Controllers
         }
 
         [HttpPost]
+        [Route("Logout")]
         public async Task<IActionResult> Logout()
         {
             HttpContext.Session.Clear();
@@ -108,6 +109,7 @@ namespace Inventory.Controllers
             return RedirectToAction("Login", "Account");
         }
 
+        [Route("AcessoNegado")]
         public IActionResult AccessDenied()
         {
             return View();

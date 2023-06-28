@@ -1,17 +1,14 @@
-﻿using FastReport;
-using Inventory.Models;
+﻿using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Inventory.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MySqlX.XDevAPI.Common;
 
 using System.Globalization;
 
 namespace Inventory.Controllers
 {
-    //[Route("Contagem")]
+    [Route("Contagem")]
     [Authorize]
     public class StockTakingController : Controller
     {
@@ -41,7 +38,12 @@ namespace Inventory.Controllers
             _itemAddressingService = itemAddressingService;
         }
 
-        //[Route("Cadastro")]
+        public async Task<IActionResult> Index(int inventaryStartId, string filter, int pageindex = 1, string sort = "AddressingCountEnded")
+        {
+            return View(await _addressingsInventoryStartService.GetAddressingsStockTakingsPagingAsync(1, filter, pageindex, sort));
+        }
+
+        [Route("Cadastro")]
         public async Task<IActionResult> ItemCount(string itemId, bool stockTakingCheched)
         {
             var checkStockTacking = await _stockTakingService.GetAllStockTakingByItemIdAsync(itemId);
@@ -66,7 +68,7 @@ namespace Inventory.Controllers
         }
 
         [HttpPost]
-        //[Route("Cadastro")]
+        [Route("Cadastro")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ItemCount(StockTaking stockTaking)
         {
@@ -88,7 +90,7 @@ namespace Inventory.Controllers
             return View(stockTaking);
         }
 
-        //[Route("Editar")]
+        [Route("Editar")]
         public async Task<IActionResult> ItemCountEdit(int stockTakingId)
         {
             var stockTaking = await _stockTakingService.GetStockTakingByIdAsync(stockTakingId);
@@ -103,30 +105,40 @@ namespace Inventory.Controllers
         }
 
         [HttpPost]
-        //[Route("Editar")]
+        [Route("Editar")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ItemCountEdit(string itemId, StockTaking stockTaking)
         {
-            if (itemId != stockTaking.ItemId)
+            try
             {
-                return NotFound();
+
+                if (itemId != stockTaking.ItemId)
+                {
+                    return NotFound();
+                }
+
+                if (ModelState.IsValid)
+                {
+                    await _stockTakingService.UpdateStockTaking(stockTaking);
+
+                    var result = await _stockTakingService.GetStockTakingByIdAsync(stockTaking.Id);
+                    TempData["successMessage"] = "Contagem do item " + stockTaking.Item.Name;
+
+                    return RedirectToAction("Details", "Warehouses", new { id = result.AddressingsInventoryStart.Addressing.WarehouseId });
+                }
+                TempData["errorMessage"] = "contagem do item " + stockTaking.Item.Name;
+                return View(stockTaking);
+            }
+            catch (Exception ex)
+            {
+
+                TempData["errorMessage"] = "contagem do item " + stockTaking.Item.Name;
+                return View(stockTaking);
             }
 
-            if (ModelState.IsValid)
-            {
-                _stockTakingService.UpdateStockTaking(stockTaking);
-
-                var result = await _stockTakingService.GetStockTakingByIdAsync(stockTaking.Id);
-                TempData["successMessage"] = "Contagem do item " + stockTaking.Item.Name;
-
-                return RedirectToAction("Details", "Warehouses", new { id = result.AddressingsInventoryStart.Addressing.WarehouseId });
-            }
-            TempData["errorMessage"] = "contagem do item " + stockTaking.Item.Name;
-
-            return View(stockTaking);
         }
 
-        //[Route("Verificacao/Enderecamento")]
+        [Route("Verificacao/Enderecamento")]
         public async Task<IActionResult> CheckStockTaking(string itemId)
         {
             var itemStockTaking = await _stockTakingService.GetAllStockTakingByItemIdAsync(itemId);
@@ -136,13 +148,7 @@ namespace Inventory.Controllers
             return View(itemStockTaking);
         }
 
-        //[Route("Lista")]
-        public async Task<IActionResult> Index(int inventaryStartId, string filter, int pageindex = 1, string sort = "AddressingCountEnded")
-        {
-            return View(await _addressingsInventoryStartService.GetAddressingsStockTakingsPagingAsync(1, filter, pageindex, sort));
-        }
-
-        //[Route("Relatorio")]
+        [Route("Relatorio")]
         public async Task<IActionResult> StockTakingReport(int addressingId)
         {
             // Local Variable

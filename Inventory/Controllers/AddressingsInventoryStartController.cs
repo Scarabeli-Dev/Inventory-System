@@ -1,10 +1,8 @@
 ﻿using FastReport.Data;
 using FastReport.Web;
 using Inventory.Helpers;
-using Inventory.Helpers.Interfaces;
 using Inventory.Services.Interfaces;
 using Inventory.ViewModels;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inventory.Controllers
@@ -20,7 +18,6 @@ namespace Inventory.Controllers
         }
 
 
-        //[Route("CreateReport")]
         public IActionResult CreateReport(int inventaryStartId = 1)
         {
             var path = Path.Combine(Directory.GetCurrentDirectory(), "Resources", _destiny, "StockTaking.frx");
@@ -53,6 +50,7 @@ namespace Inventory.Controllers
             return Ok($"Relatório gerado: {path}");
         }
 
+        [Route("Relatorio/ContagemEnderecamento")]
         public async Task<IActionResult> Report(int inventaryStartId = 1)
         {
             var webReport = new WebReport();

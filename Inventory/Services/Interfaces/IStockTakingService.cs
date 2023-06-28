@@ -6,7 +6,7 @@ namespace Inventory.Services.Interfaces
     public interface IStockTakingService : IGeralService
     {
         Task<bool> NewStockTakingAsync(StockTaking stockTaking);
-        bool UpdateStockTaking(StockTaking stockTaking);
+        Task<bool> UpdateStockTaking(StockTaking stockTaking);
         Task<StockTaking> GetStockTakingByIdAsync(int stockTakingId);
         IEnumerable<StockTaking> GetStockTakingsEnumerableAsync();
         Task<List<StockTaking>> GetAllStockTakingByItemIdAsync(string itemId);

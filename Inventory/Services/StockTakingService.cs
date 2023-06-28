@@ -42,14 +42,14 @@ namespace Inventory.Services
             return true;
         }
 
-        public bool UpdateStockTaking(StockTaking stockTaking)
+        public async Task<bool> UpdateStockTaking(StockTaking stockTaking)
         {
             stockTaking.StockTakingDate = DateTime.Now;
 
             stockTaking.NumberOfCount++;
 
             _context.StockTaking.Update(stockTaking);
-            _addressingsStockTakingService.SetAddressingCountRealizedTrueAsync(stockTaking.AddressingsInventoryStartId);
+            await _addressingsStockTakingService.SetAddressingCountRealizedTrueAsync(stockTaking.AddressingsInventoryStartId);
             _context.SaveChanges();
 
             return true;

@@ -31,7 +31,7 @@
         function loadItems(warehouseId, filter) {
             $.ajax({
                 type: 'GET',
-                url: "/Items/ItemWarehouseIndex",
+                url: "/Itens/Lista/Deposito",
                 dataType: 'html',
                 data: {
                     warehouseId: warehouseId,
@@ -41,7 +41,7 @@
                 async: true,
                 success: function (data) {
                     $('#modal-form').empty();
-                    $('#modal-form').append('<partial name = "/Items/ItemWarehouseIndex" />');
+                    $('#modal-form').append('<partial name = "/Itens/Lista/Deposito" />');
                     $('#modal-form').html(data);
                 }
             });

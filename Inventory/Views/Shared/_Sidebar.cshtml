@@ -14,7 +14,7 @@
             </a>
             <ul id="warehouse-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
                 <li>
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Warehouses" asp-action="Index">
+                    <a class="nav-link text-dark" is-active-route asp-area="" asp-controller="Warehouses" asp-action="Index">
                         <i class="bi bi-pencil-square"></i>Contagem de Depósito
                     </a>
                 </li>
@@ -27,7 +27,7 @@
         </li>
 
         <li class="nav-item">
-            <a class="nav-link collapsed" asp-area="" asp-controller="Addressings" asp-action="Index">
+            <a class="nav-link collapsed" asp-area="" is-active-route asp-controller="Addressings" asp-action="Index">
                 <i class="bi bi-inboxes"></i>
                 Endereçamentos
             </a>
@@ -76,11 +76,5 @@
             </ul>
         </li>
     }
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">
-            <i class="bi bi-grid"></i>
-            Privacy
-        </a>
-    </li>
 
 </ul>

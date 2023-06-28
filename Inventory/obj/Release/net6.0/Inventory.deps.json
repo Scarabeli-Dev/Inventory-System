@@ -35,17 +35,21 @@
       "Inventory/1.0.0": {
         "dependencies": {
           "CsvHelper": "30.0.1",
-          "FastReport.Data.MySql": "2023.2.0",
+          "FastReport.OpenSource": "2023.2.18",
+          "FastReport.OpenSource.Data.MySql": "2021.4.0",
+          "FastReport.OpenSource.Export.PdfSimple": "2023.2.18",
           "FastReport.OpenSource.Web": "2023.2.18",
           "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "6.0.14",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.14",
           "Microsoft.AspNetCore.Identity.UI": "6.0.14",
+          "Microsoft.CodeAnalysis.Common": "4.0.0",
           "Microsoft.EntityFrameworkCore.SqlServer": "6.0.16",
           "Microsoft.EntityFrameworkCore.Tools": "6.0.16",
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "6.0.14",
           "MySql.Data": "8.0.33",
           "Pomelo.EntityFrameworkCore.MySql": "6.0.2",
           "ReflectionIT.Mvc.Paging": "7.0.0",
+          "FastReport.Compat.Reference": "2023.1.8.0",
           "Microsoft.AspNetCore.Antiforgery": "6.0.0.0",
           "Microsoft.AspNetCore.Authentication.Abstractions.Reference": "6.0.0.0",
           "Microsoft.AspNetCore.Authentication.Cookies": "6.0.0.0",
@@ -351,9 +355,66 @@
           "lib/net6.0/CsvHelper.dll": {}
         }
       },
-      "FastReport.Data.MySql/2023.2.0": {
+      "FastReport.Compat/2023.1.8": {
         "dependencies": {
+          "Microsoft.CodeAnalysis.CSharp": "4.0.0",
+          "Microsoft.CodeAnalysis.VisualBasic": "3.3.1",
+          "System.Drawing.Common": "6.0.0"
+        },
+        "runtimeTargets": {
+          "runtimes/any/lib/netcoreapp3.0/FastReport.Compat.dll": {
+            "rid": "any",
+            "assetType": "runtime",
+            "assemblyVersion": "2023.1.8.0",
+            "fileVersion": "2023.1.8.0"
+          }
+        }
+      },
+      "FastReport.OpenSource/2023.2.18": {
+        "dependencies": {
+          "FastReport.Compat": "2023.1.8",
+          "System.Drawing.Common": "6.0.0",
+          "System.Security.Cryptography.Pkcs": "5.0.0",
+          "System.Security.Permissions": "6.0.0",
+          "System.Text.Encoding.CodePages": "6.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.1/FastReport.dll": {
+            "assemblyVersion": "2023.2.18.0",
+            "fileVersion": "2023.2.18.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.1/FastReport.dll": {}
+        }
+      },
+      "FastReport.OpenSource.Data.MySql/2021.4.0": {
+        "dependencies": {
+          "FastReport.OpenSource": "2023.2.18",
           "MySql.Data": "8.0.33"
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/FastReport.Data.MySql.dll": {
+            "assemblyVersion": "2021.4.0.0",
+            "fileVersion": "2021.4.0.0"
+          }
+        },
+        "compile": {
+          "lib/netcoreapp3.1/FastReport.Data.MySql.dll": {}
+        }
+      },
+      "FastReport.OpenSource.Export.PdfSimple/2023.2.18": {
+        "dependencies": {
+          "FastReport.OpenSource": "2023.2.18"
+        },
+        "runtime": {
+          "lib/netstandard2.0/FastReport.OpenSource.Export.PdfSimple.dll": {
+            "assemblyVersion": "2023.2.18.0",
+            "fileVersion": "2023.2.18.0"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/FastReport.OpenSource.Export.PdfSimple.dll": {}
         }
       },
       "FastReport.OpenSource.Web/2023.2.18": {
@@ -1700,6 +1761,61 @@
         },
         "compile": {
           "lib/netcoreapp3.1/Microsoft.CodeAnalysis.Scripting.dll": {}
+        }
+      },
+      "Microsoft.CodeAnalysis.VisualBasic/3.3.1": {
+        "dependencies": {
+          "Microsoft.CodeAnalysis.Common": "4.0.0"
+        },
+        "runtime": {
+          "lib/netstandard2.0/Microsoft.CodeAnalysis.VisualBasic.dll": {
+            "assemblyVersion": "3.3.0.0",
+            "fileVersion": "3.300.119.46211"
+          }
+        },
+        "resources": {
+          "lib/netstandard2.0/cs/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "cs"
+          },
+          "lib/netstandard2.0/de/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "de"
+          },
+          "lib/netstandard2.0/es/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "es"
+          },
+          "lib/netstandard2.0/fr/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "fr"
+          },
+          "lib/netstandard2.0/it/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "it"
+          },
+          "lib/netstandard2.0/ja/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "ja"
+          },
+          "lib/netstandard2.0/ko/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "ko"
+          },
+          "lib/netstandard2.0/pl/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "pl"
+          },
+          "lib/netstandard2.0/pt-BR/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "pt-BR"
+          },
+          "lib/netstandard2.0/ru/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "ru"
+          },
+          "lib/netstandard2.0/tr/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "tr"
+          },
+          "lib/netstandard2.0/zh-Hans/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "zh-Hans"
+          },
+          "lib/netstandard2.0/zh-Hant/Microsoft.CodeAnalysis.VisualBasic.resources.dll": {
+            "locale": "zh-Hant"
+          }
+        },
+        "compile": {
+          "lib/netstandard2.0/Microsoft.CodeAnalysis.VisualBasic.dll": {}
         }
       },
       "Microsoft.CodeAnalysis.Workspaces.Common/4.0.0": {
@@ -3551,6 +3667,17 @@
           "System.Xml.ReaderWriter": "4.3.0"
         }
       },
+      "FastReport.Compat.Reference/2023.1.8.0": {
+        "runtime": {
+          "FastReport.Compat.dll": {
+            "assemblyVersion": "2023.1.8.0",
+            "fileVersion": "2023.1.8.0"
+          }
+        },
+        "compile": {
+          "FastReport.Compat.dll": {}
+        }
+      },
       "Microsoft.AspNetCore.Antiforgery/6.0.0.0": {
         "compile": {
           "Microsoft.AspNetCore.Antiforgery.dll": {}
@@ -5282,12 +5409,33 @@
       "path": "csvhelper/30.0.1",
       "hashPath": "csvhelper.30.0.1.nupkg.sha512"
     },
-    "FastReport.Data.MySql/2023.2.0": {
+    "FastReport.Compat/2023.1.8": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-8hW1tAgwpMf1chtKK99NuXFAG+zm0HuoebLno/CYsPVvcbbrfSSpeLpqyjaMWw3iAI1593p0gYteuqnyFQTeKQ==",
-      "path": "fastreport.data.mysql/2023.2.0",
-      "hashPath": "fastreport.data.mysql.2023.2.0.nupkg.sha512"
+      "sha512": "sha512-GFvZwuKkUJ21nd26IKu8iGb8uXUQ5/98Cl76cLDsvcrXC3HqdPht1AfIALP9to6ov26ZAFuqxnwwSeDL+5AXfw==",
+      "path": "fastreport.compat/2023.1.8",
+      "hashPath": "fastreport.compat.2023.1.8.nupkg.sha512"
+    },
+    "FastReport.OpenSource/2023.2.18": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rVpYiowqFEyGOjDIYe8/p8l2cIyGIbKsud35N/9ZeMDdkpmT7wD1gfFNDfdofBIu172WyNiZnPDbSZxHYsNL7g==",
+      "path": "fastreport.opensource/2023.2.18",
+      "hashPath": "fastreport.opensource.2023.2.18.nupkg.sha512"
+    },
+    "FastReport.OpenSource.Data.MySql/2021.4.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-1mAErpK4GVigjWKj239ZjvnN+jkI4Abm7fqMkyGmfpnZ1hYzQ+qfawwPJ6WuwsNLM4IxNrnWxWxnEi5taIqPnA==",
+      "path": "fastreport.opensource.data.mysql/2021.4.0",
+      "hashPath": "fastreport.opensource.data.mysql.2021.4.0.nupkg.sha512"
+    },
+    "FastReport.OpenSource.Export.PdfSimple/2023.2.18": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-NI+hRh7fveNRE4yjLyTefV7frr8SOlZJ6GYIDcvm1DnLVSlftLj+LMxYSCWi49nzUsL6BfPp9/m005DXrcOTdQ==",
+      "path": "fastreport.opensource.export.pdfsimple/2023.2.18",
+      "hashPath": "fastreport.opensource.export.pdfsimple.2023.2.18.nupkg.sha512"
     },
     "FastReport.OpenSource.Web/2023.2.18": {
       "type": "package",
@@ -5988,6 +6136,13 @@
       "sha512": "sha512-jU/ncoHSFnXU/L2iju9AFlOwmsAYByIxhCCpeLPNTguXwosJp1o13mtrboJOfkDhi7ebvzQmvcZ++yBu8cF4Sw==",
       "path": "microsoft.codeanalysis.scripting.common/4.0.0",
       "hashPath": "microsoft.codeanalysis.scripting.common.4.0.0.nupkg.sha512"
+    },
+    "Microsoft.CodeAnalysis.VisualBasic/3.3.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-F7fc/G+0ocOYkKSCJ7Y8Q7eAEkAdG5RYODI9FtSl2Hm8zIDBVA3NccCm98gaOvCamLfMHYqeOjpb3yJnnw3m/w==",
+      "path": "microsoft.codeanalysis.visualbasic/3.3.1",
+      "hashPath": "microsoft.codeanalysis.visualbasic.3.3.1.nupkg.sha512"
     },
     "Microsoft.CodeAnalysis.Workspaces.Common/4.0.0": {
       "type": "package",
@@ -7136,6 +7291,11 @@
       "sha512": "sha512-5zJ0XDxAIg8iy+t4aMnQAu0MqVbqyvfoUVl1yDV61xdo3Vth45oA2FoY4pPkxYAH5f8ixpmTqXeEIya95x0aCQ==",
       "path": "system.xml.xdocument/4.3.0",
       "hashPath": "system.xml.xdocument.4.3.0.nupkg.sha512"
+    },
+    "FastReport.Compat.Reference/2023.1.8.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
     },
     "Microsoft.AspNetCore.Antiforgery/6.0.0.0": {
       "type": "referenceassembly",

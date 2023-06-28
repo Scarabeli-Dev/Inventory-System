@@ -30,11 +30,28 @@ namespace Inventory.Helpers
                 role.NormalizedName = "ADMIN";
                 IdentityResult roleResult = _roleManager.CreateAsync(role).Result;
             }
-            if(!_roleManager.RoleExistsAsync("Member").Result)
+
+            if(!_roleManager.RoleExistsAsync("Gerente").Result)
             {
                 Role role = new Role();
-                role.Name = "Member";
-                role.NormalizedName = "MEMBER";
+                role.Name = "Gerente";
+                role.NormalizedName = "GERENTE";
+                IdentityResult roleResult = _roleManager.CreateAsync(role).Result;
+            }
+
+            if (!_roleManager.RoleExistsAsync("Contagem").Result)
+            {
+                Role role = new Role();
+                role.Name = "Contagem";
+                role.NormalizedName = "CONTAGEM";
+                IdentityResult roleResult = _roleManager.CreateAsync(role).Result;
+            }
+
+            if (!_roleManager.RoleExistsAsync("Relatorio").Result)
+            {
+                Role role = new Role();
+                role.Name = "Relatorio";
+                role.NormalizedName = "RELATORIO";
                 IdentityResult roleResult = _roleManager.CreateAsync(role).Result;
             }
         }

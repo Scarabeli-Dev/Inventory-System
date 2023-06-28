@@ -1,14 +1,11 @@
 ﻿using Inventory.Models;
-using Inventory.Services;
 using Inventory.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ReflectionIT.Mvc.Paging;
-using System.Collections.Generic;
 
 namespace Inventory.Controllers
 {
-    //[Route("Inventario")]
+    [Route("Inventario")]
     [Authorize(Roles = "Admin")]
     public class InventoryStartController : Controller
     {
@@ -26,14 +23,14 @@ namespace Inventory.Controllers
             return View(await _inventoryStartService.GetAllInventoryStartsAsync(filter, pageindex, sort));
         }
 
-        //[Route("Cadastro")]
+        [Route("Cadastro")]
         public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        //[Route("Cadastro")]
+        [Route("Cadastro")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(InventoryStart inventoryStart)
         {
@@ -48,7 +45,7 @@ namespace Inventory.Controllers
             return View(inventoryStart);
         }
 
-        //[Route("Detalhe")]
+        [Route("Detalhe")]
         public async Task<IActionResult> Details(int id, string filter)
         {
             var inventoryStart = await _inventoryStartService.GetInventoryStartByIdAsync(id);
@@ -95,7 +92,7 @@ namespace Inventory.Controllers
             return View(inventoryStart);
         }
 
-        //[Route("Contagem/Enderecamento")]
+        [Route("Contagem/Enderecamento")]
         public async Task<IActionResult> AddressingCount(int inventaryStartId, string filter, int pageindex = 1, string sort = "Id")
         {
             return View(await _addressingsStockTakingService.GetAddressingsStockTakingsPagingAsync(inventaryStartId, filter, pageindex, sort));

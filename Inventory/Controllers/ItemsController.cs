@@ -1,18 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Inventory.Data;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
-using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Authorization;
 using Inventory.Helpers.Interfaces;
 using Inventory.ViewModels;
-using Inventory.Services;
-using Microsoft.AspNetCore.Hosting;
 
 namespace Inventory.Controllers
 {
-    //[Route("Itens")]
+    [Route("Itens")]
     [Authorize]
     public class ItemsController : Controller
     {
@@ -34,21 +30,20 @@ namespace Inventory.Controllers
 
         // GET: Items
         [Authorize(Roles = "Admin")]
-        //[Route("Lista")]
         public async Task<IActionResult> Index(string filter, int pageindex = 1, string sort = "Name")
         {
             return View(await _itemService.GetAllItemsPagingAsync(filter, pageindex, sort));
         }
 
         // GET: Items by addressing
-        //[Route("Lista/Enderecamento")]
+        [Route("Lista/Enderecamento")]
         public async Task<IActionResult> ItemAddressingIndex(int addressingId, string filter, int pageindex = 1, string sort = "Name")
         {
             return View(await _itemService.GetItemsByAddressingPagingAsync(addressingId, filter, pageindex, sort));
         }
 
         // GET: Items by warehouse
-        ////[Route("Lista/Deposito")]
+        [Route("Lista/Deposito")]
         public async Task<IActionResult> ItemWarehouseIndex(int warehouseId, string filter, int pageindex = 1, string sort = "Name")
         {
             ViewBag.WarehouseId = warehouseId;
@@ -56,7 +51,7 @@ namespace Inventory.Controllers
         }
 
         // GET: Items/Details/5
-        //[Route("Detalhe")]
+        [Route("Detalhe")]
         public async Task<IActionResult> Details(string id)
         {
 
@@ -71,7 +66,7 @@ namespace Inventory.Controllers
         }
 
         // GET: Items/Create
-        //[Route("Cadastro")]
+        [Route("Cadastro")]
         public IActionResult Create()
         {
             var locations = _addressingService.GetAllAsync<Addressing>();
@@ -85,7 +80,7 @@ namespace Inventory.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Route("Cadastro")]
+        [Route("Cadastro")]
         public async Task<IActionResult> Create([Bind("Id,Name,UnitOfMeasurement,Quantity,ExpirationDate,FabricationDate,Observation")] ItemCreateViewModel itemVm)
         {
             if (ModelState.IsValid)
@@ -98,7 +93,7 @@ namespace Inventory.Controllers
         }
 
         // GET: Items/Edit/5
-        //[Route("Editar")]
+        [Route("Editar")]
         public async Task<IActionResult> Edit(string id)
         {
             var item = await _itemService.GetItemByIdAsync(id);
@@ -118,7 +113,7 @@ namespace Inventory.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        //[Route("Editar")]
+        [Route("Editar")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,Name,UnitOfMeasurement,Quantity,ExpirationDate,FabricationDate,Observation")] Item item)
         {
@@ -154,7 +149,7 @@ namespace Inventory.Controllers
         }
 
         // GET: Items/Delete/5
-        //[Route("Deletar")]
+        [Route("Deletar")]
         public async Task<IActionResult> Delete(string id)
         {
             var item = await _itemService.GetItemByIdAsync(id);
@@ -183,7 +178,7 @@ namespace Inventory.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //[Route("Importacao")]
+        [Route("Importacao")]
         public async Task<IActionResult> ImportItems(IFormFile documentFile)
         {
             if (documentFile != null && documentFile.Length > 0)
@@ -210,7 +205,7 @@ namespace Inventory.Controllers
             return BadRequest("Nenhum documento foi enviado.");
         }
 
-        //[Route("Relatorio")]
+        [Route("Relatorio")]
         public async Task<IActionResult> CreateReport()
         {
             //var pathReport = Path.Combine(_webHostEnvironment.WebRootPath, @"reports\StockTaking.frx");

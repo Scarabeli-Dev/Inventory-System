@@ -3,7 +3,6 @@ using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Hosting;
 
 namespace Inventory.Controllers
 {

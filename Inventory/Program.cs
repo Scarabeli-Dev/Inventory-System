@@ -47,7 +47,7 @@ builder.Services.AddIdentity<User, Role>(options =>
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.LoginPath = "/Account/Login/";
+                    options.LoginPath = "/Usuario/Login/";
                 });
 
 
@@ -100,9 +100,9 @@ builder.Services.AddPaging(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Account/Login"; // Página de login personalizada
-    options.LogoutPath = "/Account/Logout"; // Página de logout personalizada
-    options.AccessDeniedPath = "/Account/AccessDenied"; // Página de acesso negado personalizada
+    options.LoginPath = "/Usuario/Login"; // Página de login personalizada
+    options.LogoutPath = "/Usuario/Logout"; // Página de logout personalizada
+    options.AccessDeniedPath = "/Usuario/AccessDenied"; // Página de acesso negado personalizada
 });
 
 var app = builder.Build();
@@ -131,7 +131,7 @@ app.UseAuthentication();
 app.UseCookiePolicy();
 app.Use(async (context, next) =>
 {
-    if (context.Request.Path == "/Account/Login" && context.User.Identity.IsAuthenticated)
+    if (context.Request.Path == "/Usuario/Login" && context.User.Identity.IsAuthenticated)
     {
         context.Response.Redirect("/"); // Página inicial do seu aplicativo
         return;
