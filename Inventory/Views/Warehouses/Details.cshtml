@@ -27,8 +27,8 @@
     <script type="text/javascript">
 
         $.ready(loadItems(@Model.Id, @filter))
-
         function loadItems(warehouseId, filter) {
+        debugger;
             $.ajax({
                 type: 'GET',
                 url: "/Itens/Lista/Deposito",

@@ -1,27 +1,32 @@
 ﻿@{
     var errorMessage = TempData["errorMessage"]?.ToString();
     var successMessage = TempData["successMessage"]?.ToString();
+    var wait = TempData["wait"]?.ToString();
 }
 @if (!string.IsNullOrWhiteSpace(successMessage))
 {
-    <div id="alertLayout" class="alert alert-success alert-dismissible fade show" role="alert">
+    <div id="successAlertLayout" class="alert alert-success alert-dismissible fade show" role="alert">
         <i class="bi bi-check-circle me-1"></i>
         @successMessage salvo com sucesso!
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
-
 }
+
 @if (!string.IsNullOrWhiteSpace(errorMessage))
 {
-    <div id="alertLayout" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <div id="errorAlertLayout" class="alert alert-danger alert-dismissible fade show" role="alert">
         <i class="bi bi-exclamation-octagon me-1"></i>
         Erro ao salvar @errorMessage!
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 
-<script>
-    setTimeout(function () {
-        document.getElementById('alertLayout').style.display = 'none';
-    }, 3000); // 3 segundos
-</script>
+@*@if (string.IsNullOrEmpty(wait))
+{
+    <script>
+        setTimeout(function () {
+            document.getElementById('successAlertLayout').style.display = 'none';
+            document.getElementById('errorAlertLayout').style.display = 'none';
+        }, 3000); // 3 segundos
+    </script>
+}*@

@@ -80,6 +80,7 @@ namespace Inventory.Controllers
                 await _stockTakingService.SaveChangesAsync();
 
                 TempData["successMessage"] = "Contagem do item " + stockTaking.Item.Name;
+                TempData["wait"] = "wait";
                 return RedirectToAction("Details", "Warehouses", new { id = stockTaking.AddressingsInventoryStart.Addressing.WarehouseId });
             }
             var item = await _itemService.GetItemByIdAsync(stockTaking.ItemId);

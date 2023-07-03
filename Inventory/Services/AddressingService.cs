@@ -1,5 +1,6 @@
 ﻿using CsvHelper;
 using Inventory.Data;
+using Inventory.Helpers;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Inventory.ViewModels.Imports;
@@ -27,6 +28,18 @@ namespace Inventory.Services
 
             return addressing;
 
+        }
+
+        public async Task<PageList<Addressing>> GetAllPageListDataTable(PageParams pageParams)
+        {
+            IQueryable<Addressing> query = _context.Addressing.Include(l => l.Item)
+                                                              .ThenInclude(i => i.Item)
+                                                              .Include(w => w.Warehouse);
+
+            query = query.AsNoTracking()
+                         .Where(a => a.Name.ToLower().Contains(pageParams.Term.ToLower()));
+
+            return await PageList<Addressing>.CreateAsync(query, pageParams.PageNumber, query.Count());
         }
 
         public async Task<PagingList<Addressing>> GetAllAddressingsByPagingAsync(string filter, int pageindex = 1, string sort = "Name")

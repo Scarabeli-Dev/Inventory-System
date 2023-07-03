@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Inventory.Controllers
 {
-    //[Route("Movimentacao")]
+    [Route("Movimentacao")]
     [Authorize(Roles = "Admin")]
     public class InventoryMovementController : Controller
     {
@@ -29,7 +29,7 @@ namespace Inventory.Controllers
         }
 
         [HttpPost]
-        //[Route("Importacao")]
+        [Route("Importacao")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UploadDocument(IFormFile documentFile)
         {

@@ -55,6 +55,11 @@ namespace Inventory.Services
             return inventoryReturn;
         }
 
+        public List<InventoryMovement> GetAllInventoryMovementsAsync()
+        {
+            return _context.InventoryMovement.ToList();
+        }
+
         //public List<InventoryMovement> GenereteCSV(List<InventoryMovement> inventoryMovements, string destiny)
         //{
         //    //Read CSV

@@ -1,4 +1,5 @@
-﻿using Inventory.Models;
+﻿using Inventory.Helpers;
+using Inventory.Models;
 using ReflectionIT.Mvc.Paging;
 
 namespace Inventory.Services.Interfaces
@@ -6,6 +7,7 @@ namespace Inventory.Services.Interfaces
     public interface IAddressingService : IGeralService
     {
         Task<Addressing> AddAddressingAsync(Addressing location);
+        Task<PageList<Addressing>> GetAllPageListDataTable(PageParams pageParams);
         Task<PagingList<Addressing>> GetAllAddressingsByPagingAsync(string filter, int pageindex = 1, string sort = "Name");
         Task<PagingList<Addressing>> GetAddressingsByWarehouseIdAsync(int warehouseId, string filter, int pageindex = 1, string sort = "Name");
         Task<List<Addressing>> GetAllAddressingsByWarehouseIdAsync(int warehouseId);

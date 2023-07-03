@@ -1,0 +1,72 @@
+﻿@model PageList<Addressing>
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Selecione o Endereçamento</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="teste">
+            <div class="card">
+                <div class="card-body">
+
+                    <table id="itemTable" class="table datatable table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Endereçamento</th>
+                                <th scope="col">Selecionar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <th scope="row">
+                                        @Html.DisplayFor(modelItem => item.Id)
+                                    </th>
+                                    <td class="col-10">
+                                        @Html.DisplayFor(modelItem => item.Name)
+                                    </td>
+                                    <td class="col-10">
+                                        <button class="btn btn-primary" onclick="actionEdit(@item.Id, '@item.Name')">
+                                            Selecionar
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script src="~/assets/vendor/simple-datatables/simple-datatables.js"></script>
+
+<script type="text/javascript">
+
+    function actionEdit(id, name) {
+        // Atualize a lógica conforme necessário
+        // Por exemplo, você pode armazenar esses valores em variáveis ou usá-los para atualizar elementos específicos no seu view
+        // Exemplo:
+        //debugger;
+        var addressingIdElement = document.getElementById("addressing-id");
+        var addressingNameElement = document.getElementById("addressing-name");
+        //debugger;
+
+        addressingIdElement.value = id; // Atualiza o valor do input com o ID do endereçamento selecionado
+        addressingNameElement.textContent = name; // Atualiza o nome do endereçamento no cabeçalho
+
+        // Feche o modal ou faça qualquer outra ação necessária
+        $('#modal-form').modal('hide');
+    }
+</script>
+}

@@ -6,6 +6,7 @@ using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Inventory.Helpers.Interfaces;
+using Inventory.Helpers;
 
 namespace Inventory.Controllers
 {
@@ -41,6 +42,15 @@ namespace Inventory.Controllers
             var addressings = await _addressingService.GetAddressingsByWarehouseIdAsync(warehouseId, filter, pageindex, sort);
 
             ViewBag.WarehouseId = warehouseId;
+
+            return View(addressings);
+        }
+
+        [Route("Lista/Contagem")]
+        public async Task<IActionResult> AddressingForCount([FromQuery] PageParams pageParams)
+        {
+            var addressings = await _addressingService.GetAllPageListDataTable(pageParams);
+            Response.AddPagination(addressings.CurrentPage, addressings.PageSize, addressings.TotalCount, addressings.TotalPages);
 
             return View(addressings);
         }
