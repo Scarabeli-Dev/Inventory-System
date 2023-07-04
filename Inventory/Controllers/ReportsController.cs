@@ -28,7 +28,7 @@ namespace Inventory.Controllers
         [Route("Contagem-com-movimentacao")]
         public async Task<IActionResult> Index()
         {
-            PageList<StockTakingWithMovement> view = new PageList<StockTakingWithMovement>();
+            PageList<InventoryMovement> view = new PageList<InventoryMovement>();
 
             var inventoryMovement = _inventoryMovementService.GetAllInventoryMovementsAsync();
 

@@ -1,5 +1,7 @@
 ﻿using Inventory.Models.Enums;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Inventory.Models
 {
@@ -22,7 +24,8 @@ namespace Inventory.Models
         public Warehouse Warehouse { get; set; }
 
         [Display(Name = "Quantidade Movimentada")]
-        public double Amount { get; set; }
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Amount { get; set; }
 
         [Display(Name = "Data da Movimentação")]
         [DataType(DataType.Date)]

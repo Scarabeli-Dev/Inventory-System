@@ -3,6 +3,7 @@ using Inventory.Models;
 using Inventory.Services.Interfaces;
 using System.Globalization;
 using CsvHelper;
+using Inventory.ViewModels;
 using Inventory.ViewModels.Imports;
 
 namespace Inventory.Services

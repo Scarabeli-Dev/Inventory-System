@@ -75,6 +75,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRkcmVzc2luZ3NcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Systems/Inventory/Inventory/Views/Imports/ImportAll.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW1wb3J0c1xJbXBvcnRBbGwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Systems/Inventory/Inventory/Views/InventoryMovement/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52ZW50b3J5TW92ZW1lbnRcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

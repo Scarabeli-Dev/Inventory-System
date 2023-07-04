@@ -77,19 +77,21 @@ builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 // Add Helpers
 builder.Services.AddScoped<IUtil, Util>();
-
-// Add Services
-builder.Services.AddScoped<IAddressingService, AddressingService>();
-builder.Services.AddScoped<IItemAddressingService, ItemAddressingService>();
-builder.Services.AddScoped<IItemService, ItemService>();
-builder.Services.AddScoped<IInventoryStartService, InventoryStartService>();
-builder.Services.AddScoped<IAddressingsInventoryStartService, AddressingsInventoryStartService>();
-builder.Services.AddScoped<IInventoryMovementService, InventoryMovementService>();
-builder.Services.AddScoped<IStockTakingService, StockTakingService>();
-builder.Services.AddScoped<IWarehouseService, WarehouseService>();
-builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ISeedUserRoleInitial, SeedUserRoleInitial>();
 builder.Services.AddScoped<HelperFastReport>();
+
+// Add Services
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IAddressingService, AddressingService>();
+builder.Services.AddScoped<IAddressingsInventoryStartService, AddressingsInventoryStartService>();
+builder.Services.AddScoped<IItemAddressingService, ItemAddressingService>();
+builder.Services.AddScoped<IImportService, ImportService>();
+builder.Services.AddScoped<IInventoryMovementService, InventoryMovementService>();
+builder.Services.AddScoped<IInventoryStartService, InventoryStartService>();
+builder.Services.AddScoped<IItemAddressingService, ItemAddressingService>();
+builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IStockTakingService, StockTakingService>();
+builder.Services.AddScoped<IWarehouseService, WarehouseService>();
 
 // Add Paging List
 builder.Services.AddPaging(options =>
@@ -125,7 +127,7 @@ app.UseStaticFiles();
 app.UseFastReport();
 app.UseRouting();
 
-//CriarPerfisUsuarios(app);
+CriarPerfisUsuarios(app);
 
 app.UseAuthentication();
 app.UseCookiePolicy();
@@ -153,13 +155,13 @@ app.MapRazorPages();
 
 app.Run();
 
-//void CriarPerfisUsuarios(WebApplication app)
-//{
-//    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
-//    using (var scope = scopedFactory.CreateScope())
-//    {
-//        var service = scope.ServiceProvider.GetService<ISeedUserRoleInitial>();
-//        service.SeedRoles();
-//        service.SeedUsers();
-//    }
-//}
+void CriarPerfisUsuarios(WebApplication app)
+{
+    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+    using (var scope = scopedFactory.CreateScope())
+    {
+        var service = scope.ServiceProvider.GetService<ISeedUserRoleInitial>();
+        service.SeedRoles();
+        service.SeedUsers();
+    }
+}

@@ -19,6 +19,11 @@ namespace Inventory.Services
             _context = context;
         }
 
+        public async Task<Warehouse> GetWarehouseByName(string warehouseName)
+        {
+            return await _context.Warehouse.FirstOrDefaultAsync(w => w.Name == warehouseName);
+        }
+
         public async Task<PagingList<Warehouse>> GetAllWarehousesAsync(string filter, int pageindex = 1, string sort = "Name")
         {
             var result = _context.Warehouse.Include(l => l.Addressings)

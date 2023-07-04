@@ -1,5 +1,6 @@
 ﻿using Inventory.Models.Enums;
 using Inventory.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Inventory.ViewModels.Imports
 {
@@ -8,7 +9,9 @@ namespace Inventory.ViewModels.Imports
         public string ItemId { get; set; }
         public MovementeType MovementeType { get; set; }
         public int WarehouseId { get; set; }
-        public double Amount { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal Amount { get; set; }
         public DateTime MovementDate { get; set; }
     }
 }

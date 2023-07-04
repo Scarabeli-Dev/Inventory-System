@@ -3,6 +3,7 @@ using System;
 using Inventory.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Inventory.Migrations
 {
     [DbContext(typeof(InventoryContext))]
-    partial class InventoryContextModelSnapshot : ModelSnapshot
+    [Migration("20230704140344_updadeDataBase")]
+    partial class updadeDataBase
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
