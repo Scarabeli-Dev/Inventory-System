@@ -30,28 +30,13 @@ namespace Inventory.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal StockTakingQuantity { get; set; }
 
-        [Display(Name = "Data de Fabricação")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime? FabricationDate { get; set; }
-
-        [Display(Name = "Data de Validade")]
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime? ExpirationDate { get; set; }
-
-        [Display(Name = "Lote")]
-        [StringLength(30, ErrorMessage = "Máximo de {1} caracteres!")]
-        public string? ItemBatch { get; set; }
+        [Display(Name = "Item Perecível")]
+        public bool IsPerishableItem { get; set; }
+        public List<PerishableItem>? PerishableItem { get; set; }
 
         [Display(Name = "Observação")]
         [StringLength(250, ErrorMessage = "Máximo de {1} caracteres!")]
         public string StockTakingObservation { get; set; }
-
-        //[Display(Name = "Contagem para o inventário")]
-        //[Required(ErrorMessage = "{0} é obrigatório")]
-        //public int InventoryStartId { get; set; }
-        //public InventoryStart InventoryStart { get; set; }
 
         public int NumberOfCount { get; set; }
     }

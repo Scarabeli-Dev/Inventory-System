@@ -14,6 +14,7 @@ namespace Inventory.Services.Interfaces
         Task<PagingList<StockTaking>> GetStockTakingByPagingAsync(string filter, int pageindex = 1, string sort = "StockTakingDate");
         Task<List<StockTaking>> GetStockTakingByAddressingAsync(int addressingId);
         Task<StockTaking> GetStockTakingByAddressingAndItemIdAsync(int addressingId, string itemId);
+        Task<StockTaking> GetStockTakingByWarehouseAndItemIdAsync(int warehouseId, string itemId);
         int GetCountStockTakingByAddressingAsync(int addressingId);
     }
 }

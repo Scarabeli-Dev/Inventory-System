@@ -16,7 +16,7 @@ namespace Inventory.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.16")
+                .HasAnnotation("ProductVersion", "6.0.18")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Inventory.Models.Account.Role", b =>
@@ -169,21 +169,18 @@ namespace Inventory.Migrations
 
             modelBuilder.Entity("Inventory.Models.InventoryMovement", b =>
                 {
-                    b.Property<string>("ItemId")
-                        .HasMaxLength(150)
-                        .HasColumnType("varchar(150)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("ImportDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("ItemId1")
-                        .IsRequired()
+                    b.Property<string>("ItemId")
+                        .HasMaxLength(150)
                         .HasColumnType("varchar(150)");
 
                     b.Property<DateTime>("MovementDate")
@@ -195,9 +192,9 @@ namespace Inventory.Migrations
                     b.Property<int>("WarehouseId")
                         .HasColumnType("int");
 
-                    b.HasKey("ItemId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("ItemId1");
+                    b.HasIndex("ItemId");
 
                     b.HasIndex("WarehouseId");
 
@@ -274,6 +271,32 @@ namespace Inventory.Migrations
                     b.ToTable("ItemsAddressing");
                 });
 
+            modelBuilder.Entity("Inventory.Models.PerishableItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("FabricationDate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("ItemBatch")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<int>("StockTakingId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StockTakingId");
+
+                    b.ToTable("PerishableItem");
+                });
+
             modelBuilder.Entity("Inventory.Models.StockTaking", b =>
                 {
                     b.Property<int>("Id")
@@ -283,15 +306,8 @@ namespace Inventory.Migrations
                     b.Property<int>("AddressingsInventoryStartId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("ExpirationDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime?>("FabricationDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("ItemBatch")
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
+                    b.Property<bool>("IsPerishableItem")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("ItemId")
                         .IsRequired()
@@ -481,9 +497,7 @@ namespace Inventory.Migrations
                 {
                     b.HasOne("Inventory.Models.Item", "Item")
                         .WithMany()
-                        .HasForeignKey("ItemId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ItemId");
 
                     b.HasOne("Inventory.Models.Warehouse", "Warehouse")
                         .WithMany()
@@ -511,6 +525,17 @@ namespace Inventory.Migrations
                     b.Navigation("Addressing");
 
                     b.Navigation("Item");
+                });
+
+            modelBuilder.Entity("Inventory.Models.PerishableItem", b =>
+                {
+                    b.HasOne("Inventory.Models.StockTaking", "StockTaking")
+                        .WithMany("PerishableItem")
+                        .HasForeignKey("StockTakingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("StockTaking");
                 });
 
             modelBuilder.Entity("Inventory.Models.StockTaking", b =>
@@ -619,6 +644,11 @@ namespace Inventory.Migrations
                     b.Navigation("Addressings");
 
                     b.Navigation("StockTaking");
+                });
+
+            modelBuilder.Entity("Inventory.Models.StockTaking", b =>
+                {
+                    b.Navigation("PerishableItem");
                 });
 
             modelBuilder.Entity("Inventory.Models.Warehouse", b =>

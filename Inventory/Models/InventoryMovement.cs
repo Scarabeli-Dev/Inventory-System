@@ -7,10 +7,9 @@ namespace Inventory.Models
 {
     public class InventoryMovement
     {
+        [Key]
         public int Id { get; set; }
 
-
-        [Key]
         [Display(Name = "Código do Item")]
         [StringLength(150, ErrorMessage = "Máximo de {1} caracteres!")]
         public string ItemId { get; set; }

@@ -28,16 +28,24 @@ namespace Inventory.Controllers
         [Route("Contagem-com-movimentacao")]
         public async Task<IActionResult> Index()
         {
-            PageList<InventoryMovement> view = new PageList<InventoryMovement>();
+            PageList<StockTakingWithMovement> view = new PageList<StockTakingWithMovement>();
 
             var inventoryMovement = _inventoryMovementService.GetAllInventoryMovementsAsync();
 
             foreach (var item in inventoryMovement)
             {
+                StockTakingWithMovement stockTakingWithMovement = new StockTakingWithMovement();
+
                 var baseItem = _itemService.Items.Where(a => a.Addressings.Any(w => w.Addressing.WarehouseId == item.WarehouseId && (w.ItemId == item.ItemId)));
+                StockTaking stockTackingItem = await _stockTakingService.GetStockTakingByWarehouseAndItemIdAsync(item.WarehouseId, item.ItemId);
 
+                stockTakingWithMovement.ItemId = item.ItemId;
+                stockTakingWithMovement.ItemName = item.Item.Name;
+                stockTakingWithMovement.QuantityStockTaking = stockTackingItem.StockTakingQuantity;
+                stockTakingWithMovement.QuantityMovement = item.Amount;
+                stockTakingWithMovement.MovementeType = item.MovementeType;
+                stockTakingWithMovement.QuantityClosed = 0;
             }
-
             return View(view);
         }
     }

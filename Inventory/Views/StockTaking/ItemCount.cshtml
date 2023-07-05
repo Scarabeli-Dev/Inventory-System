@@ -16,6 +16,7 @@
     <div class="card-body mt-3">
         <form class="row g-3" asp-action="ItemCount">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
             <div class="col-md-12">
                 <div class="d-flex justify-content-around">
                     <h2>Confirme o endereçamento: <strong><span id="addressing-name">@addressing.Name</span></strong></h2>
@@ -50,7 +51,44 @@
                         <span class="text-danger"></span>
                     </div>
                     <div id="dates" style="display: none;">
-                        <div class="row align-items-center">
+                        <tbody class="table" id="tbbody">
+
+                            @if (Model == null || Model.PerishableItem == null || Model.PerishableItem.Count == 0)
+                            {
+                                <tr>
+@*                                    <td>
+                                        <input class="form-control" id="name" name="PerishableItem[0].FabricationDate" />
+                                    </td>
+                                    <td>
+                                        <input class="form-control" id="age" name="PerishableItem[0].ExpirationDate" />
+                                    </td>*@
+                                    <td>
+                                        <input class="form-control" id="age" name="PerishableItem[0].ItemBatch" />
+                                    </td>
+                                    <td><input type="button" class="btnremove" value="remove" /></td>
+                                </tr>
+                            }
+                            else if (Model.PerishableItem != null && Model.PerishableItem.Count > 0)
+                            {
+                                @for (var i = 0; i < Model.PerishableItem.Count; i++)
+                                {
+
+                                    <tr>
+@*                                        <td>
+                                            <input class="form-control" asp-for="@Model.PerishableItem[@i].FabricationDate" />
+                                        </td>
+                                        <td>
+                                            <input class="form-control" asp-for="@Model.PerishableItem[@i].ExpirationDate" />
+                                        </td>*@
+                                        <td>
+                                            <input class="form-control" asp-for="@Model.PerishableItem[@i].ItemBatch" />
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                        @*<div class="row align-items-center">
                             <div class="col-4">
                                 <label asp-for="FabricationDate" class="control-label"></label>
                                 <input asp-for="FabricationDate" class="form-control" />
@@ -66,7 +104,7 @@
                                 <input asp-for="ItemBatch" class="form-control" />
                                 <span asp-validation-for="ItemBatch" class="text-danger"></span>
                             </div>
-                        </div>
+                        </div>*@
                     </div>
                 </div>
                 <div class="col-4 d-none">
@@ -140,6 +178,67 @@
                 }
             });
         }
+
+
+
+
+
+        $(function () {
+            $("#btnAddNew").click(function () {
+                var count = $("#tbbody >tr").length;
+                $("#tbbody").append("<tr><td> <input class='form-control' id='itemBatch' name='PerishableItem[" + count + "].itemBatch'></td> <td><input type='button' class='btnremove' value='remove'/></td></tr>");
+
+                AddRemoveAction();
+            });
+
+
+            AddRemoveAction();
+
+            //add remove button click event
+            function AddRemoveAction() {
+                $(".btnremove").each(function (index, item) {
+                    $(item).click(function () {
+                        $(this).closest('tr').remove();
+                    });
+
+                })
+            }
+            //use Ajax to submit the data
+            $("#btnAjaxSubmit").click(function () {
+                //define a object.
+                var stockTaking = {};
+                stockTaking.Id = parseInt($("#Id").val());
+
+                var perishableItems = [];
+                //loop through the rows and get the name and age.
+                $("#tbbody >tr").each(function (index, item) {
+                    var newperishable = {};
+                    newperishable.name = $(item).find("#name").val();
+                    newperishable.age = parseInt($(item).find("#age").val());
+                    perishableItems.push(newperishable);
+                });
+                stockTaking.perishableItem = perishableItems;
+                //use jquery ajax to call the controller action.
+                $.ajax({
+                    type: "POST",
+                    url: "/Contagem/Cadastro",
+                    dataType: "json",
+                    contentType: 'application/json',
+                    headers: {
+                        RequestVerificationToken:
+                            $('input:hidden[name="__RequestVerificationToken"]').val()
+                    },
+                    data: JSON.stringify(stockTaking),
+                    success: function (data) {
+
+                        //in the success function, you can redirect to other page via the windows.location property.
+                        alert(data);
+                    }
+                });
+            });
+
+        });
+
 
     </script>
 }

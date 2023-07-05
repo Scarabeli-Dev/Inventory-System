@@ -70,7 +70,7 @@ namespace Inventory.Controllers
         [HttpPost]
         [Route("Cadastro")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ItemCount(StockTaking stockTaking)
+        public async Task<IActionResult> ItemCount([FromBody] StockTaking stockTaking)
         {
             if (ModelState.IsValid)
             {

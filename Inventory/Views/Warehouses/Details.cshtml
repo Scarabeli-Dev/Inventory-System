@@ -26,12 +26,14 @@
 
     <script type="text/javascript">
 
-        $.ready(loadItems(@Model.Id, @filter))
+        $(document).ready(function () {
+            loadItems(@Model.Id, '@filter');
+        });
+
         function loadItems(warehouseId, filter) {
-        debugger;
             $.ajax({
                 type: 'GET',
-                url: "/Itens/Lista/Deposito",
+                url: '/Itens/Lista/Deposito',
                 dataType: 'html',
                 data: {
                     warehouseId: warehouseId,
@@ -41,7 +43,7 @@
                 async: true,
                 success: function (data) {
                     $('#modal-form').empty();
-                    $('#modal-form').append('<partial name = "/Itens/Lista/Deposito" />');
+                    $('#modal-form').append('<partial name="/Itens/Lista/Deposito" />');
                     $('#modal-form').html(data);
                 }
             });

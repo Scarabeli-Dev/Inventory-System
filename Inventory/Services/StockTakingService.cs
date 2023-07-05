@@ -118,6 +118,13 @@ namespace Inventory.Services
                                              .FirstOrDefaultAsync(a => a.AddressingsInventoryStart.AddressingId == addressingId && a.ItemId == itemId);
         }
 
+        public async Task<StockTaking> GetStockTakingByWarehouseAndItemIdAsync(int warehouseId, string itemId)
+        {
+            return await _context.StockTaking.Include(x => x.Item)
+                                             .Include(a => a.AddressingsInventoryStart).ThenInclude(inv => inv.InventoryStart)
+                                             .FirstOrDefaultAsync(a => a.AddressingsInventoryStart.Addressing.WarehouseId == warehouseId && a.ItemId == itemId);
+        }
+
         public int GetCountStockTakingByAddressingAsync(int addressingId)
         {
             return _context.StockTaking.Include(x => x.Item)

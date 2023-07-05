@@ -51,7 +51,15 @@ namespace Inventory.Data
                         .HasMany(s => s.StockTaking)
                         .WithOne(s => s.AddressingsInventoryStart)
                         .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<StockTaking>()
+                        .HasMany(s => s.PerishableItem)
+                        .WithOne(s => s.StockTaking)
+                        .OnDelete(DeleteBehavior.Cascade);
         }
+
+
+        public DbSet<Inventory.Models.PerishableItem> PerishableItem { get; set; }
 
     }
 }
