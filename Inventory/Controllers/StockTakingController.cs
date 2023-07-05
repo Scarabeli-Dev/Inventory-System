@@ -64,13 +64,16 @@ namespace Inventory.Controllers
 
             ViewBag.Inventory = await _inventoryStartService.GetInventoryStartByAddressingAsync(addressing.Id);
 
-            return View();
+            var model = new StockTaking();
+            model.PerishableItem = new List<PerishableItem>();
+
+            return View(model);
         }
 
         [HttpPost]
         [Route("Cadastro")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ItemCount([FromBody] StockTaking stockTaking)
+        public async Task<IActionResult> ItemCount(StockTaking stockTaking)
         {
             if (ModelState.IsValid)
             {

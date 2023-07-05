@@ -32,7 +32,7 @@ namespace Inventory.Models
 
         [Display(Name = "Item Perecível")]
         public bool IsPerishableItem { get; set; }
-        public List<PerishableItem>? PerishableItem { get; set; }
+        public List<PerishableItem> PerishableItem { get; set; }
 
         [Display(Name = "Observação")]
         [StringLength(250, ErrorMessage = "Máximo de {1} caracteres!")]

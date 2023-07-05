@@ -46,65 +46,39 @@
                         <span asp-validation-for="StockTakingObservation" class="text-danger"></span>
                     </div>
                     <div class="col-4 form-check form-switch">
-                        <input type="checkbox" class="form-control form-check-input" id="flexSwitchCheckDefault" />
+                        <input type="checkbox" asp-for="IsPerishableItem" class="form-control form-check-input" id="flexSwitchCheckDefault" />
                         <label class="control-label form-check-label" for="flexSwitchCheckDefault">Item Perecível</label>
                         <span class="text-danger"></span>
                     </div>
                     <div id="dates" style="display: none;">
-                        <tbody class="table" id="tbbody">
-
-                            @if (Model == null || Model.PerishableItem == null || Model.PerishableItem.Count == 0)
-                            {
+                            
+                        <h4>Lotes de Fabricação:</h4>
+                        <table id="lotesTable">
+                            <thead>
                                 <tr>
-@*                                    <td>
-                                        <input class="form-control" id="name" name="PerishableItem[0].FabricationDate" />
-                                    </td>
-                                    <td>
-                                        <input class="form-control" id="age" name="PerishableItem[0].ExpirationDate" />
-                                    </td>*@
-                                    <td>
-                                        <input class="form-control" id="age" name="PerishableItem[0].ItemBatch" />
-                                    </td>
-                                    <td><input type="button" class="btnremove" value="remove" /></td>
+                                    <th>Data de Fabricação</th>
+                                    <th>Data de Vencimento</th>
+                                    <th>Lote</th>
+                                    <th>Ações</th>
                                 </tr>
-                            }
-                            else if (Model.PerishableItem != null && Model.PerishableItem.Count > 0)
-                            {
-                                @for (var i = 0; i < Model.PerishableItem.Count; i++)
+                            </thead>
+                            <tbody>
+                                @if (Model.PerishableItem != null)
                                 {
-
-                                    <tr>
-@*                                        <td>
-                                            <input class="form-control" asp-for="@Model.PerishableItem[@i].FabricationDate" />
-                                        </td>
-                                        <td>
-                                            <input class="form-control" asp-for="@Model.PerishableItem[@i].ExpirationDate" />
-                                        </td>*@
-                                        <td>
-                                            <input class="form-control" asp-for="@Model.PerishableItem[@i].ItemBatch" />
-                                        </td>
-                                        <td></td>
-                                    </tr>
+                                    for (int i = 0; i < Model.PerishableItem.Count; i++)
+                                    {
+                                        <tr>
+                                            <td><input type="date" name="PerishableItem[@i].FabricationDate" class="form-control" value="@Model.PerishableItem[i].FabricationDate.ToString("yyyy-MM-dd")" /></td>
+                                            <td><input type="date" name="PerishableItem[@i].ExpirationDate" class="form-control" value="@Model.PerishableItem[i].ExpirationDate.ToString("yyyy-MM-dd")" /></td>
+                                            <td><input type="text" name="PerishableItem[@i].ItemBatch" class="form-control" value="@Model.PerishableItem[i].ItemBatch" /></td>
+                                            <td><button type="button" class="btn btn-danger remove-lote">Remover</button></td>
+                                        </tr>
+                                    }
                                 }
-                            }
-                        </tbody>
-                        @*<div class="row align-items-center">
-                            <div class="col-4">
-                                <label asp-for="FabricationDate" class="control-label"></label>
-                                <input asp-for="FabricationDate" class="form-control" />
-                                <span asp-validation-for="FabricationDate" class="text-danger"></span>
-                            </div>
-                            <div class="col-4">
-                                <label asp-for="ExpirationDate" class="control-label"></label>
-                                <input asp-for="ExpirationDate" class="form-control" />
-                                <span asp-validation-for="ExpirationDate" class="text-danger"></span>
-                            </div>
-                            <div class="col-4">
-                                <label asp-for="ItemBatch" class="control-label"></label>
-                                <input asp-for="ItemBatch" class="form-control" />
-                                <span asp-validation-for="ItemBatch" class="text-danger"></span>
-                            </div>
-                        </div>*@
+                            </tbody>
+                        </table>
+
+                        <button type="button" id="addLote" class="btn btn-primary">Adicionar Lote</button>
                     </div>
                 </div>
                 <div class="col-4 d-none">
@@ -130,7 +104,25 @@
 @section Scripts {
     <script type="text/javascript">
 
-        $.ready(actionEdit())
+        $(document).ready(function () {
+            // Adicionar lote
+            $('#addLote').click(function () {
+                var rowCount = $('#lotesTable tbody tr').length;
+                var newRow = '<tr>' +
+                    '<td><input type="date" name="PerishableItem[' + rowCount + '].FabricationDate" class="form-control" /></td>' +
+                    '<td><input type="date" name="PerishableItem[' + rowCount + '].ExpirationDate" class="form-control" /></td>' +
+                    '<td><input type="text" name="PerishableItem[' + rowCount + '].ItemBatch" class="form-control" /></td>' +
+                    '<td><button type="button" class="btn btn-danger remove-lote">Remover</button></td>' +
+                    '</tr>';
+
+                $('#lotesTable tbody').append(newRow);
+            });
+
+            // Remover lote
+            $(document).on('click', '.remove-lote', function () {
+                $(this).closest('tr').remove();
+            });
+        });
 
 
         // Função para mostrar o conteúdo da div "stockTaking"
@@ -178,67 +170,6 @@
                 }
             });
         }
-
-
-
-
-
-        $(function () {
-            $("#btnAddNew").click(function () {
-                var count = $("#tbbody >tr").length;
-                $("#tbbody").append("<tr><td> <input class='form-control' id='itemBatch' name='PerishableItem[" + count + "].itemBatch'></td> <td><input type='button' class='btnremove' value='remove'/></td></tr>");
-
-                AddRemoveAction();
-            });
-
-
-            AddRemoveAction();
-
-            //add remove button click event
-            function AddRemoveAction() {
-                $(".btnremove").each(function (index, item) {
-                    $(item).click(function () {
-                        $(this).closest('tr').remove();
-                    });
-
-                })
-            }
-            //use Ajax to submit the data
-            $("#btnAjaxSubmit").click(function () {
-                //define a object.
-                var stockTaking = {};
-                stockTaking.Id = parseInt($("#Id").val());
-
-                var perishableItems = [];
-                //loop through the rows and get the name and age.
-                $("#tbbody >tr").each(function (index, item) {
-                    var newperishable = {};
-                    newperishable.name = $(item).find("#name").val();
-                    newperishable.age = parseInt($(item).find("#age").val());
-                    perishableItems.push(newperishable);
-                });
-                stockTaking.perishableItem = perishableItems;
-                //use jquery ajax to call the controller action.
-                $.ajax({
-                    type: "POST",
-                    url: "/Contagem/Cadastro",
-                    dataType: "json",
-                    contentType: 'application/json',
-                    headers: {
-                        RequestVerificationToken:
-                            $('input:hidden[name="__RequestVerificationToken"]').val()
-                    },
-                    data: JSON.stringify(stockTaking),
-                    success: function (data) {
-
-                        //in the success function, you can redirect to other page via the windows.location property.
-                        alert(data);
-                    }
-                });
-            });
-
-        });
-
 
     </script>
 }

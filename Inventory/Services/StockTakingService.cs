@@ -14,30 +14,30 @@ namespace Inventory.Services
         private readonly IItemService _itemService;
         private readonly IInventoryStartService _inventoryStartService;
         private readonly IAddressingsInventoryStartService _addressingsStockTakingService;
+        private readonly IPerishableItemService _perishableItemService;
 
         public StockTakingService(InventoryContext context,
                                   IItemService itemService,
                                   IInventoryStartService inventoryStartService,
-                                  IAddressingsInventoryStartService addressingsStockTakingService) : base(context)
+                                  IAddressingsInventoryStartService addressingsStockTakingService,
+                                  IPerishableItemService perishableItemService) : base(context)
         {
             _context = context;
             _itemService = itemService;
             _inventoryStartService = inventoryStartService;
             _addressingsStockTakingService = addressingsStockTakingService;
+            _perishableItemService = perishableItemService;
         }
 
         public async Task<bool> NewStockTakingAsync(StockTaking stockTaking)
         {
             stockTaking.StockTakingDate = DateTime.Now;
 
-            var inventory = await _inventoryStartService.GetInventoryStartByAddressingAsync(stockTaking.AddressingsInventoryStartId);
-
             stockTaking.NumberOfCount++;
 
             _context.StockTaking.Add(stockTaking);
-            _context.SaveChanges();
-
             await _addressingsStockTakingService.SetAddressingCountRealizedTrueAsync(stockTaking.AddressingsInventoryStartId);
+            _context.SaveChanges();
 
             return true;
         }
@@ -60,6 +60,7 @@ namespace Inventory.Services
             return await _context.StockTaking.Include(i => i.Item)
                                              .Include(a => a.AddressingsInventoryStart).ThenInclude(a => a.Addressing)
                                              .Include(i => i.AddressingsInventoryStart).ThenInclude(a => a.InventoryStart)
+                                             .Include(p => p.PerishableItem)
                                              .FirstOrDefaultAsync(st => st.Id == stockTakingId);
         }
 
@@ -73,6 +74,7 @@ namespace Inventory.Services
             return await _context.StockTaking.Include(i => i.Item)
                                              .Include(a => a.AddressingsInventoryStart).ThenInclude(a => a.Addressing)
                                              .Include(i => i.AddressingsInventoryStart).ThenInclude(a => a.InventoryStart)
+                                             .Include(p => p.PerishableItem)
                                              .Where(st => st.ItemId == itemId).ToListAsync();
         }
 
@@ -80,6 +82,8 @@ namespace Inventory.Services
         {
             return await _context.StockTaking.Include(l => l.Item)
                                              .Include(i => i.AddressingsInventoryStart).ThenInclude(a => a.Addressing)
+                                             .Include(i => i.AddressingsInventoryStart).ThenInclude(a => a.InventoryStart)
+                                             .Include(p => p.PerishableItem)
                                              .ToListAsync();
 
         }
@@ -89,6 +93,7 @@ namespace Inventory.Services
             var result = _context.StockTaking.Include(l => l.Item)
                                              .Include(i => i.AddressingsInventoryStart).ThenInclude(a => a.Addressing)
                                              .Include(i => i.AddressingsInventoryStart).ThenInclude(a => a.InventoryStart)
+                                             .Include(p => p.PerishableItem)
                                              .AsNoTracking()
                                              .AsQueryable();
 
@@ -108,6 +113,8 @@ namespace Inventory.Services
         {
             return await _context.StockTaking.Include(x => x.Item)
                                              .Include(a => a.AddressingsInventoryStart).ThenInclude(inv => inv.InventoryStart)
+                                             .Include(i => i.AddressingsInventoryStart).ThenInclude(a => a.InventoryStart)
+                                             .Include(p => p.PerishableItem)
                                              .Where(a => a.AddressingsInventoryStart.AddressingId == addressingId).ToListAsync();
         }
 
@@ -115,6 +122,8 @@ namespace Inventory.Services
         {
             return await _context.StockTaking.Include(x => x.Item)
                                              .Include(a => a.AddressingsInventoryStart).ThenInclude(inv => inv.InventoryStart)
+                                             .Include(i => i.AddressingsInventoryStart).ThenInclude(a => a.InventoryStart)
+                                             .Include(p => p.PerishableItem)
                                              .FirstOrDefaultAsync(a => a.AddressingsInventoryStart.AddressingId == addressingId && a.ItemId == itemId);
         }
 
@@ -122,6 +131,8 @@ namespace Inventory.Services
         {
             return await _context.StockTaking.Include(x => x.Item)
                                              .Include(a => a.AddressingsInventoryStart).ThenInclude(inv => inv.InventoryStart)
+                                             .Include(i => i.AddressingsInventoryStart).ThenInclude(a => a.InventoryStart)
+                                             .Include(p => p.PerishableItem)
                                              .FirstOrDefaultAsync(a => a.AddressingsInventoryStart.Addressing.WarehouseId == warehouseId && a.ItemId == itemId);
         }
 
@@ -129,6 +140,8 @@ namespace Inventory.Services
         {
             return _context.StockTaking.Include(x => x.Item)
                                        .Include(a => a.AddressingsInventoryStart).ThenInclude(inv => inv.InventoryStart)
+                                       .Include(i => i.AddressingsInventoryStart).ThenInclude(a => a.InventoryStart)
+                                       .Include(p => p.PerishableItem)
                                        .Where(a => a.AddressingsInventoryStart.AddressingId == addressingId).Count();
         }
     }

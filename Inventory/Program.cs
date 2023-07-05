@@ -90,6 +90,7 @@ builder.Services.AddScoped<IInventoryMovementService, InventoryMovementService>(
 builder.Services.AddScoped<IInventoryStartService, InventoryStartService>();
 builder.Services.AddScoped<IItemAddressingService, ItemAddressingService>();
 builder.Services.AddScoped<IItemService, ItemService>();
+builder.Services.AddScoped<IPerishableItemService, PerishableItemService>();
 builder.Services.AddScoped<IStockTakingService, StockTakingService>();
 builder.Services.AddScoped<IWarehouseService, WarehouseService>();
 
