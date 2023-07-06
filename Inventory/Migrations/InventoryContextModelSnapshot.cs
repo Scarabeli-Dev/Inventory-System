@@ -287,6 +287,9 @@ namespace Inventory.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
 
+                    b.Property<decimal>("PerishableItemQuantity")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("StockTakingId")
                         .HasColumnType("int");
 

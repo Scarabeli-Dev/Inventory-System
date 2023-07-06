@@ -1,9 +1,10 @@
-﻿using Inventory.Models;
+﻿using Inventory.Helpers;
+using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Inventory.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
 namespace Inventory.Controllers
@@ -38,10 +39,18 @@ namespace Inventory.Controllers
             _itemAddressingService = itemAddressingService;
         }
 
-        public async Task<IActionResult> Index(int inventaryStartId, string filter, int pageindex = 1, string sort = "AddressingCountEnded")
+        public async Task<IActionResult> Index(int inventaryStartId, string filter, int pageindex = 1, string sort = "AddressingCountRealized")
         {
             return View(await _addressingsInventoryStartService.GetAddressingsStockTakingsPagingAsync(1, filter, pageindex, sort));
         }
+
+        //public async Task<IActionResult> Index([FromQuery] PageParams pageParams)
+        //{
+        //    var addressingsInventoryStart = await _addressingsInventoryStartService.GetAllPageListDataTable(pageParams);
+        //    Response.AddPagination(addressingsInventoryStart.CurrentPage, addressingsInventoryStart.PageSize, addressingsInventoryStart.TotalCount, addressingsInventoryStart.TotalPages);
+
+        //    return View(addressingsInventoryStart);
+        //}
 
         [Route("Cadastro")]
         public async Task<IActionResult> ItemCount(string itemId, bool stockTakingCheched)
@@ -75,21 +84,21 @@ namespace Inventory.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ItemCount(StockTaking stockTaking)
         {
+            var item = await _itemService.GetItemByIdAsync(stockTaking.ItemId);
             if (ModelState.IsValid)
             {
                 stockTaking.StockTakingQuantity = decimal.Parse(stockTaking.StockTakingQuantity.ToString().Replace(",", "."), CultureInfo.InvariantCulture);
 
-                await _stockTakingService.NewStockTakingAsync(stockTaking);
-                await _stockTakingService.SaveChangesAsync();
+                await _stockTakingService.SaveStockTaking(stockTaking);
 
-                TempData["successMessage"] = "Contagem do item " + stockTaking.Item.Name;
+                TempData["successMessage"] = "Contagem do item " + item.Id + "- " + item.Name;
                 TempData["wait"] = "wait";
                 return RedirectToAction("Details", "Warehouses", new { id = stockTaking.AddressingsInventoryStart.Addressing.WarehouseId });
             }
-            var item = await _itemService.GetItemByIdAsync(stockTaking.ItemId);
+
             ViewBag.item = item;
 
-            TempData["errorMessage"] = "contagem do item " + stockTaking.Item.Name;
+            TempData["errorMessage"] = "contagem do item " + item.Id + "- " + item.Name;
 
             return View(stockTaking);
         }
@@ -115,7 +124,7 @@ namespace Inventory.Controllers
         {
             try
             {
-
+                var item = await _itemService.GetItemByIdAsync(itemId);
                 if (itemId != stockTaking.ItemId)
                 {
                     return NotFound();
@@ -123,21 +132,20 @@ namespace Inventory.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    await _stockTakingService.UpdateStockTaking(stockTaking);
+                    await _stockTakingService.SaveStockTaking(stockTaking);
 
                     var result = await _stockTakingService.GetStockTakingByIdAsync(stockTaking.Id);
-                    TempData["successMessage"] = "Contagem do item " + stockTaking.Item.Name;
+                    TempData["successMessage"] = "Contagem do item " + item.Id + "- " + item.Name;
 
                     return RedirectToAction("Details", "Warehouses", new { id = result.AddressingsInventoryStart.Addressing.WarehouseId });
                 }
-                TempData["errorMessage"] = "contagem do item " + stockTaking.Item.Name;
+                TempData["errorMessage"] = "contagem do item " + item.Id + "- " + item.Name;
                 return View(stockTaking);
             }
-            catch (Exception ex)
+            catch (DbUpdateException ex)
             {
-
-                TempData["errorMessage"] = "contagem do item " + stockTaking.Item.Name;
-                return View(stockTaking);
+                ModelState.AddModelError("", "Ocorreu um erro ao atualizar o StockTaking: " + ex.Message);
+                return View("Error");
             }
 
         }
@@ -184,8 +192,11 @@ namespace Inventory.Controllers
                 {
                     model.ItemInitialQuantity = 0;
                 }
+                else
+                {
+                    model.ItemInitialQuantity = itemAddressingVerify.Addressings.FirstOrDefault(a => a.AddressingId == item.AddressingsInventoryStart.AddressingId).Quantity;
+                }
 
-                model.ItemInitialQuantity = itemAddressingVerify.Addressings.FirstOrDefault(a => a.AddressingId == item.AddressingsInventoryStart.AddressingId).Quantity;
 
 
                 var stockTaking = await _stockTakingService.GetStockTakingByAddressingAndItemIdAsync(addressingId, item.ItemId);

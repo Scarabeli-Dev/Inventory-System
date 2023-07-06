@@ -1,4 +1,5 @@
 ﻿using Inventory.Data;
+using Inventory.Helpers;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -24,16 +25,32 @@ namespace Inventory.Services
                                                                                             .Include(s => s.StockTaking)
                                                                                             .ThenInclude(i => i.Item);
 
+        public async Task<PageList<AddressingsInventoryStart>> GetAllPageListDataTable(PageParams pageParams)
+        {
+            IQueryable<AddressingsInventoryStart> query = _context.AddressingsInventoryStart
+                                                                  .Include(l => l.Addressing)
+                                                                  .ThenInclude(i => i.Item)
+                                                                  .ThenInclude(i => i.Item)
+                                                                  .Include(s => s.StockTaking)
+                                                                  .OrderByDescending(p => p.AddressingCountRealized)
+                                                                  .ThenBy(p => p.AddressingCountEnded)
+                                                                  .ThenBy(p => p.Addressing.Name);
+
+            query = query.AsNoTracking()
+                         .Where(a => a.Addressing.Name.ToLower().Contains(pageParams.Term.ToLower()));
+
+            return await PageList<AddressingsInventoryStart>.CreateAsync(query, pageParams.PageNumber, query.Count());
+        }
+
         public async Task<PagingList<AddressingsInventoryStart>> GetAddressingsStockTakingsPagingAsync(int inventaryStartId, string filter, int pageindex = 1, string sort = "AddressingCountRealized")
         {
-            var result = _context.AddressingsInventoryStart.Include(l => l.Addressing)
-                                                           .ThenInclude(i => i.Item)
-                                                           .ThenInclude(i => i.Item)
-                                                           .Include(s => s.StockTaking)
-                                                           .Where(s => s.InventoryStartId == inventaryStartId)
-
-                                                           .AsNoTracking()
-                                                           .AsQueryable();
+            var result = _context.AddressingsInventoryStart
+                .Include(l => l.Addressing)
+                .ThenInclude(i => i.Item)
+                .Include(s => s.StockTaking)
+                .Where(s => s.InventoryStartId == inventaryStartId)
+                .AsNoTracking()
+                .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(filter))
             {
@@ -51,11 +68,26 @@ namespace Inventory.Services
                 }
             }
 
+            if (sort == "AddressingCountRealized")
+            {
+                result = result.OrderByDescending(p => p.AddressingCountEnded)
+                               .ThenByDescending(p => p.AddressingCountRealized)
+                               .ThenBy(p => p.Addressing.Name);
+            }
+            else
+            {
+                result = result.OrderBy(p =>
+                    p.AddressingCountRealized ? 0 :
+                    p.AddressingCountEnded ? 2 :
+                    1);
+            }
+
             var model = await PagingList.CreateAsync(result, 10, pageindex, sort, "AddressingCountRealized");
             model.RouteValue = new RouteValueDictionary { { "filter", filter } };
 
             return model;
         }
+
 
         public async Task CreateAddressingsStockTakingAsync(int inventoryStartId)
         {

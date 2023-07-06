@@ -13,8 +13,8 @@
                     <table id="itemTable" class="table datatable table-striped">
                         <thead>
                             <tr>
-                                <th scope="col">Id</th>
                                 <th scope="col">Endereçamento</th>
+                                <th scope="col">Depósito</th>
                                 <th scope="col">Selecionar</th>
                             </tr>
                         </thead>
@@ -22,13 +22,13 @@
                             @foreach (var item in Model)
                             {
                                 <tr>
-                                    <th scope="row">
-                                        @Html.DisplayFor(modelItem => item.Id)
-                                    </th>
-                                    <td class="col-10">
+                                    <td scope="row">
                                         @Html.DisplayFor(modelItem => item.Name)
                                     </td>
-                                    <td class="col-10">
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Warehouse.Name)
+                                    </td>
+                                    <td>
                                         <button class="btn btn-primary" onclick="actionEdit(@item.Id, '@item.Name')">
                                             Selecionar
                                         </button>

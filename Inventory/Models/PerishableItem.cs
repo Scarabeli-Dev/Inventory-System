@@ -13,18 +13,18 @@ namespace Inventory.Models
         [Display(Name = "Data de Fabricação")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime FabricationDate { get; set; }
+        public DateTime? FabricationDate { get; set; }
 
         [Display(Name = "Data de Validade")]
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
-        public DateTime ExpirationDate { get; set; }
+        public DateTime? ExpirationDate { get; set; }
 
         [Display(Name = "Lote")]
         [StringLength(30, ErrorMessage = "Máximo de {1} caracteres!")]
-        public string ItemBatch { get; set; }
+        public string? ItemBatch { get; set; }
 
-        [Display(Name = "Quantidade na Contagem")]
+        [Display(Name = "Quantidade do Lote")]
         [Required(ErrorMessage = "{0} é obrigatório")]
         [DisplayFormat(DataFormatString = "{0:F2}")]
         [Column(TypeName = "decimal(18,2)")]

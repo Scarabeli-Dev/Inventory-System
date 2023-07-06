@@ -50,7 +50,7 @@ namespace Inventory.Controllers
                     _util.DeleteDocument(documentName, _destiny);
 
                     // Retorna uma resposta de sucesso ou redireciona para outra página
-                    TempData["successMessage"] = "Items";
+                    TempData["successMessage"] = "Itens";
                     return RedirectToAction("Index", "Warehouses");
                 }
             }

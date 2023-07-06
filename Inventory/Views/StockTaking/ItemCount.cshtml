@@ -36,7 +36,12 @@
                 <div class="row align-items-center">
                     <div class="col-4">
                         <label asp-for="StockTakingQuantity" class="control-label"></label>
-                        <input type="number" asp-for="StockTakingQuantity" class="form-control" step="any" onchange="formatDecimalInput(this)" />
+                        <div class="input-group">
+                            <input type="number" asp-for="StockTakingQuantity" class="form-control" step="any" id="stockTakingQuantity" />
+                            <div class="input-group-append">
+                                <span class="input-group-text">@itemCount.UnitOfMeasurement</span>
+                            </div>
+                        </div>
                         <span asp-validation-for="StockTakingQuantity" class="text-danger"></span>
                     </div>
 
@@ -51,34 +56,23 @@
                         <span class="text-danger"></span>
                     </div>
                     <div id="dates" style="display: none;">
-                            
+
                         <h4>Lotes de Fabricação:</h4>
                         <table id="lotesTable">
                             <thead>
                                 <tr>
+                                    <th>Lote</th>
                                     <th>Data de Fabricação</th>
                                     <th>Data de Vencimento</th>
-                                    <th>Lote</th>
+                                    <th>Quantidade do Lote</th>
                                     <th>Ações</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @if (Model.PerishableItem != null)
-                                {
-                                    for (int i = 0; i < Model.PerishableItem.Count; i++)
-                                    {
-                                        <tr>
-                                            <td><input type="date" name="PerishableItem[@i].FabricationDate" class="form-control" value="@Model.PerishableItem[i].FabricationDate.ToString("yyyy-MM-dd")" /></td>
-                                            <td><input type="date" name="PerishableItem[@i].ExpirationDate" class="form-control" value="@Model.PerishableItem[i].ExpirationDate.ToString("yyyy-MM-dd")" /></td>
-                                            <td><input type="text" name="PerishableItem[@i].ItemBatch" class="form-control" value="@Model.PerishableItem[i].ItemBatch" /></td>
-                                            <td><button type="button" class="btn btn-danger remove-lote">Remover</button></td>
-                                        </tr>
-                                    }
-                                }
                             </tbody>
                         </table>
 
-                        <button type="button" id="addLote" class="btn btn-primary">Adicionar Lote</button>
+                        <div id="addLote" class="btn btn-primary" onclick="addLote()">Adicionar Lote</div>
                     </div>
                 </div>
                 <div class="col-4 d-none">
@@ -101,28 +95,105 @@
     <div class="modal fade" id="modal-form" tabindex="-1" data-bs-backdrop="false">
     </div>
 </div>
+
+<!-- Modal de Confirmação de Remoção -->
+<div class="modal fade" id="removeItemBatch" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Remover Lote</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Deseja realmente excluir o lote?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="btnDelteYes">Excluir</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fim do Modal de Confirmação de Remoção -->
+
 @section Scripts {
     <script type="text/javascript">
 
         $(document).ready(function () {
-            // Adicionar lote
-            $('#addLote').click(function () {
-                var rowCount = $('#lotesTable tbody tr').length;
-                var newRow = '<tr>' +
-                    '<td><input type="date" name="PerishableItem[' + rowCount + '].FabricationDate" class="form-control" /></td>' +
-                    '<td><input type="date" name="PerishableItem[' + rowCount + '].ExpirationDate" class="form-control" /></td>' +
-                    '<td><input type="text" name="PerishableItem[' + rowCount + '].ItemBatch" class="form-control" /></td>' +
-                    '<td><button type="button" class="btn btn-danger remove-lote">Remover</button></td>' +
-                    '</tr>';
 
-                $('#lotesTable tbody').append(newRow);
+            $('#btnDelteYes').click(function () {
+                var id = $('#removeItemBatch').data('id');
+                $('[data-id=' + id + ']').remove();
+                $('#removeItemBatch').modal('hide');
             });
 
-            // Remover lote
-            $(document).on('click', '.remove-lote', function () {
-                $(this).closest('tr').remove();
-            });
+            // Exibir campos da div "dates" se IsPerishableItem for true
+            toggleDates();
         });
+
+        function addLote() {
+            // Adicionar lote
+            var rowCount = $('#lotesTable tbody tr').length;
+            var newRow = '<tr data-id=' + rowCount + '>' +
+                '<td><input type="text" name="PerishableItem[' + rowCount + '].ItemBatch" class="form-control" /></td>' +
+                '<td><input type="date" name="PerishableItem[' + rowCount + '].FabricationDate" class="form-control"  onchange="validateDates()"/></td>' +
+                '<td><input type="date" name="PerishableItem[' + rowCount + '].ExpirationDate" class="form-control"  onchange="validateDates()"/></td>' +
+                '<td>' +
+                '   <div class="input-group">' +
+                '       <input type="number" name="PerishableItem[' + rowCount + '].PerishableItemQuantity" class="form-control col-md-2" step="any" onchange="atualizarStockTakingQuantity()" />' +
+                '       <div class="input-group-append">' +
+                '           <span class="input-group-text">@itemCount.UnitOfMeasurement</span>' +
+                '       </div>' +
+                '   </div>' +
+                '</td>' +
+                '<td><div class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeItemBatch"><i class="bi bi-trash"></i></div></td>' +
+                '</tr>';
+            $('#lotesTable tbody').append(newRow);
+        }
+
+        //Verifica data de fabricação e validade
+        function validateDates() {
+            var rows = document.querySelectorAll("tr[data-id]");
+            rows.forEach(function (row) {
+                var fabricationDateInput = row.querySelector("input[name$='FabricationDate']");
+                var expirationDateInput = row.querySelector("input[name$='ExpirationDate']");
+                var fabricationDate = new Date(fabricationDateInput.value);
+                var expirationDate = new Date(expirationDateInput.value);
+
+                if (fabricationDateInput.value !== "" && expirationDateInput.value !== "") {
+                    if (fabricationDate >= expirationDate) {
+                        alert("A data de fabricação deve ser anterior à data de validade.");
+                        fabricationDateInput.value = "";
+                        expirationDateInput.value = "";
+                    }
+                }
+            });
+        }
+
+        //Abre modal Delete
+
+        function openDelet(id) {
+            $('#removeItemBatch').data('id', id).modal('show');
+            console.log(id);
+        }
+
+        // Atualizar StockTakingQuantity com a soma das quantidades do lote
+        function atualizarStockTakingQuantity() {
+            var somaQuantidades = calcularSomaQuantidadesLote();
+            $('#stockTakingQuantity').val(somaQuantidades);
+        }
+
+        // Função para calcular a soma das quantidades do lote
+        function calcularSomaQuantidadesLote() {
+            var somaQuantidades = 0;
+            $('input[name^="PerishableItem["][name$="].PerishableItemQuantity"]').each(function () {
+                var quantidade = parseFloat($(this).val());
+                if (!isNaN(quantidade)) {
+                    somaQuantidades += quantidade;
+                }
+            });
+            return somaQuantidades;
+        }
 
 
         // Função para mostrar o conteúdo da div "stockTaking"
@@ -148,8 +219,13 @@
 
             if (switchElement.checked) {
                 datesDiv.style.display = "block";
+                $('#stockTakingQuantity').prop('disabled', true);
+                calcularSomaQuantidadesLote();
+                atualizarStockTakingQuantity();
+                addLote();
             } else {
                 datesDiv.style.display = "none";
+                $('#stockTakingQuantity').prop('disabled', false);
             }
         }
         // Vincula o evento de mudança (change) do switch à função toggleDates

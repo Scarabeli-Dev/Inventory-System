@@ -1,4 +1,5 @@
-﻿using Inventory.Models;
+﻿using Inventory.Helpers;
+using Inventory.Models;
 using ReflectionIT.Mvc.Paging;
 
 namespace Inventory.Services.Interfaces
@@ -6,6 +7,7 @@ namespace Inventory.Services.Interfaces
     public interface IAddressingsInventoryStartService : IGeralService
     {
         IEnumerable<AddressingsInventoryStart> AddressingsInventoryStarts { get; }
+        Task<PageList<AddressingsInventoryStart>> GetAllPageListDataTable(PageParams pageParams);
         Task<PagingList<AddressingsInventoryStart>> GetAddressingsStockTakingsPagingAsync(int inventaryStartId, string filter, int pageindex = 1, string sort = "Id");
         Task CreateAddressingsStockTakingAsync(int inventoryStartId);
         Task<AddressingsInventoryStart> GetAddressingsStockTakingAddressingByIdAsync(int addressingId);

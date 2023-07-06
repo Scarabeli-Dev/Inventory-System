@@ -15,7 +15,7 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="row">
-                <div class="form-group">
+                <div class="form-group mt-2">
                     <h3>Endereçamento: <strong>@Model.AddressingsInventoryStart.Addressing.Name</strong></h3>
                     <select asp-for="AddressingsInventoryStartId" name="AddressingsInventoryStartId" class="chosen-select col-6 form-control" tabindex="17" id="addressing-select">
                         @foreach (var item in addressingsList)
@@ -33,38 +33,78 @@
                 </div>
             </div>
             <div id="stockTaking">
-                <div class="form-group">
+                <div class="form-group mt-2 col-md-2">
                     <label asp-for="StockTakingQuantity" class="control-label"></label>
-                    <input type="number" asp-for="StockTakingQuantity" class="form-control" step="any" onchange="formatDecimalInput(this)" />
+                    <div class="input-group">
+                        <input type="number" asp-for="StockTakingQuantity" class="form-control" step="any" onchange="formatDecimalInput(this)" id="stockTakingQuantity" />
+                        <div class="input-group-append">
+                            <span class="input-group-text">@Model.Item.UnitOfMeasurement</span>
+                        </div>
+                    </div>
                     <span asp-validation-for="StockTakingQuantity" class="text-danger"></span>
                 </div>
 
-                <div class="form-group col-12 form-check form-switch">
-                    <input type="checkbox" class="form-control form-check-input" id="flexSwitchCheckDefault" />
+                <div class="form-group col-12 form-check form-switch mt-2">
+                    <input type="checkbox" asp-for="IsPerishableItem" class="form-control form-check-input" id="flexSwitchCheckDefault" />
                     <label class="control-label form-check-label" for="flexSwitchCheckDefault">Item Perecível</label>
                     <span class="text-danger"></span>
                 </div>
                 <div id="dates" style="display: none;">
 
+                    <h4>Lotes de Fabricação:</h4>
+                    <table id="lotesTable">
+                        <thead>
+                            <tr>
+                                <th>Lote</th>
+                                <th>Data de Fabricação</th>
+                                <th>Data de Vencimento</th>
+                                <th>Quantidade do Lote </th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.PerishableItem != null)
+                            {
+                                for (int i = 0; i < Model.PerishableItem.Count; i++)
+                                {
+                                    <tr data-id="@i">
+                                        <td><input type="text" name="PerishableItem[@i].ItemBatch" class="form-control" value="@Model.PerishableItem[i].ItemBatch" /></td>
+                                        <td>
+                                            <input type="date" name="PerishableItem[@i].FabricationDate" class="form-control"
+                                                   value="@(Model.PerishableItem[i].FabricationDate.HasValue ?
+                                                   Model.PerishableItem[i].FabricationDate.Value.ToString("yyyy-MM-dd") :
+                                                   string.Empty)" onchange="validateDates()" />
+                                        </td>
+                                        <td>
+                                            <input type="date" name="PerishableItem[@i].ExpirationDate" class="form-control"
+                                                   value="@(Model.PerishableItem[i].ExpirationDate.HasValue ?
+                                                   Model.PerishableItem[i].ExpirationDate.Value.ToString("yyyy-MM-dd") :
+                                                   string.Empty)" onchange="validateDates()" />
+                                        </td>
+                                        <td>
+                                            <div class="input-group">
+                                                <input type="number" name="PerishableItem[@i].PerishableItemQuantity" class="form-control col-md-2" step="any" onchange="formatDecimalInput(this); atualizarStockTakingQuantity();" value="@Model.PerishableItem[i].PerishableItemQuantity" />
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text">@Model.Item.UnitOfMeasurement</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="btn btn-danger" id="itemBatchRemove" onclick="openDelet(@i)">
+                                                <i class="bi bi-trash"></i>
+                                            </div>
+                                        </td>
+                                        <input type="text" name="PerishableItem[@i].Id" class="form-control" value="@Model.PerishableItem[i].Id" hidden />
+                                        <input type="text" name="PerishableItem[@i].StockTakingId" class="form-control" value="@Model.Id" hidden />
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
 
-
-                    @*<div class="form-group">
-                        <label asp-for="FabricationDate" class="control-label"></label>
-                        <input asp-for="FabricationDate" class="form-control" />
-                        <span asp-validation-for="FabricationDate" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="ExpirationDate" class="control-label"></label>
-                        <input asp-for="ExpirationDate" class="form-control" />
-                        <span asp-validation-for="ExpirationDate" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="ItemBatch" class="control-label"></label>
-                        <input asp-for="ItemBatch" class="form-control" />
-                        <span asp-validation-for="ItemBatch" class="text-danger"></span>
-                    </div>*@
+                    <div id="addLote" class="btn btn-primary" onclick="addLote()">Adicionar Lote</div>
                 </div>
-                <div class="form-group">
+                <div class="form-group mt-2">
                     <label asp-for="StockTakingObservation" class="control-label"></label>
                     <input asp-for="StockTakingObservation" class="form-control" />
                     <span asp-validation-for="StockTakingObservation" class="text-danger"></span>
@@ -73,7 +113,7 @@
                     <input type="hidden" asp-for="ItemId" />
                     <input type="hidden" asp-for="NumberOfCount" />
                 </div>
-                <div class="form-group">
+                <div class="form-group mt-2">
                     <input type="submit" value="Salvar" class="btn btn-primary" />
                 </div>
             </div>
@@ -82,8 +122,29 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a href="@Url.Action("Details", "Warehouses", new { id = @Model.AddressingsInventoryStart.Addressing.WarehouseId })" class="btn btn-primary">Voltar para a lista</a>
 </div>
+
+
+<!-- Modal de Confirmação de Remoção -->
+<div class="modal fade" id="removeItemBatch" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Remover Lote</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Deseja realmente excluir o lote?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="btnDelteYes">Excluir</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Fim do Modal de Confirmação de Remoção -->
 
 @section Scripts {
     <script src="~/js/chosen.jquery.min.js" type="text/javascript"></script>
@@ -92,6 +153,81 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
     <script type="text/javascript">
+
+        $(document).ready(function () {
+
+            $('#btnDelteYes').click(function () {
+                var id = $('#removeItemBatch').data('id');
+                $('[data-id=' + id + ']').remove();
+                $('#removeItemBatch').modal('hide');
+            });
+
+            // Exibir campos da div "dates" se IsPerishableItem for true
+            toggleDates();
+        });
+
+        function addLote() {
+            // Adicionar lote
+            var rowCount = $('#lotesTable tbody tr').length;
+            var newRow = '<tr data-id=' + rowCount + '>' +
+                '<td><input type="text" name="PerishableItem[' + rowCount + '].ItemBatch" class="form-control" /></td>' +
+                '<td><input type="date" name="PerishableItem[' + rowCount + '].FabricationDate" class="form-control"  onchange="validateDates()"/></td>' +
+                '<td><input type="date" name="PerishableItem[' + rowCount + '].ExpirationDate" class="form-control"  onchange="validateDates()"/></td>' +
+                '<td>' +
+                '   <div class="input-group">' +
+                '       <input type="number" name="PerishableItem[' + rowCount + '].PerishableItemQuantity" class="form-control col-md-2" step="any" onchange="atualizarStockTakingQuantity()" />' +
+                '       <div class="input-group-append">' +
+                '           <span class="input-group-text">@Model.Item.UnitOfMeasurement</span>' +
+                '       </div>' +
+                '   </div>' +
+                '</td>' +
+                '<td><div class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeItemBatch"><i class="bi bi-trash"></i></div></td>' +
+                '</tr>';
+            $('#lotesTable tbody').append(newRow);
+        }
+
+        //Verifica data de fabricação e validade
+        function validateDates() {
+            var rows = document.querySelectorAll("tr[data-id]");
+            rows.forEach(function (row) {
+                var fabricationDateInput = row.querySelector("input[name$='FabricationDate']");
+                var expirationDateInput = row.querySelector("input[name$='ExpirationDate']");
+                var fabricationDate = new Date(fabricationDateInput.value);
+                var expirationDate = new Date(expirationDateInput.value);
+
+                if (fabricationDateInput.value !== "" && expirationDateInput.value !== "") {
+                    if (fabricationDate >= expirationDate) {
+                        alert("A data de fabricação deve ser anterior à data de validade.");
+                        fabricationDateInput.value = "";
+                        expirationDateInput.value = "";
+                    }
+                }
+            });
+        }
+
+        //Abre modal Delete
+        function openDelet(id) {
+            $('#removeItemBatch').data('id', id).modal('show');
+            console.log(id);
+        }
+
+        // Atualizar StockTakingQuantity com a soma das quantidades do lote
+        function atualizarStockTakingQuantity() {
+            var somaQuantidades = calcularSomaQuantidadesLote();
+            $('#stockTakingQuantity').val(somaQuantidades);
+        }
+
+        // Função para calcular a soma das quantidades do lote
+        function calcularSomaQuantidadesLote() {
+            var somaQuantidades = 0;
+            $('input[name^="PerishableItem["][name$="].PerishableItemQuantity"]').each(function () {
+                var quantidade = parseFloat($(this).val());
+                if (!isNaN(quantidade)) {
+                    somaQuantidades += quantidade;
+                }
+            });
+            return somaQuantidades;
+        }
 
         // Função para mostrar o conteúdo da div "stockTaking"
         function showStockTaking() {
@@ -116,18 +252,22 @@
 
             if (switchElement.checked) {
                 datesDiv.style.display = "block";
+                $('#stockTakingQuantity').prop('disabled', true);
+                calcularSomaQuantidadesLote();
+                atualizarStockTakingQuantity();
             } else {
                 datesDiv.style.display = "none";
+                $('#stockTakingQuantity').prop('disabled', false);
             }
         }
         // Vincula o evento de mudança (change) do switch à função toggleDates
         document.getElementById("flexSwitchCheckDefault").addEventListener("change", toggleDates);
 
-                        //function formatDecimalInput(input) {
-                        //    var value = input.value;
-                        //    var formattedValue = parseFloat(value.replace(',', '.')).toLocaleString('pt-BR');
-                        //    input.value = formattedValue;
-                        //}
+        function formatDecimalInput(input) {
+            var value = input.value;
+            var formattedValue = parseFloat(value.replace(',', '.')).toLocaleString('pt-BR');
+            input.value = formattedValue;
+        }
 
     </script>
 }

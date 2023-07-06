@@ -36,22 +36,45 @@ namespace Inventory.Services
             stockTaking.NumberOfCount++;
 
             _context.StockTaking.Add(stockTaking);
-            await _addressingsStockTakingService.SetAddressingCountRealizedTrueAsync(stockTaking.AddressingsInventoryStartId);
             _context.SaveChanges();
 
+            await _addressingsStockTakingService.SetAddressingCountRealizedTrueAsync(stockTaking.AddressingsInventoryStartId);
             return true;
         }
 
-        public async Task<bool> UpdateStockTaking(StockTaking stockTaking)
+        public async Task<bool> SaveStockTaking(StockTaking stockTaking)
         {
             stockTaking.StockTakingDate = DateTime.Now;
 
             stockTaking.NumberOfCount++;
 
-            _context.StockTaking.Update(stockTaking);
-            await _addressingsStockTakingService.SetAddressingCountRealizedTrueAsync(stockTaking.AddressingsInventoryStartId);
-            _context.SaveChanges();
+            if (stockTaking.IsPerishableItem == true && stockTaking.Id != 0)
+            {
+                var perishableItemsToDelete = new List<PerishableItem>();
 
+                foreach (var item in stockTaking.PerishableItem)
+                {
+                    if (item.ItemBatch == null && item.PerishableItemQuantity == 0)
+                    {
+                        perishableItemsToDelete.Add(item);
+                        await _perishableItemService.DeletePerishableItemAsync(item);
+                    }
+                    else
+                    {
+                        stockTaking.StockTakingQuantity = stockTaking.StockTakingQuantity + item.PerishableItemQuantity;
+                    }
+                }
+
+                foreach (var itemDelete in perishableItemsToDelete)
+                {
+                    stockTaking.PerishableItem.Remove(itemDelete);
+                }
+            }
+
+            _context.StockTaking.Update(stockTaking);
+            await _context.SaveChangesAsync();
+
+            await _addressingsStockTakingService.SetAddressingCountRealizedTrueAsync(stockTaking.AddressingsInventoryStartId);
             return true;
         }
 
