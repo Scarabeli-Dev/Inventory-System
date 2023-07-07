@@ -13,6 +13,9 @@ namespace Inventory.ViewModels
         [Display(Name = "Nome do Item")]
         public string ItemName { get; set; }
 
+        [Display(Name = "Unidade de Medida")]
+        public UnitOfMeasurement UnitOfMeasurement { get; set; }
+
         [Display(Name = "Quantidade Inicial")]
         [Column(TypeName = "decimal(18,2)")]
         public decimal InitialQuantity { get; set; }

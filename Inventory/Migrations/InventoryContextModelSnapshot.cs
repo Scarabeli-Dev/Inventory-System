@@ -277,10 +277,10 @@ namespace Inventory.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ExpirationDate")
+                    b.Property<DateTime?>("ExpirationDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime>("FabricationDate")
+                    b.Property<DateTime?>("FabricationDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("ItemBatch")
@@ -352,6 +352,35 @@ namespace Inventory.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Warehouse");
+                });
+
+            modelBuilder.Entity("Inventory.ViewModels.StockTakingReport", b =>
+                {
+                    b.Property<decimal>("InitialQuantity")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ItemId")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ItemName")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("MovementeType")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("QuantityClosed")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("QuantityMovement")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("QuantityStockTaking")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("UnitOfMeasurement")
+                        .HasColumnType("int");
+
+                    b.ToView("View_StockTakingReport");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

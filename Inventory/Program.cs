@@ -91,6 +91,7 @@ builder.Services.AddScoped<IInventoryStartService, InventoryStartService>();
 builder.Services.AddScoped<IItemAddressingService, ItemAddressingService>();
 builder.Services.AddScoped<IItemService, ItemService>();
 builder.Services.AddScoped<IPerishableItemService, PerishableItemService>();
+builder.Services.AddScoped<IReportViewService, ReportViewService>();
 builder.Services.AddScoped<IStockTakingService, StockTakingService>();
 builder.Services.AddScoped<IWarehouseService, WarehouseService>();
 
@@ -128,7 +129,7 @@ app.UseStaticFiles();
 app.UseFastReport();
 app.UseRouting();
 
-//CriarPerfisUsuarios(app);
+CriarPerfisUsuarios(app);
 
 app.UseAuthentication();
 app.UseCookiePolicy();
@@ -156,13 +157,13 @@ app.MapRazorPages();
 
 app.Run();
 
-//void CriarPerfisUsuarios(WebApplication app)
-//{
-//    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
-//    using (var scope = scopedFactory.CreateScope())
-//    {
-//        var service = scope.ServiceProvider.GetService<ISeedUserRoleInitial>();
-//        service.SeedRoles();
-//        service.SeedUsers();
-//    }
-//}
+void CriarPerfisUsuarios(WebApplication app)
+{
+    var scopedFactory = app.Services.GetService<IServiceScopeFactory>();
+    using (var scope = scopedFactory.CreateScope())
+    {
+        var service = scope.ServiceProvider.GetService<ISeedUserRoleInitial>();
+        service.SeedRoles();
+        service.SeedUsers();
+    }
+}

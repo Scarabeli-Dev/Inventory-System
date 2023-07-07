@@ -1,0 +1,74 @@
+﻿@model PagingList<StockTakingReport>
+@{
+    ViewData["Title"] = "Relatório Final";
+}
+
+<h3>@ViewData["Title"]</h3>
+
+<form method="get" class="nput-group mb-3">
+
+    <div class="input-group mb-3">
+        <input name="filter" class="form-control" placeholder="filtro"
+               value="@Model.RouteValue["Filter"]" />
+
+        <button type="submit" class="btn btn-info">Procurar</button>
+    </div>
+</form>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        Código do Item
+                    </th>
+                    <th>
+                        Nome do Item
+                    </th>
+                    <th>
+                        Unidade de Medida
+                    </th>
+                    <th>
+                        Estoque do Sistema
+                    </th>
+                    <th>
+                        Quantidade da Contagem
+                    </th>
+                    <th>
+                        Divergência de Estoque
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ItemId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ItemName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UnitOfMeasurement)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.InitialQuantity)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.QuantityStockTaking)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.QuantityClosed)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div>
+    <vc:pager paging-list="@Model"></vc:pager>
+</div>
