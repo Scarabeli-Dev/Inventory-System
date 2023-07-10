@@ -17,6 +17,16 @@ namespace Inventory.Services
             _context = context;
         }
 
+        public List<InventoryMovement> GetInventoryMovementsByItemId (string itemId)
+        {
+            return _context.InventoryMovement.Where(i => i.ItemId == itemId).ToList();
+        }
+
+        public List<InventoryMovement> GetAllInventoryMovementsAsync()
+        {
+            return _context.InventoryMovement.ToList();
+        }
+
         public async Task<List<InventoryMovement>> ImportInventoryMovementsAsync(string fileName, string destiny)
         {
             List<InventoryMovementImport> inventoryMovements = new List<InventoryMovementImport>();
@@ -56,10 +66,6 @@ namespace Inventory.Services
             return inventoryReturn;
         }
 
-        public List<InventoryMovement> GetAllInventoryMovementsAsync()
-        {
-            return _context.InventoryMovement.ToList();
-        }
 
         //public List<InventoryMovement> GenereteCSV(List<InventoryMovement> inventoryMovements, string destiny)
         //{

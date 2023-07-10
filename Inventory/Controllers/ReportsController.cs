@@ -19,11 +19,16 @@ namespace Inventory.Controllers
             _reportViewService = reportViewService;
         }
 
+        //[Route("Contagem-com-movimentacao")]
+        //public async Task<IActionResult> ReportWithMovementation(PageParams pageParams)
+        //{
+        //    return View(await _reportViewService.FinalReport(pageParams));
+        //}
+
         [Route("Contagem-com-movimentacao")]
         public async Task<IActionResult> ReportWithMovementation(string filter, int pageindex = 1, string sort = "ItemName")
         {
             return View(await _reportViewService.ReportWithMovementation(filter, pageindex, sort));
         }
-
     }
 }

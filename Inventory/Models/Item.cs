@@ -30,6 +30,7 @@ namespace Inventory.Models
         [Display(Name = "Imagem do Item")]
         public string ImageUrl { get; set; }
         public IEnumerable<StockTaking> StockTaking { get; set; }
+        public IEnumerable<InventoryMovement> InventoryMovement { get; set; }
 
     }
 }

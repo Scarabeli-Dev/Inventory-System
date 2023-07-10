@@ -1,6 +1,7 @@
 ﻿using Inventory.Models;
 using Inventory.Models.Account;
 using Inventory.ViewModels;
+using Inventory.ViewModels.DataBaseViews;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,7 +22,8 @@ namespace Inventory.Data
         public DbSet<PerishableItem> PerishableItem { get; set; }
 
         //Views
-        public DbSet<StockTakingReport> StockTakingReportView { get; set; }
+        public DbSet<StockTakingReport> ViewStockTakingFinalReport { get; set; }
+        //public DbSet<StockTakingFinalReport> ViewStockTakingFinalReport { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -61,7 +63,8 @@ namespace Inventory.Data
                         .WithOne(s => s.StockTaking)
                         .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<StockTakingReport>().HasNoKey().ToView("StockTakingReportView");
+            modelBuilder.Entity<StockTakingReport>().HasNoKey().ToView("ViewStockTakingFinalReport");
+            //modelBuilder.Entity<StockTakingFinalReport>().HasNoKey().ToView("ViewStockTakingFinalReport");
 
         }
 

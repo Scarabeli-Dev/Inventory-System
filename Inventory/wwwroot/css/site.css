@@ -16,3 +16,11 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.expandable-row {
+    cursor: pointer;
+}
+
+.collapsed {
+    display: none;
+}
