@@ -26,6 +26,7 @@ namespace Inventory.Services
         {
             return await _context.ItemsAddressing.Include(i => i.Item)
                                                  .Include(a => a.Addressing)
+                                                 .ThenInclude(w => w.Warehouse)
                                                  .Where(i => i.ItemId == itemId)
                                                 .ToListAsync();
         }

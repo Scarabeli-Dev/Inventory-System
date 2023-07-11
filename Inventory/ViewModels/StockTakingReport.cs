@@ -34,7 +34,10 @@ namespace Inventory.ViewModels
         public StockSituation StockSituation { get; set; }
 
         [Display(Name = "Situação do Armazenamento")]
-        public AddressingSitutation AddressingSitutation { get; set; }
+        public AddressingSituation AddressingSituation { get; set; }
+
+        public int WarehouseAddressingId { get; set; }
+        public int WarehouseStocktakingId { get; set; }
 
         public IEnumerable<StockTaking> StockTakings { get; set; }
         public IEnumerable<ItemsAddressings> Addressings { get; set; }

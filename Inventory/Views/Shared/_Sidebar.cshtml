@@ -6,7 +6,7 @@
             <a class="nav-link text-dark" asp-area="" asp-controller="Warehouses" asp-action="Index">Contagem de Depósito</a>
         </li>
     }
-    @if (User.IsInRole("Admin"))
+    @if (User.IsInRole("Admin") || User.IsInRole("Gerente"))
     {
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#warehouse-nav" data-bs-toggle="collapse" href="#">
@@ -25,7 +25,6 @@
                 </li>
             </ul>
         </li>
-
         <li class="nav-item">
             <a class="nav-link collapsed" asp-area="" is-active-route asp-controller="Addressings" asp-action="Index">
                 <i class="bi bi-inboxes"></i>
@@ -50,6 +49,10 @@
                 <span>Relatório por endereçamento</span>
             </a>
         </li>
+    }
+
+    @if (User.IsInRole("Admin"))
+    {
         <li class="nav-item">
             <a class="nav-link collapsed" asp-area="" asp-controller="Imports" asp-action="ImportAll">
                 <i class="bi bi-card-checklist"></i>
@@ -63,7 +66,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link collapsed" asp-area="" asp-controller="Reports" asp-action="ReportWithMovementation">
+            <a class="nav-link collapsed" asp-area="" asp-controller="Reports" asp-action="Index">
                 <i class="bi bi-card-checklist"></i>
                 <span>Relatório Final</span>
             </a>
@@ -87,6 +90,6 @@
                 </li>
             </ul>
         </li>
-    }
 
+    }
 </ul>

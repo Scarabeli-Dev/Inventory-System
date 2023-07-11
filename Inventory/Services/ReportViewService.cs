@@ -1,8 +1,11 @@
 ﻿using Inventory.Data;
 using Inventory.Helpers;
+using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Inventory.ViewModels;
+using Inventory.ViewModels.ViewModelEnums;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Packaging;
 using ReflectionIT.Mvc.Paging;
 
 namespace Inventory.Services
@@ -28,12 +31,30 @@ namespace Inventory.Services
             _context = context;
         }
 
-        public async Task<PagingList<StockTakingReport>> ReportWithMovementation(string filter, int pageindex = 1, string sort = "ItemName")
+        public async Task<PagingList<StockTakingReport>> ReportWithMovementation(string filter, int pageindex = 1, string sort = "ItemName", int warehouseId = 0, int stockSituation = -1, int addressingSituation = -1)
         {
             var result = _context.ViewStockTakingFinalReport
-                                      .AsNoTracking()
-                                      .AsQueryable();
+                                 .AsNoTracking()
+                                 .AsQueryable();
+            if (warehouseId != 0)
+            {
+                result = result.Where(w => (w.WarehouseAddressingId == warehouseId) ||
+                                            w.WarehouseStocktakingId == warehouseId);
+            }
 
+            if (stockSituation != -1)
+            {
+                StockSituation stockSituationEnum = (StockSituation)stockSituation;
+
+                result = result.Where(w => w.StockSituation == stockSituationEnum);
+            }
+
+            if (addressingSituation != -1)
+            {
+                AddressingSituation addressingSituationEnum = (AddressingSituation)addressingSituation;
+
+                result = result.Where(w => w.AddressingSituation == addressingSituationEnum);
+            }
 
             if (!string.IsNullOrWhiteSpace(filter))
             {
@@ -45,10 +66,65 @@ namespace Inventory.Services
 
             foreach (var item in model)
             {
-
                 item.StockTakings = await _stockTakingService.GetAllStockTakingByItemIdAsync(item.ItemId);
                 item.Addressings = await _itemAddressingService.GetAllItemAddressingByItemIdsAsync(item.ItemId);
+
+
+                /*if (item.StockTakings != null)
+                {
+                    if (item.SystemQuantity == item.QuantityStockTaking)
+                    {
+                        item.StockSituation = StockSituation.Regular;
+                    }
+                    else if (item.Divergence > 0)
+                    {
+                        item.StockSituation = StockSituation.HigherThanRegistered;
+                    }
+                    else if (item.Divergence < 0)
+                    {
+                        item.StockSituation = StockSituation.LowerThanRegistered;
+                    }
+                    else
+                    {
+                        item.StockSituation = StockSituation.ItemNoCount;
+                        item.AddressingSituation = AddressingSituation.ItemNoCount;
+                        continue;
+                    }
+                }
+                else
+                {
+                    item.StockSituation = StockSituation.ItemNoCount;
+                    item.AddressingSituation = AddressingSituation.ItemNoCount;
+                    continue;
+                }
+
+                List<int> stockTakingIdsConference = new List<int>();
+                List<int> addressingsIdsConference = new List<int>();
+
+                foreach (var stockTakingConference in item.StockTakings)
+                {
+                    stockTakingIdsConference.Add(stockTakingConference.AddressingsInventoryStart.AddressingId);
+                }
+
+                foreach (var addressingsConference in item.Addressings)
+                {
+                    addressingsIdsConference.Add(addressingsConference.AddressingId);
+                }
+
+                if (addressingsIdsConference.SequenceEqual(stockTakingIdsConference))
+                {
+                    item.AddressingSituation = AddressingSituation.Regular;
+                }
+                else if (item.Addressings.Sum(q => q.Quantity) == 0)
+                {
+                    item.AddressingSituation = AddressingSituation.ItemNoAddressRecord;
+                }
+                else if (!addressingsIdsConference.SequenceEqual(stockTakingIdsConference))
+                {
+                    item.AddressingSituation = AddressingSituation.ItemStoredInMoreThanOneAddress;
+                }*/
             }
+
             model.RouteValue = new RouteValueDictionary { { "filter", filter } };
 
             return model;

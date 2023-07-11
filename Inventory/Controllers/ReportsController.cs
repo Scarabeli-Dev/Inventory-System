@@ -1,22 +1,22 @@
-﻿using Inventory.Helpers;
-using Inventory.Models;
+﻿using Inventory.Models;
 using Inventory.Services.Interfaces;
-using Inventory.ViewModels;
+using Inventory.ViewModels.ViewModelEnums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ReflectionIT.Mvc.Paging;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Inventory.Controllers
 {
-    [Route("Relatorios")]
     [Authorize(Roles = "Admin")]
     public class ReportsController : Controller
     {
         private readonly IReportViewService _reportViewService;
+        private readonly IWarehouseService _warehouseService;
 
-        public ReportsController(IReportViewService reportViewService)
+        public ReportsController(IReportViewService reportViewService, IWarehouseService warehouseService)
         {
             _reportViewService = reportViewService;
+            _warehouseService = warehouseService;
         }
 
         //[Route("Contagem-com-movimentacao")]
@@ -25,10 +25,15 @@ namespace Inventory.Controllers
         //    return View(await _reportViewService.FinalReport(pageParams));
         //}
 
-        [Route("Contagem-com-movimentacao")]
-        public async Task<IActionResult> ReportWithMovementation(string filter, int pageindex = 1, string sort = "ItemName")
+        public async Task<IActionResult> Index(string filter, int pageindex = 1, string sort = "ItemName", int warehouseId = 0, int stockSituation = -1, int addressingSituation = -1)
         {
-            return View(await _reportViewService.ReportWithMovementation(filter, pageindex, sort));
+            var warehouses = await _warehouseService.GetAllAsync<Warehouse>();
+            var warehouseList = warehouses.Select(w => new SelectListItem { Text = w.Name, Value = w.Id.ToString() }).ToList();
+            warehouseList.Insert(0, new SelectListItem { Text = "Todos", Value = 0.ToString() });
+            ViewData["WarehouseId"] = new SelectList(warehouseList, "Value", "Text", warehouseId);
+
+            return View(await _reportViewService.ReportWithMovementation(filter, pageindex, sort, warehouseId, stockSituation, addressingSituation));
         }
+
     }
 }

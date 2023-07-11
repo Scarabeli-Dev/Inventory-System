@@ -1,6 +1,6 @@
 ﻿namespace Inventory.ViewModels.ViewModelEnums
 {
-    public enum AddressingSitutation : int
+    public enum AddressingSituation : int
     {
         Regular = 0,
         ItemNoCount = 1,
