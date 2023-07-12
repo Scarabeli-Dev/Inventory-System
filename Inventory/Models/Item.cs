@@ -19,7 +19,7 @@ namespace Inventory.Models
         [Required(ErrorMessage = "{0} é obrigatório")]
         public UnitOfMeasurement UnitOfMeasurement { get; set; }
 
-        [Display(Name = "Prateleira")]
+        [Display(Name = "Endereçamento")]
         [Required(ErrorMessage = "{0} é obrigatório")]
         public IEnumerable<ItemsAddressings> Addressings { get; set; }
 

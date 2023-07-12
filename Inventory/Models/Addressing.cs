@@ -15,6 +15,8 @@ namespace Inventory.Models
         [Display(Name = "Depósito")]
         [Required(ErrorMessage = "{0} é obrigatório")]
         public int WarehouseId { get; set; }
+
+        [Display(Name = "Depósito")]
         public Warehouse Warehouse { get; set; }
 
         [Display(Name = "Itens")]

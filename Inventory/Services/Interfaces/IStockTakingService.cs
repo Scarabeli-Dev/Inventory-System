@@ -5,8 +5,10 @@ namespace Inventory.Services.Interfaces
 {
     public interface IStockTakingService : IGeralService
     {
-        Task<bool> NewStockTakingAsync(StockTaking stockTaking);
-        Task<bool> SaveStockTaking(StockTaking stockTaking);
+        Task<bool> SaveStockTakingWithOutRecount(StockTaking stockTaking);
+        Task<bool> SaveStockTakingWithRecount(StockTaking stockTaking);
+        Task<bool> AddStockTakingForRecountAssync(int stockTakingId);
+        Task<List<StockTaking>> GetAllStocktakingWithRecount(string filter, int pageindex = 1, string sort = "ItemId");
         Task<StockTaking> GetStockTakingByIdAsync(int stockTakingId);
         IEnumerable<StockTaking> GetStockTakingsEnumerableAsync();
         Task<List<StockTaking>> GetAllStockTakingByItemIdAsync(string itemId);

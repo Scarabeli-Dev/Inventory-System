@@ -5,7 +5,6 @@ using Inventory.Services.Interfaces;
 using Inventory.ViewModels;
 using Inventory.ViewModels.ViewModelEnums;
 using Microsoft.EntityFrameworkCore;
-using NuGet.Packaging;
 using ReflectionIT.Mvc.Paging;
 
 namespace Inventory.Services
@@ -117,7 +116,7 @@ namespace Inventory.Services
                         }
                     }
 
-                    item.Divergence = item.SystemQuantity - item.QuantityStockTaking;
+                    item.Divergence = item.QuantityStockTaking - item.SystemQuantity;
 
 
                     if (item.StockTakings.Count() > 0)
@@ -126,11 +125,11 @@ namespace Inventory.Services
                         {
                             item.StockSituation = StockSituation.Regular;
                         }
-                        else if (item.Divergence > 0)
+                        else if (item.Divergence < 0)
                         {
                             item.StockSituation = StockSituation.HigherThanRegistered;
                         }
-                        else if (item.Divergence < 0)
+                        else if (item.Divergence > 0)
                         {
                             item.StockSituation = StockSituation.LowerThanRegistered;
                         }
@@ -166,6 +165,10 @@ namespace Inventory.Services
                     if (addressingsIdsConference.SequenceEqual(stockTakingIdsConference))
                     {
                         item.AddressingSituation = AddressingSituation.Regular;
+                    }
+                    else if (!item.StockTakings.Any(st => item.Addressings.Any(ad => st.AddressingsInventoryStart.AddressingId == ad.AddressingId)) && item.StockTakings.Count() > 0)
+                    {
+                        item.AddressingSituation = AddressingSituation.ItemInDivergentAddress;
                     }
                     else if (item.Addressings.Sum(q => q.Quantity) == 0)
                     {
@@ -270,7 +273,7 @@ namespace Inventory.Services
                     item.StockSituation = StockSituation.ItemNoCount;
                 }
 
-                item.Divergence = item.SystemQuantity - item.QuantityStockTaking;
+                item.Divergence = item.QuantityStockTaking - item.SystemQuantity;
 
                 if (item.StockTakings.Count() > 0)
                 {
@@ -278,11 +281,11 @@ namespace Inventory.Services
                     {
                         item.StockSituation = StockSituation.Regular;
                     }
-                    else if (item.Divergence > 0)
+                    else if (item.Divergence < 0)
                     {
                         item.StockSituation = StockSituation.HigherThanRegistered;
                     }
-                    else if (item.Divergence < 0)
+                    else if (item.Divergence > 0)
                     {
                         item.StockSituation = StockSituation.LowerThanRegistered;
                     }
@@ -316,6 +319,10 @@ namespace Inventory.Services
                 if (addressingsIdsConference.SequenceEqual(stockTakingIdsConference))
                 {
                     item.AddressingSituation = AddressingSituation.Regular;
+                }
+                else if (!item.StockTakings.Any(st => item.Addressings.Any(ad => st.AddressingsInventoryStart.AddressingId == ad.AddressingId)) && item.StockTakings.Count() > 0)
+                {
+                    item.AddressingSituation = AddressingSituation.ItemInDivergentAddress;
                 }
                 else if (item.Addressings.Sum(q => q.Quantity) == 0)
                 {

@@ -11,56 +11,30 @@ namespace Inventory.Services
     public class StockTakingService : GeralService, IStockTakingService
     {
         private readonly InventoryContext _context;
-        private readonly IItemService _itemService;
-        private readonly IInventoryStartService _inventoryStartService;
         private readonly IAddressingsInventoryStartService _addressingsStockTakingService;
         private readonly IPerishableItemService _perishableItemService;
 
         public StockTakingService(InventoryContext context,
-                                  IItemService itemService,
-                                  IInventoryStartService inventoryStartService,
                                   IAddressingsInventoryStartService addressingsStockTakingService,
                                   IPerishableItemService perishableItemService) : base(context)
         {
             _context = context;
-            _itemService = itemService;
-            _inventoryStartService = inventoryStartService;
             _addressingsStockTakingService = addressingsStockTakingService;
             _perishableItemService = perishableItemService;
         }
 
-        public async Task<bool> NewStockTakingAsync(StockTaking stockTaking)
+        public async Task<bool> SaveStockTakingWithOutRecount(StockTaking stockTaking)
         {
-            stockTaking.StockTakingDate = DateTime.Now;
-
-            stockTaking.NumberOfCount++;
-
-            _context.StockTaking.Add(stockTaking);
-            _context.SaveChanges();
-
-            await _addressingsStockTakingService.SetAddressingCountRealizedTrueAsync(stockTaking.AddressingsInventoryStartId);
-            return true;
-        }
-
-        public async Task<bool> SaveStockTaking(StockTaking stockTaking)
-        {
-            stockTaking.StockTakingDate = DateTime.Now;
-
-            stockTaking.NumberOfCount++;
-
-            stockTaking.StockTakingQuantity = 0;
-
-            foreach (var item in stockTaking.PerishableItem)
-            {
-                stockTaking.StockTakingQuantity = stockTaking.StockTakingQuantity + item.PerishableItemQuantity;
-            }
 
             if (stockTaking.IsPerishableItem == true && stockTaking.Id != 0)
             {
+                stockTaking.StockTakingQuantity = 0;
                 var perishableItemsToDelete = new List<PerishableItem>();
 
                 foreach (var item in stockTaking.PerishableItem)
                 {
+                    stockTaking.StockTakingQuantity = stockTaking.StockTakingQuantity + item.PerishableItemQuantity;
+
                     if (item.ItemBatch == null && item.PerishableItemQuantity == 0)
                     {
                         perishableItemsToDelete.Add(item);
@@ -79,6 +53,85 @@ namespace Inventory.Services
 
             await _addressingsStockTakingService.SetAddressingCountRealizedTrueAsync(stockTaking.AddressingsInventoryStartId);
             return true;
+        }
+
+        public async Task<bool> SaveStockTakingWithRecount(StockTaking stockTaking)
+        {
+            stockTaking.StockTakingDate = DateTime.Now;
+            stockTaking.NumberOfCount++;
+            stockTaking.ItemToRecount = false;
+
+            if (stockTaking.IsPerishableItem == true && stockTaking.Id != 0)
+            {
+                stockTaking.StockTakingQuantity = 0;
+                var perishableItemsToDelete = new List<PerishableItem>();
+
+                foreach (var item in stockTaking.PerishableItem)
+                {
+                    stockTaking.StockTakingQuantity = stockTaking.StockTakingQuantity + item.PerishableItemQuantity;
+
+                    if (item.ItemBatch == null && item.PerishableItemQuantity == 0)
+                    {
+                        perishableItemsToDelete.Add(item);
+                        await _perishableItemService.DeletePerishableItemAsync(item);
+                    }
+                }
+
+                foreach (var itemDelete in perishableItemsToDelete)
+                {
+                    stockTaking.PerishableItem.Remove(itemDelete);
+                }
+            }
+
+            _context.StockTaking.Update(stockTaking);
+            await _context.SaveChangesAsync();
+
+            await _addressingsStockTakingService.SetAddressingCountRealizedTrueAsync(stockTaking.AddressingsInventoryStartId);
+            return true;
+        }
+
+        public async Task<bool> AddStockTakingForRecountAssync(int stockTakingId)
+        {
+
+            var stockTaking = await _context.StockTaking.FirstOrDefaultAsync(i => i.Id == stockTakingId);
+
+            stockTaking.StockTakingPreviousQuantity = stockTaking.StockTakingQuantity;
+            stockTaking.StockTakingQuantity = 0;
+            stockTaking.ItemToRecount = true;
+
+            foreach (var item in stockTaking.PerishableItem)
+            {
+                item.PerishableItemPreviousQuantity = item.PerishableItemQuantity;
+                item.PerishableItemQuantity = 0;
+                _context.Update<PerishableItem>(item);
+            }
+
+            _context.StockTaking.Update(stockTaking);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<List<StockTaking>> GetAllStocktakingWithRecount(string filter, int pageindex = 1, string sort = "ItemId")
+        {
+            var result = _context.StockTaking.Include(i => i.Item)
+                                             .Include(a => a.AddressingsInventoryStart).ThenInclude(a => a.Addressing).ThenInclude(w => w.Warehouse)
+                                             .Include(i => i.AddressingsInventoryStart).ThenInclude(a => a.InventoryStart)
+                                             .Include(p => p.PerishableItem)
+                                             .Where(rc => rc.ItemToRecount == true)
+                                             .AsNoTracking()
+                                             .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                result = result.Where(p => (p.Item.Name.ToLower().Contains(filter.ToLower())) ||
+                                           (p.AddressingsInventoryStart.Addressing.Name.ToLower().Contains(filter.ToLower())));
+            }
+
+            var model = await PagingList.CreateAsync(result, 10, pageindex, sort, "ItemId");
+            model.RouteValue = new RouteValueDictionary { { "filter", filter } };
+
+            return model;
         }
 
         public async Task<StockTaking> GetStockTakingByIdAsync(int stockTakingId)

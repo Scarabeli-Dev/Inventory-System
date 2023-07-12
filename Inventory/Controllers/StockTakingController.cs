@@ -1,5 +1,4 @@
-﻿using Inventory.Helpers;
-using Inventory.Models;
+﻿using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Inventory.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -44,13 +43,11 @@ namespace Inventory.Controllers
             return View(await _addressingsInventoryStartService.GetAddressingsStockTakingsPagingAsync(1, filter, pageindex, sort));
         }
 
-        //public async Task<IActionResult> Index([FromQuery] PageParams pageParams)
-        //{
-        //    var addressingsInventoryStart = await _addressingsInventoryStartService.GetAllPageListDataTable(pageParams);
-        //    Response.AddPagination(addressingsInventoryStart.CurrentPage, addressingsInventoryStart.PageSize, addressingsInventoryStart.TotalCount, addressingsInventoryStart.TotalPages);
-
-        //    return View(addressingsInventoryStart);
-        //}
+        [Route("Lista/Recontagem")]
+        public async Task<IActionResult> IndexRecount(string filter, int pageindex = 1, string sort = "ItemId")
+        {
+            return View(await _stockTakingService.GetAllStocktakingWithRecount(filter, pageindex, sort));
+        }
 
         [Route("Cadastro")]
         public async Task<IActionResult> ItemCount(string itemId, bool stockTakingCheched)
@@ -89,7 +86,7 @@ namespace Inventory.Controllers
             {
                 stockTaking.StockTakingQuantity = decimal.Parse(stockTaking.StockTakingQuantity.ToString().Replace(",", "."), CultureInfo.InvariantCulture);
 
-                await _stockTakingService.SaveStockTaking(stockTaking);
+                await _stockTakingService.SaveStockTakingWithRecount(stockTaking);
 
                 TempData["successMessage"] = "Contagem do item " + item.Id + "- " + item.Name;
                 TempData["wait"] = "wait";
@@ -109,10 +106,13 @@ namespace Inventory.Controllers
             var stockTaking = await _stockTakingService.GetStockTakingByIdAsync(stockTakingId);
             if (stockTaking.AddressingsInventoryStart.AddressingCountEnded == true)
             {
+                TempData["errorMessage"] = "Contagem do endereçamento já encerrada";
                 return RedirectToAction(nameof(Index));
             }
             var addressings = await _addressingService.GetAllAddressingsByWarehouseIdAsync(stockTaking.AddressingsInventoryStart.Addressing.WarehouseId);
             ViewBag.Addressings = addressings;
+
+            ViewBag.IsRecount = stockTaking.ItemToRecount;
 
             return View(stockTaking);
         }
@@ -132,7 +132,71 @@ namespace Inventory.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    await _stockTakingService.SaveStockTaking(stockTaking);
+                    await _stockTakingService.SaveStockTakingWithOutRecount(stockTaking);
+
+                    var result = await _stockTakingService.GetStockTakingByIdAsync(stockTaking.Id);
+                    TempData["successMessage"] = "Contagem do item " + item.Id + "- " + item.Name;
+
+                    return RedirectToAction("Details", "Warehouses", new { id = result.AddressingsInventoryStart.Addressing.WarehouseId });
+                }
+                TempData["errorMessage"] = "contagem do item " + item.Id + "- " + item.Name;
+                return View(stockTaking);
+            }
+            catch (DbUpdateException ex)
+            {
+                ModelState.AddModelError("", "Ocorreu um erro ao atualizar o StockTaking: " + ex.Message);
+                return View("Error");
+            }
+
+        }
+
+        [HttpPost]
+        [Route("Adiciona-Recontar")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddRecount(int stockTakingId)
+        {
+            var stockTaking = await _stockTakingService.GetStockTakingByIdAsync(stockTakingId);
+
+            if (await _stockTakingService.AddStockTakingForRecountAssync(stockTakingId))
+            {
+                TempData["successMessage"] = "Recontagem do item " + stockTaking.ItemId + "- " + stockTaking.Item.Name;
+                return RedirectToAction(nameof(IndexRecount));
+            }
+
+            TempData["errorMessage"] = "contagem do item " + stockTaking.ItemId + "- " + stockTaking.Item.Name;
+            return RedirectToAction(nameof(IndexRecount));
+        }
+
+        [Route("Recontar")]
+        public async Task<IActionResult> ItemRecount(int stockTakingId)
+        {
+            var stockTaking = await _stockTakingService.GetStockTakingByIdAsync(stockTakingId);
+            if (stockTaking.AddressingsInventoryStart.AddressingCountEnded == true)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+            var addressings = await _addressingService.GetAllAddressingsByWarehouseIdAsync(stockTaking.AddressingsInventoryStart.Addressing.WarehouseId);
+            ViewBag.Addressings = addressings;
+
+            return View(stockTaking);
+        }
+
+        [HttpPost]
+        [Route("Recontar")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ItemRecount(string itemId, StockTaking stockTaking)
+        {
+            try
+            {
+                var item = await _itemService.GetItemByIdAsync(itemId);
+                if (itemId != stockTaking.ItemId)
+                {
+                    return NotFound();
+                }
+
+                if (ModelState.IsValid)
+                {
+                    await _stockTakingService.SaveStockTakingWithRecount(stockTaking);
 
                     var result = await _stockTakingService.GetStockTakingByIdAsync(stockTaking.Id);
                     TempData["successMessage"] = "Contagem do item " + item.Id + "- " + item.Name;
@@ -204,11 +268,13 @@ namespace Inventory.Controllers
                 if (stockTaking == null)
                 {
                     model.ItemStockTakingQuantity = 0;
+                    model.ItemStockTakingPreviousQuantity = 0;
                     model.NumberOfCount = 0;
                 }
                 else
                 {
                     model.ItemStockTakingQuantity = stockTaking.StockTakingQuantity;
+                    model.ItemStockTakingPreviousQuantity = stockTaking.StockTakingPreviousQuantity;
                     model.NumberOfCount = stockTaking.NumberOfCount;
                 }
 

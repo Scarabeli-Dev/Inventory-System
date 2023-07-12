@@ -52,13 +52,17 @@
                             @Html.DisplayFor(modelItem => item.NumberOfCount)
                         </td>
 
-                        @if (item.ItemInitialQuantity != item.ItemStockTakingQuantity && item.NumberOfCount < 2)
+                        @if (item.ItemInitialQuantity != item.ItemStockTakingQuantity && item.ItemStockTakingQuantity != item.ItemStockTakingPreviousQuantity)
                         {
                             <td class="table-danger">
 
-                                <div class="d-grid gap-2 d-md-flex justify-content-center">
-                                    <a href="@Url.Action("ItemCount", "StockTaking", new { itemId = item.ItemId })" class="btn btn-danger">Sim</a>
-                                </div>
+                                <form method="post" action="@Url.Action("AddRecount", "StockTaking", new { stockTakingId = item.StockTakingId })">
+                                    @Html.AntiForgeryToken()
+
+                                    <div class="d-grid gap-2 d-md-flex justify-content-center">
+                                        <button type="submit" class="btn btn-danger">Sim</button>
+                                    </div>
+                                </form>
                             </td>
                             recount = true;
                         }

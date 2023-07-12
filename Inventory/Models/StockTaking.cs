@@ -17,11 +17,15 @@ namespace Inventory.Models
         [Display(Name = "Item")]
         [Required(ErrorMessage = "{0} é obrigatório")]
         public string ItemId { get; set; }
+
+        [Display(Name = "Nome do Item")]
         public Item Item { get; set; }
 
         [Display(Name = "Endereçamento")]
         [Required(ErrorMessage = "{0} é obrigatório")]
         public int AddressingsInventoryStartId { get; set; }
+
+        [Display(Name = "Endereçamento")]
         public AddressingsInventoryStart AddressingsInventoryStart { get; set; }
 
         [Display(Name = "Quantidade na Contagem")]
@@ -30,6 +34,9 @@ namespace Inventory.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal StockTakingQuantity { get; set; }
 
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal StockTakingPreviousQuantity { get; set; } = -1;
+
         [Display(Name = "Item Perecível")]
         public bool IsPerishableItem { get; set; }
         public List<PerishableItem> PerishableItem { get; set; }
@@ -37,6 +44,8 @@ namespace Inventory.Models
         [Display(Name = "Observação")]
         [StringLength(250, ErrorMessage = "Máximo de {1} caracteres!")]
         public string StockTakingObservation { get; set; }
+
+        public bool ItemToRecount { get; set; }
 
         public int NumberOfCount { get; set; }
     }

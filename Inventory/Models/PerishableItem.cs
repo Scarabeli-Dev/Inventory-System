@@ -30,6 +30,8 @@ namespace Inventory.Models
         [Column(TypeName = "decimal(18,2)")]
         public decimal PerishableItemQuantity { get; set; }
 
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal PerishableItemPreviousQuantity { get; set; } = 0;
         public int StockTakingId { get; set; }
         public StockTaking StockTaking { get; set; }
     }

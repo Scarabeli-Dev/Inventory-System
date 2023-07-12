@@ -4,7 +4,7 @@
 }
 
 <div id="infoAlert" class="alert alert-info alert-dismissible fade show" role="alert">
-    <i class="bi bi-check-circle me-1"></i>
+    <i class="bi bi-info-circle me-1"></i>
     Clique no Código do item para ver mais detalhes!
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
@@ -19,30 +19,19 @@
         </div>
 
         <div class="col-md-2">
-            <label for="warehouseId" class="form-label">Warehouse</label>
+            <label for="warehouseId" class="form-label">Depósito</label>
             @Html.DropDownList("warehouseId", ViewData["WarehouseId"] as SelectList, new { @class = "form-control" })
         </div>
 
         <div class="col-md-3">
             <label for="stockSitutation" class="form-label">Situação do Estoque</label>
-            <select name="stockSituation" class="form-control">
-                <option value="-1">Todos</option>
-                <option value="0">Regular</option>
-                <option value="1">Item Não Contado</option>
-                <option value="2">Quantidade contada inferior ao sistema</option>
-                <option value="3">Quantidade contada superior ao sistema</option>
-            </select>
+            @Html.DropDownList("stockSituation", ViewData["StockSituation"] as SelectList, new { @class = "form-control" })
+
         </div>
 
         <div class="col-md-3">
             <label for="addressingSitutation" class="form-label">Situação do Endereçamento</label>
-            <select name="addressingSituation" class="form-control">
-                <option value="-1">Todos</option>
-                <option value="0">Regular</option>
-                <option value="1">Item Não Contado</option>
-                <option value="2">Item armazenado em mais de um endereçamento</option>
-                <option value="3">Item sem registro de armazenamento</option>
-            </select>
+            @Html.DropDownList("addressingSituation", ViewData["AddressingSituation"] as SelectList, new { @class = "form-control" })
         </div>
         <div class="col-md-2">
             <button type="submit" class="btn btn-info">Aplicar filtro</button>
@@ -60,7 +49,7 @@
                     <th class="col-1">
                         @Html.SortableHeaderFor(model => model.ItemId, "ItemId")
                     </th>
-                    <th class ="col-3">
+                    <th class="col-3">
                         @Html.SortableHeaderFor(model => model.ItemName, "ItemName")
                     </th>
                     <th class="col-1">
@@ -109,13 +98,13 @@
                         @if (item.Divergence > 0)
                         {
                             <td class="table-danger text-end">
-                                <i class="bi bi-arrow-down-circle"></i> @Html.DisplayFor(modelItem => item.Divergence)
+                                <i class="bi bi-arrow-up-circle"></i> @Html.DisplayFor(modelItem => item.Divergence)
                             </td>
                         }
                         else if (item.Divergence < 0)
                         {
                             <td class="table-danger text-end">
-                                <i class="bi bi-arrow-up-circle"></i> @Html.DisplayFor(modelItem => item.Divergence)
+                                <i class="bi bi-arrow-down-circle"></i> @Html.DisplayFor(modelItem => item.Divergence)
                             </td>
                         }
                         else
@@ -124,55 +113,14 @@
                                 <i class="bi bi-check-circle"></i> @Html.DisplayFor(modelItem => item.Divergence)
                             </td>
                         }
-                        @if (item.StockSituation == StockSituation.Regular)
-                        {
-                            <td>
-                                Regular
-                            </td>
-                        }
-                        else if (item.StockSituation == StockSituation.ItemNoCount)
-                        {
-                            <td>
-                                Item Não Contado
-                            </td>
-                        }
-                        else if (item.StockSituation == StockSituation.HigherThanRegistered)
-                        {
-                            <td>
-                                Quantidade contada inferior ao sistema
-                            </td>
-                        }
-                        else if (item.StockSituation == StockSituation.LowerThanRegistered)
-                        {
-                            <td>
-                                Quantidade contada superior ao sistema
-                            </td>
-                        }
 
-                        @if (item.AddressingSituation == AddressingSituation.Regular)
-                        {
-                            <td>
-                                Regular
-                            </td>
-                        }
-                        else if (item.AddressingSituation == AddressingSituation.ItemNoCount)
-                        {
-                            <td>
-                                Item Não Contado
-                            </td>
-                        }
-                        else if (item.AddressingSituation == AddressingSituation.ItemStoredInMoreThanOneAddress)
-                        {
-                            <td>
-                                Item armazenado em mais de um endereçamento
-                            </td>
-                        }
-                        else if (item.AddressingSituation == AddressingSituation.ItemNoAddressRecord)
-                        {
-                            <td>
-                                Item sem registro de armazenamento
-                            </td>
-                        }
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StockSituation)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AddressingSituation)
+                        </td>
                     </tr>
                     <tr id="collapse-@item.ItemId" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordion-@item.ItemId">
                         <td colspan="8" class="accordion-body">
@@ -263,5 +211,5 @@
 <script>
     setTimeout(function () {
         document.getElementById('infoAlert').style.display = 'none';
-    }, 3000); // 3 segundos
+    }, 5000); // 3 segundos
 </script>

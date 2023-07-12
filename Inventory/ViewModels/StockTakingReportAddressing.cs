@@ -23,6 +23,9 @@ namespace Inventory.ViewModels
         [Column(TypeName = "decimal(18,2)")]
         public decimal ItemStockTakingQuantity { get; set; }
 
+        [Column(TypeName = "decimal(18,2)")]
+        public decimal ItemStockTakingPreviousQuantity { get; set; }
+
         [Display(Name = "Quantidade Da Contagem")]
         public int NumberOfCount { get; set; }
     }

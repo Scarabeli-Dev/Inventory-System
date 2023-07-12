@@ -92,7 +92,7 @@ namespace Inventory.Services
 
         public async Task<Addressing> GetAddressingByIdAsync(int id)
         {
-            var result = await _context.Addressing.Include(l => l.Item).ThenInclude(il => il.Item).FirstOrDefaultAsync(m => m.Id == id);
+            var result = await _context.Addressing.Include(l => l.Item).ThenInclude(il => il.Item).Include(w => w.Warehouse).FirstOrDefaultAsync(m => m.Id == id);
 
             return result;
         }

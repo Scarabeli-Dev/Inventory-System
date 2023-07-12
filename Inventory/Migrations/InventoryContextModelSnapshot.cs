@@ -287,6 +287,9 @@ namespace Inventory.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
 
+                    b.Property<decimal>("PerishableItemPreviousQuantity")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("PerishableItemQuantity")
                         .HasColumnType("decimal(18,2)");
 
@@ -316,6 +319,9 @@ namespace Inventory.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(150)");
 
+                    b.Property<bool>("ItemToRecount")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<int>("NumberOfCount")
                         .HasColumnType("int");
 
@@ -325,6 +331,9 @@ namespace Inventory.Migrations
                     b.Property<string>("StockTakingObservation")
                         .HasMaxLength(250)
                         .HasColumnType("varchar(250)");
+
+                    b.Property<decimal>("StockTakingPreviousQuantity")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("StockTakingQuantity")
                         .HasColumnType("decimal(18,2)");
@@ -356,7 +365,10 @@ namespace Inventory.Migrations
 
             modelBuilder.Entity("Inventory.ViewModels.StockTakingReport", b =>
                 {
-                    b.Property<decimal>("InitialQuantity")
+                    b.Property<int>("AddressingSituation")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Divergence")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ItemId")
@@ -365,22 +377,25 @@ namespace Inventory.Migrations
                     b.Property<string>("ItemName")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("MovementeType")
+                    b.Property<decimal>("QuantityStockTaking")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("StockSituation")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("QuantityClosed")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("QuantityMovement")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("QuantityStockTaking")
+                    b.Property<decimal>("SystemQuantity")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("UnitOfMeasurement")
                         .HasColumnType("int");
 
-                    b.ToView("View_StockTakingReport");
+                    b.Property<int>("WarehouseAddressingId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WarehouseStocktakingId")
+                        .HasColumnType("int");
+
+                    b.ToView("ViewStockTakingFinalReport");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -528,7 +543,7 @@ namespace Inventory.Migrations
             modelBuilder.Entity("Inventory.Models.InventoryMovement", b =>
                 {
                     b.HasOne("Inventory.Models.Item", "Item")
-                        .WithMany()
+                        .WithMany("InventoryMovement")
                         .HasForeignKey("ItemId");
 
                     b.HasOne("Inventory.Models.Warehouse", "Warehouse")
@@ -674,6 +689,8 @@ namespace Inventory.Migrations
             modelBuilder.Entity("Inventory.Models.Item", b =>
                 {
                     b.Navigation("Addressings");
+
+                    b.Navigation("InventoryMovement");
 
                     b.Navigation("StockTaking");
                 });

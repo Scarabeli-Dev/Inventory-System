@@ -1,0 +1,56 @@
+﻿@model PagingList<StockTaking>
+
+@{
+    ViewData["Title"] = "Itens Para Recontagem";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form method="get" class="nput-group mb-3">
+    <div class="input-group mb-3">
+        <input name="filter" class="form-control" placeholder="filtro"
+               value="@Model.RouteValue["Filter"]" />
+        <button type="submit" class="btn btn-info">Procurar</button>
+    </div>
+</form>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>
+                        @Html.SortableHeaderFor(model => model.Item.Id)
+                    </th>
+                    <th>
+                        @Html.SortableHeaderFor(model => model.Item.Name)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="col-4">
+                            <div class="d-grid gap-2 d-md-flex justify-content-center">
+                                <a href="@Url.Action("ItemCountEdit", "StockTaking", new { stockTakingId = item.Id })" class="btn btn-primary">Realizar Recontagem</a>
+                            </div>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Item.Name)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div>
+    <vc:pager paging-list="@Model"></vc:pager>
+</div>
