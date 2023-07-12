@@ -48,6 +48,13 @@ namespace Inventory.Services
 
             stockTaking.NumberOfCount++;
 
+            stockTaking.StockTakingQuantity = 0;
+
+            foreach (var item in stockTaking.PerishableItem)
+            {
+                stockTaking.StockTakingQuantity = stockTaking.StockTakingQuantity + item.PerishableItemQuantity;
+            }
+
             if (stockTaking.IsPerishableItem == true && stockTaking.Id != 0)
             {
                 var perishableItemsToDelete = new List<PerishableItem>();
@@ -58,10 +65,6 @@ namespace Inventory.Services
                     {
                         perishableItemsToDelete.Add(item);
                         await _perishableItemService.DeletePerishableItemAsync(item);
-                    }
-                    else
-                    {
-                        stockTaking.StockTakingQuantity = stockTaking.StockTakingQuantity + item.PerishableItemQuantity;
                     }
                 }
 

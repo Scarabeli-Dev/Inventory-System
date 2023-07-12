@@ -31,46 +31,248 @@ namespace Inventory.Services
             _context = context;
         }
 
-        public async Task<PagingList<StockTakingReport>> ReportWithMovementation(string filter, int pageindex = 1, string sort = "ItemName", int warehouseId = 0, int stockSituation = -1, int addressingSituation = -1)
+        public async Task<PagingList<StockTakingReport>> ReportWithMovementation(string filter, int pageindex = 1, string sortExpression = "ItemName", int warehouseId = 0, int stockSituation = -1, int addressingSituation = -1)
         {
+            List<StockTaking> allStockTakings = await _stockTakingService.GetAllStockTakingAsync();
+            List<ItemsAddressings> allItemsAddressings = await _itemAddressingService.GetAllItemsAddressingsAsync();
+            List<InventoryMovement> allInventoryMovements = await _inventoryMovementService.GetAllInventoryMovementsAsync();
+
             var result = _context.ViewStockTakingFinalReport
                                  .AsNoTracking()
                                  .AsQueryable();
-            if (warehouseId != 0)
+            if (warehouseId != 0 || stockSituation != -1 || addressingSituation != -1)
             {
-                result = result.Where(w => (w.WarehouseAddressingId == warehouseId) ||
-                                            w.WarehouseStocktakingId == warehouseId);
+                var repository = result.ToList();
+
+                var modifiedResult = new List<StockTakingReport>();
+                foreach (var item in repository)
+                {
+                    item.SystemQuantity = 0;
+                    item.QuantityStockTaking = 0;
+
+                    List<StockTaking> stocktakingToItem = new List<StockTaking>();
+                    foreach (var stocktaking in allStockTakings)
+                    {
+                        if (stocktaking.ItemId == item.ItemId)
+                        {
+                            stocktakingToItem.Add(stocktaking);
+                        }
+                    }
+
+                    item.StockTakings = stocktakingToItem;
+
+                    if (item.StockTakings.Count() > 0)
+                    {
+                        item.QuantityStockTaking = item.StockTakings.Sum(q => q.StockTakingQuantity);
+                    }
+
+                    List<ItemsAddressings> itemAddressingToItem = new List<ItemsAddressings>();
+
+                    foreach (var itemAddressing in allItemsAddressings)
+                    {
+                        if (itemAddressing.ItemId == item.ItemId)
+                        {
+                            itemAddressingToItem.Add(itemAddressing);
+                        }
+                    }
+                    item.Addressings = itemAddressingToItem;
+
+                    //Verificar quantidade com movimentação
+                    if (allInventoryMovements.Count() > 0)
+                    {
+                        decimal movementIn = 0;
+                        decimal movementOut = 0;
+
+                        foreach (var movement in allInventoryMovements)
+                        {
+                            if (movement.ItemId == item.ItemId)
+                            {
+                                foreach (var stocktaking in allStockTakings)
+                                {
+                                    if (stocktaking.ItemId == item.ItemId)
+                                    {
+                                        if (stocktaking.StockTakingDate > movement.MovementDate)
+                                        {
+                                            if (movement.MovementeType == Models.Enums.MovementeType.E)
+                                            {
+                                                movementIn = movementIn + movement.Amount;
+                                            }
+                                            if (movement.MovementeType == Models.Enums.MovementeType.S)
+                                            {
+                                                movementOut = movementOut + movement.Amount;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            item.SystemQuantity = item.Addressings.Sum(q => q.Quantity) + movementIn - movementOut;
+                        }
+                    }
+                    else
+                    {
+                        if (item.Addressings.Count() > 0)
+                        {
+                            item.SystemQuantity = item.Addressings.Sum(q => q.Quantity);
+                        }
+                    }
+
+                    item.Divergence = item.SystemQuantity - item.QuantityStockTaking;
+
+
+                    if (item.StockTakings.Count() > 0)
+                    {
+                        if (item.SystemQuantity == item.QuantityStockTaking)
+                        {
+                            item.StockSituation = StockSituation.Regular;
+                        }
+                        else if (item.Divergence > 0)
+                        {
+                            item.StockSituation = StockSituation.HigherThanRegistered;
+                        }
+                        else if (item.Divergence < 0)
+                        {
+                            item.StockSituation = StockSituation.LowerThanRegistered;
+                        }
+                        else
+                        {
+                            item.StockSituation = StockSituation.ItemNoCount;
+                            item.AddressingSituation = AddressingSituation.ItemNoCount;
+                            modifiedResult.Add(item);
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        item.StockSituation = StockSituation.ItemNoCount;
+                        item.AddressingSituation = AddressingSituation.ItemNoCount;
+                        modifiedResult.Add(item);
+                        continue;
+                    }
+
+                    List<int> stockTakingIdsConference = new List<int>();
+                    List<int> addressingsIdsConference = new List<int>();
+
+                    foreach (var stockTakingConference in item.StockTakings)
+                    {
+                        stockTakingIdsConference.Add(stockTakingConference.AddressingsInventoryStart.AddressingId);
+                    }
+
+                    foreach (var addressingsConference in item.Addressings)
+                    {
+                        addressingsIdsConference.Add(addressingsConference.AddressingId);
+                    }
+
+                    if (addressingsIdsConference.SequenceEqual(stockTakingIdsConference))
+                    {
+                        item.AddressingSituation = AddressingSituation.Regular;
+                    }
+                    else if (item.Addressings.Sum(q => q.Quantity) == 0)
+                    {
+                        item.AddressingSituation = AddressingSituation.ItemNoAddressRecord;
+                    }
+                    else if (!addressingsIdsConference.SequenceEqual(stockTakingIdsConference))
+                    {
+                        item.AddressingSituation = AddressingSituation.ItemStoredInMoreThanOneAddress;
+                    }
+
+                    modifiedResult.Add(item);
+                }
+
+                if (warehouseId != 0)
+                {
+                    HashSet<string> itemVerify = new HashSet<string>();
+                    foreach (var item in modifiedResult)
+                    {
+                        if (item.Addressings.Any(a => a.Addressing.WarehouseId == warehouseId) ||
+                           (item.StockTakings.Any(a => a.AddressingsInventoryStart.Addressing.WarehouseId == warehouseId)))
+                        {
+                            itemVerify.Add(item.ItemId);
+                        }
+                    }
+                    result = result.Where(w => itemVerify.Contains(w.ItemId));
+                }
+
+                if (stockSituation != -1)
+                {
+                    StockSituation stockSituationEnum = (StockSituation)stockSituation;
+                    HashSet<string> itemVerify = new HashSet<string>();
+                    foreach (var item in modifiedResult)
+                    {
+                        if (item.StockSituation == stockSituationEnum)
+                        {
+                            itemVerify.Add(item.ItemId);
+                        }
+                    }
+                    result = result.Where(w => itemVerify.Contains(w.ItemId));
+                }
+
+                if (addressingSituation != -1)
+                {
+                    AddressingSituation addressingSituationEnum = (AddressingSituation)addressingSituation;
+                    HashSet<string> itemVerify = new HashSet<string>();
+                    foreach (var item in modifiedResult)
+                    {
+                        if (item.AddressingSituation == addressingSituationEnum)
+                        {
+                            itemVerify.Add(item.ItemId);
+                        }
+                    }
+                    result = result.Where(w => itemVerify.Contains(w.ItemId));
+                }
             }
-
-            if (stockSituation != -1)
-            {
-                StockSituation stockSituationEnum = (StockSituation)stockSituation;
-
-                result = result.Where(w => w.StockSituation == stockSituationEnum);
-            }
-
-            if (addressingSituation != -1)
-            {
-                AddressingSituation addressingSituationEnum = (AddressingSituation)addressingSituation;
-
-                result = result.Where(w => w.AddressingSituation == addressingSituationEnum);
-            }
-
             if (!string.IsNullOrWhiteSpace(filter))
             {
                 result = result.Where(p => (p.ItemName.ToLower().Contains(filter.ToLower())) ||
                                            (p.ItemId.ToLower().Contains(filter.ToLower())));
             }
 
-            var model = await PagingList.CreateAsync(result, 10, pageindex, sort, "ItemName");
+            var model = await PagingList.CreateAsync(result, 10, pageindex, sortExpression, "ItemName");
 
             foreach (var item in model)
             {
                 item.StockTakings = await _stockTakingService.GetAllStockTakingByItemIdAsync(item.ItemId);
                 item.Addressings = await _itemAddressingService.GetAllItemAddressingByItemIdsAsync(item.ItemId);
+                var itemMovements = _inventoryMovementService.GetInventoryMovementsByItemId(item.ItemId);
+                if (itemMovements != null)
+                {
+                    decimal movementIn = 0;
+                    decimal movementOut = 0;
 
+                    foreach (var movement in itemMovements)
+                    {
+                        if (item.StockTakings.Any(d => d.StockTakingDate > movement.MovementDate))
+                        {
+                            if (movement.MovementeType == Models.Enums.MovementeType.E)
+                            {
+                                movementIn = movementIn + movement.Amount;
+                            }
+                            if (movement.MovementeType == Models.Enums.MovementeType.S)
+                            {
+                                movementOut = movementOut + movement.Amount;
+                            }
+                        }
+                    }
+                    item.SystemQuantity = item.Addressings.Sum(q => q.Quantity) + movementIn - movementOut;
+                }
+                else
+                {
+                    item.SystemQuantity = item.Addressings.Sum(q => q.Quantity);
+                }
 
-                /*if (item.StockTakings != null)
+                if (item.StockTakings != null)
+                {
+                    item.QuantityStockTaking = item.StockTakings.Sum(q => q.StockTakingQuantity);
+                }
+                else
+                {
+                    item.QuantityStockTaking = 0;
+                    item.StockSituation = StockSituation.ItemNoCount;
+                }
+
+                item.Divergence = item.SystemQuantity - item.QuantityStockTaking;
+
+                if (item.StockTakings.Count() > 0)
                 {
                     if (item.SystemQuantity == item.QuantityStockTaking)
                     {
@@ -122,7 +324,7 @@ namespace Inventory.Services
                 else if (!addressingsIdsConference.SequenceEqual(stockTakingIdsConference))
                 {
                     item.AddressingSituation = AddressingSituation.ItemStoredInMoreThanOneAddress;
-                }*/
+                }
             }
 
             model.RouteValue = new RouteValueDictionary { { "filter", filter } };

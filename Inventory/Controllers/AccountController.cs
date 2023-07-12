@@ -61,7 +61,6 @@ namespace Inventory.Controllers
                     return Redirect(loginVM.ReturnUrl);
                 }
             }
-            TempData["errorMessage"] = "Usuário ou senha invalidos";
             return View(loginVM);
         }
 

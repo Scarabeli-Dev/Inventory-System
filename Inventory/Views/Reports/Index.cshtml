@@ -1,7 +1,13 @@
 ﻿@model PagingList<StockTakingReport>
 @{
-    ViewData["Title"] = "Relatório Final";
+    ViewData["Title"] = "Relatório De Contagem";
 }
+
+<div id="infoAlert" class="alert alert-info alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle me-1"></i>
+    Clique no Código do item para ver mais detalhes!
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
 
 <h3>@ViewData["Title"]</h3>
 
@@ -51,29 +57,29 @@
         <table class="table mt-4">
             <thead class="align-middle">
                 <tr class="table-primary">
-                    <th>
-                        Código do Item
+                    <th class="col-1">
+                        @Html.SortableHeaderFor(model => model.ItemId, "ItemId")
                     </th>
-                    <th>
-                        Nome do Item
+                    <th class ="col-3">
+                        @Html.SortableHeaderFor(model => model.ItemName, "ItemName")
                     </th>
-                    <th>
+                    <th class="col-1">
                         Unidade de Medida
                     </th>
-                    <th>
-                        Estoque do Sistema
+                    <th class="col-1">
+                        Quantidade Inicial
                     </th>
-                    <th>
-                        Quantidade da Contagem
+                    <th class="col-1">
+                        Quantidade Contada
                     </th>
-                    <th>
-                        Divergência de Estoque
+                    <th class="col-1">
+                        Divergência
                     </th>
-                    <th>
+                    <th class="col-2">
                         Situação do Estoque
                     </th>
-                    <th>
-                        Situação do Endereçamento
+                    <th class="col-2">
+                        Situação do Armazenamento
                     </th>
                 </tr>
             </thead>
@@ -191,31 +197,34 @@
                                     @{
                                         HashSet<int> addressingItem = new HashSet<int>();
                                     }
-                                    @foreach (var stockTaking in item.StockTakings)
+                                    @if (item.StockTakings != null)
                                     {
-                                        decimal itemSystemQuantity = 0;
-                                        addressingItem.Add(stockTaking.AddressingsInventoryStart.AddressingId);
-                                        <tr class="table-secondary">
-                                            <td>
-                                                @stockTaking.AddressingsInventoryStart.Addressing.Warehouse.Name
-                                            </td>
-                                            <td>
-                                                @stockTaking.AddressingsInventoryStart.Addressing.Name
-                                            </td>
-                                            <td class="text-end">
-                                                @foreach (var addressingQtd in stockTaking.AddressingsInventoryStart.Addressing.Item)
-                                                {
-                                                    if (addressingQtd.ItemId == item.ItemId)
+                                        foreach (var stockTaking in item.StockTakings)
+                                        {
+                                            decimal itemSystemQuantity = 0;
+                                            addressingItem.Add(stockTaking.AddressingsInventoryStart.AddressingId);
+                                            <tr class="table-secondary">
+                                                <td>
+                                                    @stockTaking.AddressingsInventoryStart.Addressing.Warehouse.Name
+                                                </td>
+                                                <td>
+                                                    @stockTaking.AddressingsInventoryStart.Addressing.Name
+                                                </td>
+                                                <td class="text-end">
+                                                    @foreach (var addressingQtd in stockTaking.AddressingsInventoryStart.Addressing.Item)
                                                     {
-                                                        itemSystemQuantity = itemSystemQuantity + addressingQtd.Quantity;
+                                                        if (addressingQtd.ItemId == item.ItemId)
+                                                        {
+                                                            itemSystemQuantity = itemSystemQuantity + addressingQtd.Quantity;
+                                                        }
                                                     }
-                                                }
-                                                @itemSystemQuantity
-                                            </td>
-                                            <td class="text-end">
-                                                @stockTaking.StockTakingQuantity
-                                            </td>
-                                        </tr>
+                                                    @itemSystemQuantity
+                                                </td>
+                                                <td class="text-end">
+                                                    @stockTaking.StockTakingQuantity
+                                                </td>
+                                            </tr>
+                                        }
                                     }
                                     @foreach (var addressing in item.Addressings)
                                     {
@@ -250,3 +259,9 @@
 <div>
     <vc:pager paging-list="@Model"></vc:pager>
 </div>
+
+<script>
+    setTimeout(function () {
+        document.getElementById('infoAlert').style.display = 'none';
+    }, 3000); // 3 segundos
+</script>

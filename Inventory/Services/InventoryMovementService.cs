@@ -5,6 +5,7 @@ using System.Globalization;
 using CsvHelper;
 using Inventory.ViewModels;
 using Inventory.ViewModels.Imports;
+using Microsoft.EntityFrameworkCore;
 
 namespace Inventory.Services
 {
@@ -22,9 +23,9 @@ namespace Inventory.Services
             return _context.InventoryMovement.Where(i => i.ItemId == itemId).ToList();
         }
 
-        public List<InventoryMovement> GetAllInventoryMovementsAsync()
+        public async Task<List<InventoryMovement>> GetAllInventoryMovementsAsync()
         {
-            return _context.InventoryMovement.ToList();
+            return await _context.InventoryMovement.ToListAsync();
         }
 
         public async Task<List<InventoryMovement>> ImportInventoryMovementsAsync(string fileName, string destiny)

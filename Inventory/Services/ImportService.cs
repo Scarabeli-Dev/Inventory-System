@@ -3,6 +3,7 @@ using Inventory.Data;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Inventory.ViewModels.Imports;
+using NuGet.Packaging;
 using System.Globalization;
 
 namespace Inventory.Services
@@ -195,6 +196,15 @@ namespace Inventory.Services
 
         public async Task<bool> InsertItems(List<ItemBaseImport> itemBaseImport)
         {
+            //Verify item exist
+            List<string> idsExist = new List<string>();
+            var itemsExist = await _itemService.GetAllAsync<Item>();
+
+            foreach (var item in itemsExist)
+            {
+                idsExist.Add(item.Id);
+            }
+
             List<Item> itemInsert = new List<Item>();
             List<ItemsAddressings> itemsAddressingsInsert = new List<ItemsAddressings>();
 
@@ -220,7 +230,7 @@ namespace Inventory.Services
             {
                 if (duplicateIds.Contains(item.Id))
                 {
-                    if (firstOccurrence.Contains(item.Id))
+                    if (firstOccurrence.Contains(item.Id) || idsExist.Contains(item.Id))
                     {
                         // Caso seja duplicado e não seja a primeira ocorrência, cria apenas o ItemsAddressings
                         itemsAddressingsInsert.Add(await InsertOnlyItemAddressingImportItemAsync(item, null, addressingIds));

@@ -30,5 +30,13 @@ namespace Inventory.Services
                                                  .Where(i => i.ItemId == itemId)
                                                 .ToListAsync();
         }
+
+        public async Task<List<ItemsAddressings>> GetAllItemsAddressingsAsync()
+        {
+            return await _context.ItemsAddressing.Include(i => i.Item)
+                                                 .Include(a => a.Addressing)
+                                                 .ThenInclude(w => w.Warehouse)
+                                                 .ToListAsync();
+        }       
     }
 }
