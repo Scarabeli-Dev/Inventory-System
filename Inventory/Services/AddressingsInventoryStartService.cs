@@ -42,7 +42,52 @@ namespace Inventory.Services
             return await PageList<AddressingsInventoryStart>.CreateAsync(query, pageParams.PageNumber, query.Count());
         }
 
-        public async Task<PagingList<AddressingsInventoryStart>> GetAddressingsStockTakingsPagingAsync(int inventaryStartId, string filter, int pageindex = 1, string sort = "AddressingCountRealized")
+        public async Task<PagingList<AddressingsInventoryStart>> GetAddressingsStockTakingsPagingAsync(string filter, int pageindex = 1, string sort = "AddressingCountRealized")
+        {
+            var result = _context.AddressingsInventoryStart
+                .Include(l => l.Addressing)
+                .ThenInclude(i => i.Item)
+                .Include(s => s.StockTaking)
+                .AsNoTracking()
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                if ("Contado".ToLower().Contains(filter.ToLower()))
+                {
+                    result = result.Where(p => p.AddressingCountRealized == true);
+                }
+                else if ("Finalizado".ToLower().Contains(filter.ToLower()))
+                {
+                    result = result.Where(p => p.AddressingCountEnded == true);
+                }
+                else
+                {
+                    result = result.Where(p => p.Addressing.Name.ToLower().Contains(filter.ToLower()));
+                }
+            }
+
+            if (sort == "AddressingCountRealized")
+            {
+                result = result.OrderByDescending(p => p.AddressingCountEnded)
+                               .ThenByDescending(p => p.AddressingCountRealized)
+                               .ThenBy(p => p.Addressing.Name);
+            }
+            else
+            {
+                result = result.OrderBy(p =>
+                    p.AddressingCountRealized ? 0 :
+                    p.AddressingCountEnded ? 2 :
+                    1);
+            }
+
+            var model = await PagingList.CreateAsync(result, 10, pageindex, sort, "AddressingCountRealized");
+            model.RouteValue = new RouteValueDictionary { { "filter", filter } };
+
+            return model;
+        }
+
+        public async Task<PagingList<AddressingsInventoryStart>> GetAddressingsStockTakingsByInventoryPagingAsync(int inventaryStartId, string filter, int pageindex = 1, string sort = "AddressingCountRealized")
         {
             var result = _context.AddressingsInventoryStart
                 .Include(l => l.Addressing)
@@ -88,10 +133,9 @@ namespace Inventory.Services
             return model;
         }
 
-
-        public async Task CreateAddressingsStockTakingAsync(int inventoryStartId)
+        public async Task CreateAddressingsStockTakingAsync(int inventoryStartId, int warehouseId)
         {
-            var addressings = await _addressingService.GetAllAsync<Addressing>();
+            var addressings = await _addressingService.GetAllAddressingsByWarehouseIdAsync(warehouseId);
 
             List<AddressingsInventoryStart> addressingsStockTakingRange = new List<AddressingsInventoryStart>();
 

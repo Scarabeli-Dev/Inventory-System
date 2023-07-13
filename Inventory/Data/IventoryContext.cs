@@ -53,6 +53,11 @@ namespace Inventory.Data
                         .WithOne(s => s.InventoryStart)
                         .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Warehouse>()
+                        .HasMany(s => s.InventoryStarts)
+                        .WithOne(s => s.Warehouse)
+                        .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<AddressingsInventoryStart>()
                         .HasMany(s => s.StockTaking)
                         .WithOne(s => s.AddressingsInventoryStart)

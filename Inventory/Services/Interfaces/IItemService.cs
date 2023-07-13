@@ -12,5 +12,6 @@ namespace Inventory.Services.Interfaces
         Task<PagingList<Item>> GetItemsByWarehousePagingAsync(int warehouseId, string filter, int pageindex = 1, string sort = "Name");
         Task<Item> GetItemByIdAsync(string id);
         Task<bool> ImportItemAsync(string fileName, string destiny);
+        Task<List<string>> GetAllItemIdsAsync();
     }
 }

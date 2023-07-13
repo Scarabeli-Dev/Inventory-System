@@ -216,7 +216,12 @@ namespace Inventory.Migrations
                     b.Property<DateTime>("StockTakingFinishDate")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("WarehouseId");
 
                     b.ToTable("InventoryStart");
                 });
@@ -557,6 +562,17 @@ namespace Inventory.Migrations
                     b.Navigation("Warehouse");
                 });
 
+            modelBuilder.Entity("Inventory.Models.InventoryStart", b =>
+                {
+                    b.HasOne("Inventory.Models.Warehouse", "Warehouse")
+                        .WithMany("InventoryStarts")
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Warehouse");
+                });
+
             modelBuilder.Entity("Inventory.Models.ItemsAddressings", b =>
                 {
                     b.HasOne("Inventory.Models.Addressing", "Addressing")
@@ -703,6 +719,8 @@ namespace Inventory.Migrations
             modelBuilder.Entity("Inventory.Models.Warehouse", b =>
                 {
                     b.Navigation("Addressings");
+
+                    b.Navigation("InventoryStarts");
                 });
 #pragma warning restore 612, 618
         }

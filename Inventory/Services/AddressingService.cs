@@ -86,6 +86,20 @@ namespace Inventory.Services
                                                   .Where(s => s.WarehouseId == warehouseId)
                                                   .ToListAsync();
 
+            return result;
+        }
+
+        public async Task<Addressing> GetAddressingbyAddressingAndWarehouseNamesAsync(string addressingName, string warehouseName)
+        {
+            return await _context.Addressing.Include(w => w.Warehouse).FirstOrDefaultAsync(a => a.Name == addressingName && a.Warehouse.Name == warehouseName);
+        }
+
+        public async Task<List<Addressing>> GetAllAddressingsAsync()
+        {
+            var result = await _context.Addressing.Include(l => l.Item)
+                                                  .ThenInclude(i => i.Item)
+                                                  .Include(w => w.Warehouse)
+                                                  .ToListAsync();
 
             return result;
         }

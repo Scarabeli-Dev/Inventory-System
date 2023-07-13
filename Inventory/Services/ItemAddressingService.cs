@@ -14,6 +14,8 @@ namespace Inventory.Services
             _context = context;
         }
 
+        public IEnumerable<ItemsAddressings> ItemsAddressings => _context.ItemsAddressing.Include(a => a.Addressing).ThenInclude(w => w.Warehouse);
+
         public async Task<ItemsAddressings> GetItemAddressingByIdsAsync(string itemId, int addressingId)
         {
             return await _context.ItemsAddressing.Include(i => i.Item)

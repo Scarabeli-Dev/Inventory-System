@@ -13,5 +13,6 @@ namespace Inventory.Models
         public string Name { get; set; }
 
         public IEnumerable<Addressing> Addressings { get; set; }
+        public IEnumerable<InventoryStart> InventoryStarts { get; set; }
     }
 }

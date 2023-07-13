@@ -35,45 +35,29 @@ namespace Inventory.Controllers
             warehouseList.Insert(0, new SelectListItem { Text = "Todos", Value = 0.ToString() });
             ViewData["WarehouseId"] = new SelectList(warehouseList, "Value", "Text", warehouseId);
 
-            var stockSituationList = new List<SelectListItem>{
-    new SelectListItem
-    {
-        Value = "-1",
-        Text = "Todos"
-    }
-};
+            ViewData["StockSituation"] = new SelectList(GetEnumSelectListWithAll<StockSituation>("Todos"), "Value", "Text", stockSituation);
+            ViewData["AddressingSituation"] = new SelectList(GetEnumSelectListWithAll<AddressingSituation>("Todos"), "Value", "Text", addressingSituation);
 
-            stockSituationList.AddRange(Enum.GetValues(typeof(StockSituation))
-                .OfType<StockSituation>()
-                .Select(enumValue => new SelectListItem
-                {
-                    Value = ((int)enumValue).ToString(),
-                    Text = enumValue.GetDisplayName()
-                }));
-
-            ViewData["StockSituation"] = new SelectList(stockSituationList, "Value", "Text", stockSituation);
-
-
-            var addressingSituationList = new List<SelectListItem>{
-    new SelectListItem
-    {
-        Value = "-1",
-        Text = "Todos"
-    }
-};
-            addressingSituationList.AddRange(Enum.GetValues(typeof(AddressingSituation))
-                .OfType<AddressingSituation>()
-                .Select(enumValue => new SelectListItem
-                {
-                    Value = ((int)enumValue).ToString(),
-                    Text = enumValue.GetDisplayName()
-                }));
-
-            ViewData["AddressingSituation"] = new SelectList(addressingSituationList, "Value", "Text", addressingSituation);
 
 
             return View(await _reportViewService.ReportWithMovementation(filter, pageindex, sortExpression, warehouseId, stockSituation, addressingSituation));
         }
+
+        private List<SelectListItem> GetEnumSelectListWithAll<T>(string displayNameAll) where T : Enum
+        {
+            var selectList = new List<SelectListItem> { new SelectListItem { Value = "-1", Text = displayNameAll } };
+
+            selectList.AddRange(Enum.GetValues(typeof(T))
+                .OfType<T>()
+                .Select(enumValue => new SelectListItem
+                {
+                    Value = ((int)(object)enumValue).ToString(),
+                    Text = enumValue.GetDisplayName()
+                }));
+
+            return selectList;
+        }
+
 
     }
 }

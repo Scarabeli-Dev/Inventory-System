@@ -23,13 +23,14 @@ namespace Inventory.Services
         {
             var result = await _context.InventoryStart.AddAsync(inventoryStart);
             await _context.SaveChangesAsync();
-            await _addressingsStockTakingService.CreateAddressingsStockTakingAsync(result.Entity.Id);
+            await _addressingsStockTakingService.CreateAddressingsStockTakingAsync(result.Entity.Id, inventoryStart.WarehouseId);
         }
 
         public async Task<PagingList<InventoryStart>> GetAllInventoryStartsAsync(string filter, int pageindex = 1, string sort = "InventoryStartDate")
         {
             var result = _context.InventoryStart.Include(l => l.Addressings)
                                       .ThenInclude(l => l.Addressing)
+                                      .Include(w => w.Warehouse)
                                       .AsNoTracking()
                                       .AsQueryable();
 
@@ -46,7 +47,7 @@ namespace Inventory.Services
 
         public async Task<InventoryStart> GetInventoryStartByIdAsync(int id)
         {
-            return await _context.InventoryStart.Include(l => l.Addressings).ThenInclude(il => il.Addressing).FirstOrDefaultAsync(m => m.Id == id);
+            return await _context.InventoryStart.Include(l => l.Addressings).ThenInclude(il => il.Addressing).Include(w => w.Warehouse).FirstOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task<InventoryStart> GetInventoryStartByAddressingAsync(int addressingId)
@@ -56,6 +57,7 @@ namespace Inventory.Services
             var inventoryStart = await _context.InventoryStart.Include(l => l.Addressings)
                                                               .ThenInclude(il => il.Addressing)
                                                               .ThenInclude(s => s.StockTaking)
+                                                              .Include(w => w.Warehouse)
                                                               .FirstOrDefaultAsync(i => i.IsCompleted != true);
             return inventoryStart;
         }

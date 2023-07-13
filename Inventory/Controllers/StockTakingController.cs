@@ -38,9 +38,14 @@ namespace Inventory.Controllers
             _itemAddressingService = itemAddressingService;
         }
 
-        public async Task<IActionResult> Index(int inventaryStartId, string filter, int pageindex = 1, string sort = "AddressingCountRealized")
+        public async Task<IActionResult> Index(string filter, int pageindex = 1, string sort = "AddressingCountRealized")
         {
-            return View(await _addressingsInventoryStartService.GetAddressingsStockTakingsPagingAsync(1, filter, pageindex, sort));
+            return View(await _addressingsInventoryStartService.GetAddressingsStockTakingsPagingAsync(filter, pageindex, sort));
+        }
+
+        public async Task<IActionResult> IndexInventaryStart(int inventaryStartId, string filter, int pageindex = 1, string sort = "AddressingCountRealized")
+        {
+            return View(await _addressingsInventoryStartService.GetAddressingsStockTakingsByInventoryPagingAsync(inventaryStartId, filter, pageindex, sort));
         }
 
         [Route("Lista/Recontagem")]

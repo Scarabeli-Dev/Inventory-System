@@ -14,16 +14,19 @@ namespace Inventory.Services
         private readonly IItemService _itemService;
         private readonly IAddressingService _addressingService;
         private readonly IWarehouseService _warehouseService;
+        private readonly IItemAddressingService _itemAddressingService;
 
         public ImportService(InventoryContext context,
                              IItemService itemService,
                              IAddressingService addressingService,
-                             IWarehouseService warehouseService)
+                             IWarehouseService warehouseService,
+                             IItemAddressingService itemAddressingService)
         {
             _context = context;
             _itemService = itemService;
             _addressingService = addressingService;
             _warehouseService = warehouseService;
+            _itemAddressingService = itemAddressingService;
         }
 
         public async Task<bool> ImportAsync(string fileName, string destiny)
@@ -45,7 +48,6 @@ namespace Inventory.Services
             }
 
             // Listas para adicionar
-            List<Item> itemInsert = new List<Item>();
             List<ItemBaseImport> itemBaseImport = new List<ItemBaseImport>();
             List<AddressingBaseImport> addressingsBaseImport = new List<AddressingBaseImport>();
             List<Warehouse> warehouseInsert = new List<Warehouse>();
@@ -54,7 +56,23 @@ namespace Inventory.Services
             // Listas para duplicados
             HashSet<string> warehouseNames = new HashSet<string>();
             HashSet<string> addressingNames = new HashSet<string>();
-            HashSet<string> itemIds = new HashSet<string>();
+
+            //Adicionar existentes do sistema
+            Dictionary<string, int> warehouseIds = new Dictionary<string, int>();
+            foreach (var warehouse in await _warehouseService.GetAllAsync<Warehouse>())
+            {
+                warehouseIds[warehouse.Name] = warehouse.Id;
+                warehouseNames.Add(warehouse.Name);
+            }
+
+            Dictionary<string, int> addressingsIds = new Dictionary<string, int>();
+            foreach (var addressing in await _addressingService.GetAllAddressingsAsync())
+            {
+                string name = addressing.Name + addressing.Warehouse.Name;
+
+                addressingsIds[name] = addressing.Id;
+                addressingNames.Add(name);
+            }
 
             foreach (var item in importsList)
             {
@@ -88,9 +106,8 @@ namespace Inventory.Services
             }
 
             await InsertWarehouses(warehouseInsert);
-            await InsertAddressings(addressingsBaseImport);
-            await InsertItems(itemBaseImport);
-
+            await InsertAddressings(addressingsBaseImport, warehouseIds);
+            await InsertItems(itemBaseImport, addressingNames, addressingsIds);
 
             return true;
         }
@@ -124,21 +141,9 @@ namespace Inventory.Services
         //    return true;
         //}
 
-        public async Task<bool> InsertAddressings(List<AddressingBaseImport> addressingsBaseImport)
+        public async Task<bool> InsertAddressings(List<AddressingBaseImport> addressingsBaseImport, Dictionary<string, int> warehouseIds)
         {
             List<Addressing> addressingsInsert = new List<Addressing>();
-
-            // Criar dicionário para mapear nome do armazém ao ID
-            Dictionary<string, int> warehouseIds = new Dictionary<string, int>();
-
-            // Obter todos os armazéns existentes
-            var warehouses = await _warehouseService.GetAllAsync<Warehouse>();
-
-            // Popula o dicionário com os IDs dos armazéns
-            foreach (var warehouse in warehouses)
-            {
-                warehouseIds[warehouse.Name] = warehouse.Id;
-            }
 
             foreach (var item in addressingsBaseImport)
             {
@@ -194,19 +199,16 @@ namespace Inventory.Services
         //    return true;
         //}
 
-        public async Task<bool> InsertItems(List<ItemBaseImport> itemBaseImport)
+        public async Task<bool> InsertItems(List<ItemBaseImport> itemBaseImport, HashSet<string> addressingNames, Dictionary<string, int> addressingsIds)
         {
             //Verify item exist
-            List<string> idsExist = new List<string>();
-            var itemsExist = await _itemService.GetAllAsync<Item>();
+            //List<string> idsExist = new List<string>();
+            var idsExist = new HashSet<string>(await _itemService.GetAllItemIdsAsync());
 
-            foreach (var item in itemsExist)
-            {
-                idsExist.Add(item.Id);
-            }
 
             List<Item> itemInsert = new List<Item>();
             List<ItemsAddressings> itemsAddressingsInsert = new List<ItemsAddressings>();
+            List<ItemsAddressings> itemsAddressingsForUpdate = new List<ItemsAddressings>();
 
             // Listas para duplicados
             List<string> duplicateIds = GetDuplicateIds(itemBaseImport);
@@ -215,24 +217,26 @@ namespace Inventory.Services
             // Criar dicionário para mapear a chave composta de nome do addressing e nome do warehouse ao ID do addressing
             Dictionary<(string, string), int> addressingIds = new Dictionary<(string, string), int>();
 
-            // Obter todos os addressings existentes
-            var addressings = await _addressingService.GetAllAsync<Addressing>();
-
-            // Popula o dicionário com os IDs dos addressings usando a chave composta de nome do addressing e nome do warehouse
-            foreach (var addressing in addressings)
-            {
-                var key = (addressing.Name, addressing.Warehouse.Name);
-                addressingIds[key] = addressing.Id;
-            }
-
             // Iterar sobre os itens importados
             foreach (var item in itemBaseImport)
             {
-                if (duplicateIds.Contains(item.Id))
+                List<ItemsAddressings> itemsAddressings = new List<ItemsAddressings>();
+
+                foreach (var itemAddressing in itemsAddressings)
+                {
+                }
+
+                if (duplicateIds.Contains(item.Id) || idsExist.Contains(item.Id))
                 {
                     if (firstOccurrence.Contains(item.Id) || idsExist.Contains(item.Id))
                     {
                         // Caso seja duplicado e não seja a primeira ocorrência, cria apenas o ItemsAddressings
+                        if (addressingNames.Contains(item.AddressingName + item.WarehouseName))
+                        {
+                            itemsAddressingsInsert.Add(await InsertItemAddressingsForUpdateAsync(item, addressingsIds[item.AddressingName + item.WarehouseName]));
+                            continue;
+                        }
+
                         itemsAddressingsInsert.Add(await InsertOnlyItemAddressingImportItemAsync(item, null, addressingIds));
                         continue;
                     }
@@ -250,7 +254,8 @@ namespace Inventory.Services
             }
 
             await _context.Item.AddRangeAsync(itemInsert);
-            await _context.ItemsAddressing.AddRangeAsync(itemsAddressingsInsert);
+            //await _context.ItemsAddressing.AddRangeAsync(itemsAddressingsInsert);
+            _context.ItemsAddressing.UpdateRange(itemsAddressingsInsert);
             await _context.SaveChangesAsync();
 
             return true;
@@ -300,6 +305,15 @@ namespace Inventory.Services
                 itemsAddressings.AddressingId = addressingIds[key];
                 itemsAddressings.Quantity = item.Quantity;
             }
+
+            return itemsAddressings;
+        }
+
+        private async Task<ItemsAddressings> InsertItemAddressingsForUpdateAsync(ItemBaseImport itemAddressing, int addressingId)
+        {
+            ItemsAddressings itemsAddressings = await _itemAddressingService.GetItemAddressingByIdsAsync(itemAddressing.Id, addressingId);
+
+            itemsAddressings.Quantity = itemAddressing.Quantity;
 
             return itemsAddressings;
         }

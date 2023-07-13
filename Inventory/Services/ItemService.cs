@@ -157,6 +157,11 @@ namespace Inventory.Services
             return true;
         }
 
+        public async Task<List<string>> GetAllItemIdsAsync()
+        {
+            return await _context.Item.Select(item => item.Id).ToListAsync();
+        }
+
         private List<string> GetDuplicateIds(List<ItemImport> items)
         {
             List<string> duplicateIds = new List<string>();

@@ -2,6 +2,7 @@
 using Inventory.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Inventory.Controllers
 {
@@ -11,11 +12,13 @@ namespace Inventory.Controllers
     {
         private readonly IInventoryStartService _inventoryStartService;
         private readonly IAddressingsInventoryStartService _addressingsStockTakingService;
+        private readonly IWarehouseService _warehouseService;
 
-        public InventoryStartController(IInventoryStartService inventoryStartService, IAddressingsInventoryStartService addressingsStockTakingService)
+        public InventoryStartController(IInventoryStartService inventoryStartService, IAddressingsInventoryStartService addressingsStockTakingService, IWarehouseService warehouseService)
         {
             _inventoryStartService = inventoryStartService;
             _addressingsStockTakingService = addressingsStockTakingService;
+            _warehouseService = warehouseService;
         }
 
         public async Task<IActionResult> Index(string filter, int pageindex = 1, string sort = "InventoryStartDate")
@@ -24,8 +27,9 @@ namespace Inventory.Controllers
         }
 
         [Route("Cadastro")]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            ViewData["SementeId"] = new SelectList( await _warehouseService.GetAllAsync<Warehouse>(), "Id", "Descricao");
             return View();
         }
 
@@ -42,6 +46,7 @@ namespace Inventory.Controllers
                 return RedirectToAction(nameof(Index));
             }
             TempData["errorMessage"] = "Inventário";
+            ViewData["SementeId"] = new SelectList(await _warehouseService.GetAllAsync<Warehouse>(), "Id", "Descricao", inventoryStart.WarehouseId);
             return View(inventoryStart);
         }
 
@@ -93,9 +98,9 @@ namespace Inventory.Controllers
         }
 
         [Route("Contagem/Enderecamento")]
-        public async Task<IActionResult> AddressingCount(int inventaryStartId, string filter, int pageindex = 1, string sort = "Id")
+        public async Task<IActionResult> AddressingCount(string filter, int pageindex = 1, string sort = "Id")
         {
-            return View(await _addressingsStockTakingService.GetAddressingsStockTakingsPagingAsync(inventaryStartId, filter, pageindex, sort));
+            return View(await _addressingsStockTakingService.GetAddressingsStockTakingsPagingAsync(filter, pageindex, sort));
         }
     }
 }
