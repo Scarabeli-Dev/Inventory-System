@@ -1,4 +1,6 @@
-﻿namespace Inventory.Models.Enums
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Inventory.Models.Enums
 {
     public enum UnitOfMeasurement : int
     {
@@ -11,7 +13,11 @@
         l = 6,
         ml = 7,
         gl = 8,
+
+        [Display(Name ="m²")]
         m2 = 9,
+        
+        [Display(Name = "m³")]
         m3 = 10,
         cx = 11,
         pc = 12,

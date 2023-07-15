@@ -2,50 +2,51 @@
 
 @{
     decimal quantity = 0;
-    ViewData["Title"] = "Details";
 }
-
-<h1>Details</h1>
-
-<div>
-    <h4>Item</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-2">
-            Quantidade
-        </dt>
-        <dd class="col-sm-10">
-            @foreach (var item in Model.Addressings)
-            {
-                quantity = quantity + item.Quantity;
-            }
-            @quantity
-            @Html.DisplayFor(model => model.UnitOfMeasurement)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Observation)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Observation)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Addressings)
-        </dt>
-        @foreach (var item in Model.Addressings)
-        {
-            <dd class="col-sm-10">
-                @Html.DisplayFor(modelItem => item.Addressing.Name) - Depósito @Html.DisplayFor(modelItem => item.Addressing.Warehouse.Name)
-            </dd>
-        }
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+@foreach (var item in Model.Addressings)
+{
+    quantity = quantity + item.Quantity;
+}
+<h1>@Model.Id - @Model.Name</h1>
+<h4>
+    Quantidade Total: @quantity @Html.DisplayFor(model => model.UnitOfMeasurement)
+</h4>
+<div class="card">
+    <div class="card-body">
+        @Html.DisplayFor(model => model.Observation)
+        <table class="table table-striped mt-2">
+            <thead>
+                <tr>
+                    <th>
+                        Quantidade
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Addressings)
+                    </th>
+                    <th>
+                        Depósito
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Addressings)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Quantity) @Html.DisplayFor(model => model.UnitOfMeasurement)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Addressing.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Addressing.Warehouse.Name)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    <div>
+        <a class="btn btn-primary" asp-action="Index">Voltar</a>
+    </div>
+    </div>
 </div>

@@ -44,6 +44,28 @@ namespace Inventory.Services
             return user;
         }
 
+        public bool UpdateUser(User user, ChangePasswordViewModel userVM)
+        {
+            try
+            {
+                IdentityResult result = _userManager.ChangePasswordAsync(user, userVM.CurrentPassword, userVM.NewPassword).Result;
+
+                if (result.Succeeded)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
         public async Task<PagingList<User>> GetUsersByPaggingList(string filter, int pageindex = 1, string sort = "Name")
         {
             var result = _context.Users.Include(ur => ur.UserRole)

@@ -10,5 +10,6 @@ namespace Inventory.Services.Interfaces
         Task<User> CreateUser(RegisterViewModel userVM);
         Task<PagingList<User>> GetUsersByPaggingList(string filter, int pageindex = 1, string sort = "Name");
         Task<User> GetUserByIdAsync(int userId);
+        bool UpdateUser(User user, ChangePasswordViewModel userVM);
     }
 }

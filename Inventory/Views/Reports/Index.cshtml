@@ -43,7 +43,7 @@
 <div class="card">
     <div class="card-body">
 
-        <table class="table mt-4">
+        <table class="table mt-4 table-hover">
             <thead class="align-middle">
                 <tr class="table-primary">
                     <th class="col-1">
@@ -56,7 +56,7 @@
                         Unidade de Medida
                     </th>
                     <th class="col-1">
-                        Quantidade Inicial
+                        Quantidade do Sistema
                     </th>
                     <th class="col-1">
                         Quantidade Contada
@@ -124,7 +124,7 @@
                     </tr>
                     <tr id="collapse-@item.ItemId" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordion-@item.ItemId">
                         <td colspan="8" class="accordion-body">
-                            <table class="table">
+                            <table class="table table-hover">
                                 <thead class="align-middle">
                                     <tr class="table-info">
                                         <th>
@@ -141,35 +141,92 @@
                                         </th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="align-middle">
                                     @{
                                         HashSet<int> addressingItem = new HashSet<int>();
                                     }
-                                    @if (item.StockTakings != null)
+
+                                    @foreach (var stockTaking in item.StockTakings)
                                     {
-                                        foreach (var stockTaking in item.StockTakings)
-                                        {
-                                            decimal itemSystemQuantity = 0;
-                                            addressingItem.Add(stockTaking.AddressingsInventoryStart.AddressingId);
-                                            <tr class="table-secondary">
-                                                <td>
-                                                    @stockTaking.AddressingsInventoryStart.Addressing.Warehouse.Name
-                                                </td>
-                                                <td>
+                                        decimal itemSystemQuantity = 0;
+                                        addressingItem.Add(stockTaking.AddressingsInventoryStart.AddressingId);
+                                        <tr class="table-secondary">
+                                            <td>
+                                                @stockTaking.AddressingsInventoryStart.Addressing.Warehouse.Name
+                                            </td>
+                                            <td>
+                                                @if (stockTaking.PerishableItem != null)
+                                                {
+                                                    <button class="accordion-button collapsed" style="background-color:#e2e3e5;" data-bs-toggle="collapse" data-bs-target="#collapse-@stockTaking.Id" aria-expanded="false" aria-controls="collapse-@stockTaking.Id">
+                                                        @stockTaking.AddressingsInventoryStart.Addressing.Name
+                                                    </button>
+                                                }
+                                                else
+                                                {
                                                     @stockTaking.AddressingsInventoryStart.Addressing.Name
-                                                </td>
-                                                <td class="text-end">
-                                                    @foreach (var addressingQtd in stockTaking.AddressingsInventoryStart.Addressing.Item)
+                                                }
+                                            </td>
+                                            <td class="text-end">
+                                                @foreach (var addressingQtd in stockTaking.AddressingsInventoryStart.Addressing.Item)
+                                                {
+                                                    if (addressingQtd.ItemId == item.ItemId)
                                                     {
-                                                        if (addressingQtd.ItemId == item.ItemId)
-                                                        {
-                                                            itemSystemQuantity = itemSystemQuantity + addressingQtd.Quantity;
-                                                        }
+                                                        itemSystemQuantity = itemSystemQuantity + addressingQtd.Quantity;
                                                     }
-                                                    @itemSystemQuantity
-                                                </td>
-                                                <td class="text-end">
-                                                    @stockTaking.StockTakingQuantity
+                                                }
+                                                @itemSystemQuantity
+                                            </td>
+                                            <td class="text-end">
+                                                @stockTaking.StockTakingQuantity
+                                            </td>
+                                        </tr>
+                                        @if (stockTaking.PerishableItem != null)
+                                        {
+                                            <tr id="collapse-@stockTaking.Id" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordion-@stockTaking.Id">
+                                                <td colspan="6" class="accordion-body">
+                                                    <table class="table table-hover">
+                                                        <thead class="align-middle">
+                                                            <tr class="table-success">
+                                                                <th>
+                                                                    Lote
+                                                                </th>
+                                                                <th>
+                                                                    Data de Fabricação
+                                                                </th>
+                                                                <th>
+                                                                    Data de Validade
+                                                                </th>
+                                                                <th class="text-end">
+                                                                    Quantidade do Lote
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="align-middle">
+                                                            @foreach (var itemBatch in stockTaking.PerishableItem)
+                                                            {
+                                                                <tr class="table-light">
+                                                                    <td>
+                                                                        @itemBatch.ItemBatch
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (itemBatch.FabricationDate.HasValue)
+                                                                        {
+                                                                            @(((DateTime)itemBatch.FabricationDate).ToString("dd/MM/yyyy"))
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (itemBatch.ExpirationDate.HasValue)
+                                                                        {
+                                                                            @(((DateTime)itemBatch.ExpirationDate).ToString("dd/MM/yyyy"))
+                                                                        }
+                                                                    </td>
+                                                                    <td class="text-end">
+                                                                        @itemBatch.PerishableItemQuantity
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
                                                 </td>
                                             </tr>
                                         }

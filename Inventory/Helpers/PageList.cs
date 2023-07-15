@@ -31,9 +31,7 @@ namespace Inventory.Helpers
             return new PageList<T>(items, count, pageNumber, pageSize);
         }
 
-        public static async Task<PageList<T>> ListCreateAsync(
-    List<T> source, int pageNumber, int pageSize
-    )
+        public static PageList<T> ListCreateAsync(List<T> source, int pageNumber, int pageSize)
         {
             var count = source.Count();
             var items = source.Skip((pageNumber - 1) * pageSize)

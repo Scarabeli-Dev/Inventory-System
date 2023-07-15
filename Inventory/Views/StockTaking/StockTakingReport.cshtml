@@ -52,7 +52,12 @@
                             @Html.DisplayFor(modelItem => item.NumberOfCount)
                         </td>
 
-                        @if (item.ItemInitialQuantity != item.ItemStockTakingQuantity && item.ItemStockTakingQuantity != item.ItemStockTakingPreviousQuantity)
+                        @if (item.NumberOfCount == 0)
+                        {
+                            <td class="text-danger">-</td>
+                            recount = true;
+                        }
+                        else if (item.ItemInitialQuantity != item.ItemStockTakingQuantity && item.ItemStockTakingQuantity != item.ItemStockTakingPreviousQuantity)
                         {
                             <td class="table-danger">
 

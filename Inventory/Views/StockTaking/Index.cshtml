@@ -15,13 +15,21 @@
     </div>
 </div>*@
 
-<form method="get" class="nput-group mb-3">
+<form method="get">
+    <div class="row align-items-end mb-3">
+        <div class="col-md-2">
+            <label for="warehouseId" class="form-label">Pesquise pelo Item</label>
+            <input name="filter" class="form-control" placeholder="filtro" value="@Model.RouteValue["Filter"]" />
+        </div>
 
-    <div class="input-group mb-3">
-        <input name="filter" class="form-control" placeholder="filtro"
-               value="@Model.RouteValue["Filter"]" />
+        <div class="col-md-2">
+            <label for="warehouseId" class="form-label">Depósito</label>
+            @Html.DropDownList("warehouseId", ViewData["WarehouseId"] as SelectList, new { @class = "form-control" })
+        </div>
 
-        <button type="submit" class="btn btn-info">Procurar</button>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-info">Aplicar filtro</button>
+        </div>
     </div>
 </form>
 

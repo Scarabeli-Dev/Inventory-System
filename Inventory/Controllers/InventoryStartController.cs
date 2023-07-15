@@ -23,13 +23,14 @@ namespace Inventory.Controllers
 
         public async Task<IActionResult> Index(string filter, int pageindex = 1, string sort = "InventoryStartDate")
         {
+            ViewData["WarehouseId"] = new SelectList(_warehouseService.Warehouses, "Id", "Name");
             return View(await _inventoryStartService.GetAllInventoryStartsAsync(filter, pageindex, sort));
         }
 
         [Route("Cadastro")]
-        public async Task<IActionResult> Create()
+        public IActionResult Create()
         {
-            ViewData["SementeId"] = new SelectList( await _warehouseService.GetAllAsync<Warehouse>(), "Id", "Descricao");
+            ViewData["WarehouseId"] = new SelectList( _warehouseService.Warehouses, "Id", "Name");
             return View();
         }
 
@@ -46,7 +47,7 @@ namespace Inventory.Controllers
                 return RedirectToAction(nameof(Index));
             }
             TempData["errorMessage"] = "Inventário";
-            ViewData["SementeId"] = new SelectList(await _warehouseService.GetAllAsync<Warehouse>(), "Id", "Descricao", inventoryStart.WarehouseId);
+            ViewData["WarehouseId"] = new SelectList(await _warehouseService.GetAllAsync<Warehouse>(), "Id", "Name", inventoryStart.WarehouseId);
             return View(inventoryStart);
         }
 

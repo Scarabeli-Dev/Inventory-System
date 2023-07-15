@@ -1,9 +1,12 @@
 ﻿using Inventory.Models.Account;
 using Inventory.Services.Interfaces;
+using Inventory.ViewModels;
 using Inventory.ViewModels.AccountVM;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Diagnostics;
 
 namespace Inventory.Controllers
 {
@@ -61,6 +64,7 @@ namespace Inventory.Controllers
                     return Redirect(loginVM.ReturnUrl);
                 }
             }
+            TempData["user"] = "Usuário e/ou senha inválidos!";
             return View(loginVM);
         }
 
@@ -82,7 +86,7 @@ namespace Inventory.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = _accountService.CreateUser(userVM);
+                var user = await _accountService.CreateUser(userVM);
 
                 if (user != null)
                 {
@@ -96,6 +100,44 @@ namespace Inventory.Controllers
             }
             TempData["errorMessage"] = "Usuário " + userVM.UserName;
             return View(userVM);
+        }
+
+        [Route("Mudar-Senha/")]
+        public IActionResult ChangePassword(int userId)
+        {
+            ChangePasswordViewModel userReturn = new ChangePasswordViewModel();
+
+            userReturn.UserId = userId;
+            return View(userReturn);
+        }
+
+        [HttpPost]
+        [Route("Mudar-Senha/")]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel userVM, int userId)
+        {
+            if (!ModelState.IsValid)
+                return View(userVM);
+            try
+            {
+                var user = await _accountService.GetUserByIdAsync(userVM.UserId);
+
+                if (user != null && user.Id == userId)
+                {
+                    bool result = _accountService.UpdateUser(user, userVM);
+
+                    if (result)
+                    {
+                        return RedirectToAction("Index", "Warehouses");
+                    }
+                }
+
+                TempData["user"] = "Erro ao mudar senha!";
+                return View(userVM);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Error", new { message = ex.Message });
+            }
         }
 
         [HttpPost]

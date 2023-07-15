@@ -79,17 +79,19 @@
                     <input asp-for="ItemId" class="form-control" value="@itemCount.Id" />
                     <input asp-for="AddressingsInventoryStartId" name="AddressingsInventoryStartId" class="form-control" value="@addressing.Id" id="addressing-id" />
                 </div>
-                <div class="mt-3">
-                    <input type="submit" value="Salvar" class="btn btn-primary" />
+                <div class="d-flex flex-row">
+                    <div class="mt-3 me-2">
+                        <input type="submit" value="Salvar" class="btn btn-primary" />
+                    </div>
+                    <div class="mt-3 ms-2">
+                        <a href="@Url.Action("Details", "Warehouses", new { id = @addressing.WarehouseId })" class="btn btn-primary">Voltar para a lista</a>
+                    </div>
                 </div>
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a href="@Url.Action("Details", "Warehouses", new { id = @addressing.WarehouseId })" class="btn btn-primary">Voltar para a lista</a>
-</div>
 
 <div>
     <div class="modal fade" id="modal-form" tabindex="-1" data-bs-backdrop="false">
@@ -115,7 +117,6 @@
     </div>
 </div>
 <!-- Fim do Modal de Confirmação de Remoção -->
-
 @section Scripts {
     <script type="text/javascript">
 
@@ -125,6 +126,7 @@
                 var id = $('#removeItemBatch').data('id');
                 $('[data-id=' + id + ']').remove();
                 $('#removeItemBatch').modal('hide');
+                console.log($('#removeItemBatch').data('id'))
             });
 
             // Exibir campos da div "dates" se IsPerishableItem for true
@@ -146,7 +148,7 @@
                 '       </div>' +
                 '   </div>' +
                 '</td>' +
-                '<td><div class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#removeItemBatch"><i class="bi bi-trash"></i></div></td>' +
+                '<td><div class="btn btn-danger" id="itemBatchRemove" onclick = "openDelet(' + rowCount + ')"><i class="bi bi-trash"></i></div></td>' +
                 '</tr>';
             $('#lotesTable tbody').append(newRow);
         }
@@ -171,7 +173,6 @@
         }
 
         //Abre modal Delete
-
         function openDelet(id) {
             $('#removeItemBatch').data('id', id).modal('show');
             console.log(id);

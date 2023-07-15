@@ -56,7 +56,7 @@ namespace Inventory.Controllers
             }
             // Retorna uma resposta de erro ou redireciona para outra página
             TempData["errorMessage"] = "item";
-            return BadRequest("Nenhum documento foi enviado.");
+            return RedirectToAction(nameof(ImportAll));
         }
     }
 }

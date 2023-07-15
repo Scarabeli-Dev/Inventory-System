@@ -18,10 +18,14 @@ namespace Inventory.Models
 
         [Display(Name = "Depósito")]
         public int WarehouseId { get; set; }
+        
+        [Display(Name = "Depósito")]
         public Warehouse Warehouse { get; set; }
 
         [Display(Name = "Concluído")]
         public bool IsCompleted { get; set; }
+
+        [Display(Name = "Endereçamentos")]
         public IEnumerable<AddressingsInventoryStart> Addressings { get; set; }
     }
 }

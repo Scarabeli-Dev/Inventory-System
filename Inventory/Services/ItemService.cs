@@ -131,16 +131,16 @@ namespace Inventory.Services
                 {
                     if (fisrtOccurrence.Contains(item.Id))
                     {
-                        itemsAddressingsInsert.Add(await InsertOnlyItemAddressingImportItemAsync(item, null));
+                        itemsAddressingsInsert.Add(InsertOnlyItemAddressingImportItemAsync(item, null));
                         continue;
                     }
-                    itemInsert.Add(await InsertImportItemAsync(item));
-                    itemsAddressingsInsert.Add(await InsertOnlyItemAddressingImportItemAsync(item, null));
+                    itemInsert.Add(InsertImportItemAsync(item));
+                    itemsAddressingsInsert.Add(InsertOnlyItemAddressingImportItemAsync(item, null));
                     fisrtOccurrence.Add(item.Id);
                     continue;
                 }
-                itemInsert.Add(await InsertImportItemAsync(item));
-                itemsAddressingsInsert.Add(await InsertOnlyItemAddressingImportItemAsync(null, item));
+                itemInsert.Add(InsertImportItemAsync(item));
+                itemsAddressingsInsert.Add(InsertOnlyItemAddressingImportItemAsync(null, item));
 
             }
 
@@ -179,7 +179,7 @@ namespace Inventory.Services
             return duplicateIds;
         }
 
-        private async Task<Item> InsertImportItemAsync(ItemImport item)
+        private Item InsertImportItemAsync(ItemImport item)
         {
             Item itemReturn = new Item();
             itemReturn.Id = item.Id;
@@ -189,7 +189,7 @@ namespace Inventory.Services
             return itemReturn;
         }
 
-        private async Task<ItemsAddressings> InsertOnlyItemAddressingImportItemAsync(ItemImport item, ItemImport itemReturn)
+        private ItemsAddressings InsertOnlyItemAddressingImportItemAsync(ItemImport item, ItemImport itemReturn)
         {
             ItemsAddressings itemsAddressings = new ItemsAddressings();
             if (itemReturn != null)

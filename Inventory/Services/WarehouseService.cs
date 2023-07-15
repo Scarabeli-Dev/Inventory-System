@@ -19,6 +19,7 @@ namespace Inventory.Services
             _context = context;
         }
 
+        public IEnumerable<Warehouse> Warehouses => _context.Warehouse;
         public async Task<Warehouse> GetWarehouseByName(string warehouseName)
         {
             return await _context.Warehouse.FirstOrDefaultAsync(w => w.Name == warehouseName);

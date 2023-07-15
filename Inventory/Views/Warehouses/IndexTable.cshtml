@@ -17,12 +17,6 @@
 </form>
 
 <p>
-    <form asp-controller="Warehouses" asp-action="ImportWarehouses" mothod="post" enctype="multipart/form-data">
-        <div class="input-group mb-3">
-            <input type="file" name="documentFile" class="form-control" />
-            <button type="submit" class="btn btn-group btn-success">Upload</button>
-        </div>
-    </form>
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#create-modal">
         Novo Depósito
     </button>
@@ -51,12 +45,15 @@
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-success">
                                     <i class="bi bi-info-circle"></i>
                                 </a>
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" onclick="actionEdit(@item.Id)" data-bs-target="#edit-modal">
-                                    <i class="bi bi-pencil-square"></i>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" onclick="actionEdit(@item.Id)" data-bs-target="#edit-modal">
+                                        <i class="bi bi-pencil-square"></i>
                                     </button>
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" onclick="actionDelete(@item.Id)" data-bs-target="#delete-modal">
-                                    <i class="bi bi-trash"></i>
-                                </button>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" onclick="actionDelete(@item.Id)" data-bs-target="#delete-modal">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                }
                             </div>
                         </td>
                     </tr>

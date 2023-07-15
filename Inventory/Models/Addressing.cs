@@ -21,6 +21,8 @@ namespace Inventory.Models
 
         [Display(Name = "Itens")]
         public IEnumerable<ItemsAddressings> Item { get; set; }
+
+        [Display(Name = "Contagens")]
         public IEnumerable<AddressingsInventoryStart> StockTaking { get; set; }
 
     }

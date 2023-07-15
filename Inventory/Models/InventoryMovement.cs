@@ -13,6 +13,8 @@ namespace Inventory.Models
         [Display(Name = "Código do Item")]
         [StringLength(150, ErrorMessage = "Máximo de {1} caracteres!")]
         public string ItemId { get; set; }
+
+        [Display(Name = "Item")]
         public Item Item { get; set; }
 
         [Display(Name = "Tipo de Movimentação")]
@@ -20,6 +22,8 @@ namespace Inventory.Models
         
         [Display(Name = "Depósito")]
         public int WarehouseId { get; set; }
+        
+        [Display(Name = "Depósito")]
         public Warehouse Warehouse { get; set; }
 
         [Display(Name = "Quantidade Movimentada")]

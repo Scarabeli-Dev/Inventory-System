@@ -42,14 +42,20 @@ namespace Inventory.Services
             return await PageList<AddressingsInventoryStart>.CreateAsync(query, pageParams.PageNumber, query.Count());
         }
 
-        public async Task<PagingList<AddressingsInventoryStart>> GetAddressingsStockTakingsPagingAsync(string filter, int pageindex = 1, string sort = "AddressingCountRealized")
+        public async Task<PagingList<AddressingsInventoryStart>> GetAddressingsStockTakingsPagingAsync(string filter, int pageindex = 1, string sort = "AddressingCountRealized", int warehouseId = 0)
         {
+
             var result = _context.AddressingsInventoryStart
-                .Include(l => l.Addressing)
-                .ThenInclude(i => i.Item)
-                .Include(s => s.StockTaking)
-                .AsNoTracking()
-                .AsQueryable();
+                                 .Include(l => l.Addressing).ThenInclude(i => i.Item)
+                                 .Include(s => s.StockTaking).ThenInclude(p => p.PerishableItem)
+                                 .Include(i => i.InventoryStart).ThenInclude(w => w.Warehouse)
+                                 .AsNoTracking()
+                                 .AsQueryable();
+
+            if (warehouseId > 0)
+            {
+                result = result.Where(w => w.Addressing.WarehouseId == warehouseId);
+            }
 
             if (!string.IsNullOrWhiteSpace(filter))
             {
@@ -155,7 +161,7 @@ namespace Inventory.Services
             _context.SaveChanges();
         }
 
-        public async Task<AddressingsInventoryStart> GetAddressingsStockTakingAddressingByIdAsync(int addressingId)
+        public async Task<AddressingsInventoryStart> GetAddressingsStockTakingByAddressingIdAsync(int addressingId)
         {
             return await _context.AddressingsInventoryStart.Include(x => x.Addressing)
                                                         .Include(x => x.InventoryStart)
@@ -164,7 +170,7 @@ namespace Inventory.Services
 
         public async Task<bool> SetAddressingCountRealizedTrueAsync(int addressingId)
         {
-            var addressingsStockTaking = await GetAddressingsStockTakingAddressingByIdAsync(addressingId);
+            var addressingsStockTaking = await GetAddressingsStockTakingByAddressingIdAsync(addressingId);
 
             int itemsCount = _context.AddressingsInventoryStart.Where(s => s.Id == addressingsStockTaking.Id)
                                                                .SelectMany(s => s.StockTaking)
@@ -189,7 +195,7 @@ namespace Inventory.Services
 
         public async Task<bool> SetAddressingCountEndedTrueAsync(int addressingId)
         {
-            var addressingsStockTaking = await GetAddressingsStockTakingAddressingByIdAsync(addressingId);
+            var addressingsStockTaking = await GetAddressingsStockTakingByAddressingIdAsync(addressingId);
             if (addressingsStockTaking != null)
             {
                 addressingsStockTaking.AddressingCountEnded = true;

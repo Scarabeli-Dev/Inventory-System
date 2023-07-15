@@ -7,6 +7,6 @@ namespace Inventory.Services.Interfaces
     public interface IReportViewService
     {
         Task<PagingList<StockTakingReport>> ReportWithMovementation(string filter, int pageindex = 1, string sortExpression = "ItemName", int warehouseId = 0, int stockSituation = -1, int addressingSituation = -1);
-        Task<PageList<StockTakingReport>> FinalReport(PageParams pageParams);
+        PageList<StockTakingReport> FinalReport(PageParams pageParams);
     }
 }

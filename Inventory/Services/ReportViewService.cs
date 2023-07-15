@@ -39,6 +39,13 @@ namespace Inventory.Services
             var result = _context.ViewStockTakingFinalReport
                                  .AsNoTracking()
                                  .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                result = result.Where(p => (p.ItemName.ToLower().Contains(filter.ToLower())) ||
+                                           (p.ItemId.ToLower().Contains(filter.ToLower())));
+            }
+
             if (warehouseId != 0 || stockSituation != -1 || addressingSituation != -1)
             {
                 var repository = result.ToList();
@@ -224,19 +231,19 @@ namespace Inventory.Services
                     result = result.Where(w => itemVerify.Contains(w.ItemId));
                 }
             }
-            if (!string.IsNullOrWhiteSpace(filter))
-            {
-                result = result.Where(p => (p.ItemName.ToLower().Contains(filter.ToLower())) ||
-                                           (p.ItemId.ToLower().Contains(filter.ToLower())));
-            }
+
 
             var model = await PagingList.CreateAsync(result, 10, pageindex, sortExpression, "ItemName");
 
             foreach (var item in model)
             {
-                item.StockTakings = await _stockTakingService.GetAllStockTakingByItemIdAsync(item.ItemId);
-                item.Addressings = await _itemAddressingService.GetAllItemAddressingByItemIdsAsync(item.ItemId);
+                var stockTakings = await _stockTakingService.GetAllStockTakingByItemIdAsync(item.ItemId);
+                var addressings = await _itemAddressingService.GetAllItemAddressingByItemIdsAsync(item.ItemId);
                 var itemMovements = _inventoryMovementService.GetInventoryMovementsByItemId(item.ItemId);
+                
+                item.StockTakings = stockTakings;
+                item.Addressings = addressings;
+
                 if (itemMovements != null)
                 {
                     decimal movementIn = 0;
@@ -244,7 +251,7 @@ namespace Inventory.Services
 
                     foreach (var movement in itemMovements)
                     {
-                        if (item.StockTakings.Any(d => d.StockTakingDate > movement.MovementDate))
+                        if (stockTakings.Any(d => d.StockTakingDate > movement.MovementDate))
                         {
                             if (movement.MovementeType == Models.Enums.MovementeType.E)
                             {
@@ -256,16 +263,16 @@ namespace Inventory.Services
                             }
                         }
                     }
-                    item.SystemQuantity = item.Addressings.Sum(q => q.Quantity) + movementIn - movementOut;
+                    item.SystemQuantity = addressings.Sum(q => q.Quantity) + movementIn - movementOut;
                 }
                 else
                 {
-                    item.SystemQuantity = item.Addressings.Sum(q => q.Quantity);
+                    item.SystemQuantity = addressings.Sum(q => q.Quantity);
                 }
 
-                if (item.StockTakings != null)
+                if (stockTakings != null)
                 {
-                    item.QuantityStockTaking = item.StockTakings.Sum(q => q.StockTakingQuantity);
+                    item.QuantityStockTaking = stockTakings.Sum(q => q.StockTakingQuantity);
                 }
                 else
                 {
@@ -275,7 +282,7 @@ namespace Inventory.Services
 
                 item.Divergence = item.QuantityStockTaking - item.SystemQuantity;
 
-                if (item.StockTakings.Count() > 0)
+                if (stockTakings.Count() > 0)
                 {
                     if (item.SystemQuantity == item.QuantityStockTaking)
                     {
@@ -311,7 +318,7 @@ namespace Inventory.Services
                     stockTakingIdsConference.Add(stockTakingConference.AddressingsInventoryStart.AddressingId);
                 }
 
-                foreach (var addressingsConference in item.Addressings)
+                foreach (var addressingsConference in addressings)
                 {
                     addressingsIdsConference.Add(addressingsConference.AddressingId);
                 }
@@ -320,7 +327,7 @@ namespace Inventory.Services
                 {
                     item.AddressingSituation = AddressingSituation.Regular;
                 }
-                else if (!item.StockTakings.Any(st => item.Addressings.Any(ad => st.AddressingsInventoryStart.AddressingId == ad.AddressingId)) && item.StockTakings.Count() > 0)
+                else if (!item.StockTakings.Any(st => addressings.Any(ad => st.AddressingsInventoryStart.AddressingId == ad.AddressingId)) && item.StockTakings.Count() > 0)
                 {
                     item.AddressingSituation = AddressingSituation.ItemInDivergentAddress;
                 }
@@ -339,7 +346,7 @@ namespace Inventory.Services
             return model;
         }
 
-        public async Task<PageList<StockTakingReport>> FinalReport(PageParams pageParams)
+        public PageList<StockTakingReport> FinalReport(PageParams pageParams)
         {
             //Create View
             List<StockTakingReport> view = new List<StockTakingReport>();
@@ -386,7 +393,7 @@ namespace Inventory.Services
                 else
                 {
                     stockTakingReport.QuantityStockTaking = 0;
-                    stockTakingReport.StockSituation = ViewModels.ViewModelEnums.StockSituation.ItemNoCount;
+                    stockTakingReport.StockSituation = StockSituation.ItemNoCount;
                 }
 
                 stockTakingReport.Divergence = stockTakingReport.SystemQuantity - stockTakingReport.QuantityStockTaking;
@@ -397,21 +404,21 @@ namespace Inventory.Services
                 }
                 if (stockTakingReport.SystemQuantity == stockTakingReport.QuantityStockTaking)
                 {
-                    stockTakingReport.StockSituation = ViewModels.ViewModelEnums.StockSituation.Regular;
+                    stockTakingReport.StockSituation = StockSituation.Regular;
                 }
                 if (stockTakingReport.Divergence > 0)
                 {
-                    stockTakingReport.StockSituation = ViewModels.ViewModelEnums.StockSituation.HigherThanRegistered;
+                    stockTakingReport.StockSituation = StockSituation.HigherThanRegistered;
                 }
                 if (stockTakingReport.Divergence < 0)
                 {
-                    stockTakingReport.StockSituation = ViewModels.ViewModelEnums.StockSituation.LowerThanRegistered;
+                    stockTakingReport.StockSituation = StockSituation.LowerThanRegistered;
                 }
 
                 view.Add(stockTakingReport);
             }
 
-            var result = await PageList<StockTakingReport>.ListCreateAsync(view, pageParams.PageNumber, view.Count());
+            var result = PageList<StockTakingReport>.ListCreateAsync(view, pageParams.PageNumber, view.Count());
 
             return result;
             //return view;

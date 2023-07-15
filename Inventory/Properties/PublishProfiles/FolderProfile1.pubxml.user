@@ -6,12 +6,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
     <_PublishTargetUrl>C:\Systems\Publish\KingHost</_PublishTargetUrl>
-    <History>True|2023-07-11T17:24:45.6205824Z;True|2023-07-11T11:15:31.1127447-04:00;True|2023-07-11T11:14:02.3115200-04:00;True|2023-06-26T10:26:06.2873054-04:00;True|2023-06-26T10:16:21.1664836-04:00;</History>
+    <History>True|2023-07-13T14:44:03.1208490Z;True|2023-07-13T10:35:30.3442909-04:00;True|2023-07-13T10:20:46.2110832-04:00;True|2023-07-12T21:13:34.0523789-04:00;True|2023-07-12T21:12:08.7864822-04:00;True|2023-07-11T13:24:45.6205824-04:00;True|2023-07-11T11:15:31.1127447-04:00;True|2023-07-11T11:14:02.3115200-04:00;True|2023-06-26T10:26:06.2873054-04:00;True|2023-06-26T10:16:21.1664836-04:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
-  <ItemGroup>
-    <DestinationConnectionStrings Include="DefaultConnection">
-      <Value>server=mysql26-farm10.kinghost.net%3buserid=esesiste02_add1%3bpassword=INV2023rc%3bdatabase=esesistem02</Value>
-    </DestinationConnectionStrings>
-  </ItemGroup>
 </Project>

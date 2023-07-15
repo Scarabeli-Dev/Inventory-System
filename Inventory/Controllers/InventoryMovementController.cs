@@ -35,24 +35,37 @@ namespace Inventory.Controllers
         {
             if (documentFile != null && documentFile.Length > 0)
             {
-                // Salva o documento
-                string documentName = await _util.SaveDocument(documentFile, _destiny);
+                try
+                {
+                    // Salva o documento
+                    string documentName = await _util.SaveDocument(documentFile, _destiny);
 
-                // Lê o arquivo CSV e cria os modelos
-                string documentPath = Path.Combine(_hostEnvironment.ContentRootPath, "Resources", _destiny, documentName);
-                // Implemente o código para ler o arquivo CSV e criar os modelos
-                List<InventoryMovement> inventoryMovements = await _inventoryMovementService.ImportInventoryMovementsAsync(documentPath, _destiny);
+                    // Lê o arquivo CSV e cria os modelos
+                    string documentPath = Path.Combine(_hostEnvironment.ContentRootPath, "Resources", _destiny, documentName);
+                    // Implemente o código para ler o arquivo CSV e criar os modelos
+                    List<InventoryMovement> inventoryMovements = await _inventoryMovementService.ImportInventoryMovementsAsync(documentPath, _destiny);
 
-                // Deleta o arquivo
-                _util.DeleteDocument(documentName, _destiny);
+                    // Deleta o arquivo
+                    _util.DeleteDocument(documentName, _destiny);
 
-                // Retorna uma resposta de sucesso ou redireciona para outra página
-                return RedirectToAction(nameof(Index), new { inventoryMovment = inventoryMovements });
+                    // Retorna uma resposta de sucesso ou redireciona para outra página
+                    TempData["successMessage"] = "Itens";
+                    return RedirectToAction("Index", "Warehouses");
 
+
+                }
+                catch (Exception ex)
+                {
+
+                    // Retorna uma resposta de erro ou redireciona para outra página
+                    TempData["errorMessage"] = "item";
+                    return RedirectToAction("ImportAll", "Imports");
+                }
             }
 
             // Retorna uma resposta de erro ou redireciona para outra página
-            return BadRequest("Nenhum documento foi enviado.");
+            TempData["errorMessage"] = "item";
+            return RedirectToAction("ImportAll", "Imports");
         }
     }
 }

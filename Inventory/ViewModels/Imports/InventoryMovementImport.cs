@@ -8,7 +8,7 @@ namespace Inventory.ViewModels.Imports
     {
         public string ItemId { get; set; }
         public MovementeType MovementeType { get; set; }
-        public int WarehouseId { get; set; }
+        public string WarehouseName { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal Amount { get; set; }

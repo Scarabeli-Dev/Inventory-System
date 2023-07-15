@@ -51,7 +51,7 @@ namespace Inventory.Controllers
         }
 
         [Route("Relatorio/ContagemEnderecamento")]
-        public async Task<IActionResult> Report(int inventaryStartId = 1)
+        public IActionResult Report(int inventaryStartId = 1)
         {
             var webReport = new WebReport();
 

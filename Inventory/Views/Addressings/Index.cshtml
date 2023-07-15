@@ -15,13 +15,6 @@
     </div>
 </form>
 
-<form asp-controller="Addressings" asp-action="ImportAddressings" mothod="post" enctype="multipart/form-data">
-    <div class="input-group mb-3">
-        <input type="file" name="documentFile" class="form-control" />
-        <button type="submit" class="btn btn-group btn-success">Upload</button>
-    </div>
-</form>
-
 <div class="card">
     <div class="card-body">
         <table class="table table-striped">
@@ -52,12 +45,15 @@
                         </td>
                         <td>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                                <a title="Editar Registro" data-toggle="modal" class=" btn btn-success pull-right sem_footer" onclick="actionEdit(@item.Id)" href="#modal-form">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">
                                     <i class="bi bi-info-circle"></i>
                                 </a>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <a title="Editar Registro" data-toggle="modal" class=" btn btn-success pull-right sem_footer" onclick="actionEdit(@item.Id)" href="#modal-form">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                }
                             </div>
                         </td>
                     </tr>

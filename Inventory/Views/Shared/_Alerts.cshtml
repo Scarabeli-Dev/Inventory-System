@@ -1,7 +1,7 @@
 ﻿@{
     var errorMessage = TempData["errorMessage"]?.ToString();
     var successMessage = TempData["successMessage"]?.ToString();
-    var wait = TempData["wait"]?.ToString();
+    var user = TempData["user"]?.ToString();
 }
 @if (!string.IsNullOrWhiteSpace(successMessage))
 {
@@ -21,12 +21,20 @@
     </div>
 }
 
-@*@if (string.IsNullOrEmpty(wait))
+@if (!string.IsNullOrWhiteSpace(user))
+{
+    <div id="userAlertLayout" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-octagon me-1"></i>
+        @user
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (!string.IsNullOrWhiteSpace(user))
 {
     <script>
         setTimeout(function () {
-            document.getElementById('successAlertLayout').style.display = 'none';
-            document.getElementById('errorAlertLayout').style.display = 'none';
+        document.getElementById('userAlertLayout').style.display = 'none';
         }, 3000); // 3 segundos
     </script>
-}*@
+}

@@ -5,6 +5,9 @@ using Inventory.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Inventory.Helpers.Interfaces;
 using Inventory.ViewModels;
+using System.Diagnostics;
+using Inventory.Helpers.Exceptions;
+using Inventory.Services;
 
 namespace Inventory.Controllers
 {
@@ -29,7 +32,7 @@ namespace Inventory.Controllers
         }
 
         // GET: Items
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin, Gerente")]
         public async Task<IActionResult> Index(string filter, int pageindex = 1, string sort = "Name")
         {
             return View(await _itemService.GetAllItemsPagingAsync(filter, pageindex, sort));
@@ -59,7 +62,7 @@ namespace Inventory.Controllers
 
             if (item == null)
             {
-                return NotFound();
+                return RedirectToAction("Error", "Error", new { message = "Item não encontrado" });
             }
 
             return View(item);
@@ -83,14 +86,24 @@ namespace Inventory.Controllers
         [Route("Cadastro")]
         public async Task<IActionResult> Create([Bind("Id,Name,UnitOfMeasurement,Quantity,ExpirationDate,FabricationDate,Observation")] ItemCreateViewModel itemVm)
         {
-            if (ModelState.IsValid)
+            try
             {
-                TempData["successMessage"] = "Item " + itemVm.Name;
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    _itemService.Add(itemVm);
+                    await _itemService.SaveChangesAsync();
+                    TempData["successMessage"] = "Item " + itemVm.Name;
+                    return RedirectToAction(nameof(Index));
+                }
+                TempData["errorMessage"] = "item " + itemVm.Name;
+                return View();
             }
-            TempData["errorMessage"] = "item " + itemVm.Name;
-            return View();
+            catch (DbConcurrencyException e)
+            {
+                return RedirectToAction("Error", "Error", new { message = e.Message });
+            }
         }
+
 
         // GET: Items/Edit/5
         [Route("Editar")]
@@ -99,7 +112,7 @@ namespace Inventory.Controllers
             var item = await _itemService.GetItemByIdAsync(id);
             if (item == null)
             {
-                return NotFound();
+                return RedirectToAction("Error", "Error", new { message = "Item não encontrado" });
             }
 
             var warehouses = await _warehouseService.GetAllAsync<Warehouse>();
@@ -117,35 +130,28 @@ namespace Inventory.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("Id,Name,UnitOfMeasurement,Quantity,ExpirationDate,FabricationDate,Observation")] Item item)
         {
+            var warehouses = await _warehouseService.GetAllAsync<Warehouse>();
+
+            ViewBag.Addressing = await _addressingService.GetAllAsync<Addressing>();
+
             if (id != item.Id)
             {
-                return NotFound();
+                return RedirectToAction("Error", "Error", new { message = "Id do Item não corresponde ao selecionado" });
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _itemService.Update(item);
-                    await _itemService.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    var result = await _itemService.GetItemByIdAsync(id);
-                    if (result == null)
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _itemService.Update(item);
+                await _itemService.SaveChangesAsync();
+
                 TempData["successMessage"] = "Item " + item.Name;
                 return RedirectToAction(nameof(Index));
             }
-            TempData["errorMessage"] = "item " + item.Name;
-            return View(item);
+            catch (DbConcurrencyException)
+            {
+                TempData["errorMessage"] = "item " + item.Name;
+                return View(item);
+            }
         }
 
         // GET: Items/Delete/5
@@ -155,7 +161,7 @@ namespace Inventory.Controllers
             var item = await _itemService.GetItemByIdAsync(id);
             if (item == null)
             {
-                return NotFound();
+                return RedirectToAction("Error", "Error", new { message = "Item não encontrado" });
             }
 
             return View(item);
@@ -167,10 +173,12 @@ namespace Inventory.Controllers
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
             var item = await _itemService.GetItemByIdAsync(id);
-            if (item != null)
+            if (item == null)
             {
-                _itemService.Delete(item);
+                return RedirectToAction("Error", "Error", new { message = "Item não encontrado" });
+
             }
+            _itemService.Delete(item);
 
             await _itemService.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

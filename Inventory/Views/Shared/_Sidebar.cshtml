@@ -1,85 +1,98 @@
 ﻿<ul class="sidebar-nav" id="sidebar-nav">
 
-    @if (User.IsInRole("Member"))
+    @if (User.IsInRole("Contagem"))
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Warehouses" asp-action="Index">Contagem de Depósito</a>
+            <a class="nav-link collapsed" asp-area="" asp-controller="Warehouses" asp-action="Index"><i class="bi bi-pencil-square"></i>Contagem</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="StockTaking" asp-action="IndexRecount">Recontagem</a>
+            <a class="nav-link collapsed" asp-area="" asp-controller="StockTaking" asp-action="IndexRecount"><i class="bi bi-arrow-counterclockwise"></i>Recontagem</a>
         </li>
     }
     @if (User.IsInRole("Admin") || User.IsInRole("Gerente"))
     {
+
         <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#warehouse-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-journal-text"></i><span>Depósitos</span><i class="bi bi-chevron-down ms-auto"></i>
+            <a class="nav-link collapsed" is-active-route asp-area="" asp-controller="Warehouses" asp-action="Index">
+                <i class="bi bi-pencil-square"></i>
+                Contagem
             </a>
-            <ul id="warehouse-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                    <a class="nav-link text-dark" is-active-route asp-area="" asp-controller="Warehouses" asp-action="Index">
-                        <i class="bi bi-pencil-square"></i>Contagem de Depósito
-                    </a>
-                </li>
-                <li>
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Warehouses" asp-action="IndexTable">
-                        <i class="bi bi-list-check"></i>Lista de Depósito
-                    </a>
-                </li>
-            </ul>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link collapsed" asp-area="" asp-controller="StockTaking" asp-action="IndexRecount">
+                <i class="bi bi-arrow-counterclockwise"></i>
+                <span>Recontagem</span>
+            </a>
+        </li>
+
+        <hr />
+
+        <li class="nav-item">
+            <a class="nav-link collapsed" asp-area="" asp-controller="Warehouses" asp-action="IndexTable">
+                <i class="bi bi-list-check"></i>
+                Lista de Depósitos
+            </a>
         </li>
         <li class="nav-item">
             <a class="nav-link collapsed" asp-area="" is-active-route asp-controller="Addressings" asp-action="Index">
                 <i class="bi bi-inboxes"></i>
-                Endereçamentos
+                Lista de Endereçamentos
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link collapsed" asp-area="" asp-controller="Items" asp-action="Index">
                 <i class="bi bi-minecart-loaded"></i>
-                <span>Produtos</span>
+                <span>Lista de Produtos</span>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link collapsed" asp-area="" asp-controller="StockTaking" asp-action="IndexRecount">
-                <i class="bi bi-minecart-loaded"></i>
-                <span>Recontagem</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link collapsed" asp-area="" asp-controller="InventoryStart" asp-action="Index">
-                <i class="bi bi-card-checklist"></i>
-                <span>Inventários</span>
-            </a>
-        </li>
+
+        <hr />
+
+        @if (User.IsInRole("Admin"))
+        {
+            <li class="nav-item">
+                <a class="nav-link collapsed" asp-area="" asp-controller="Imports" asp-action="ImportAll">
+                    <i class="bi bi-cloud-upload"></i>
+                    <span>Importar Dados</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" asp-area="" asp-controller="InventoryStart" asp-action="Index">
+                    <i class="bi bi-clipboard-check"></i>
+                    <span>Inventários</span>
+                </a>
+            </li>
+        }
+
         <li class="nav-item">
             <a class="nav-link collapsed" asp-area="" asp-controller="StockTaking" asp-action="Index">
-                <i class="bi bi-card-checklist"></i>
-                <span>Relatório por endereçamento</span>
+                <i class="bi bi-check2-all"></i>
+                <span>Apuração de Inventário</span>
             </a>
         </li>
     }
+    <hr />
 
-    @if (User.IsInRole("Admin"))
+    @if (!User.IsInRole("Contagem"))
     {
-        <li class="nav-item">
-            <a class="nav-link collapsed" asp-area="" asp-controller="Imports" asp-action="ImportAll">
-                <i class="bi bi-card-checklist"></i>
-                <span>Importar Dados</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link collapsed" asp-area="" asp-controller="InventoryMovement" asp-action="Index">
-                <i class="bi bi-card-checklist"></i>
-                <span>Importar Movimentação</span>
-            </a>
-        </li>
         <li class="nav-item">
             <a class="nav-link collapsed" asp-area="" asp-controller="Reports" asp-action="Index">
                 <i class="bi bi-card-checklist"></i>
-                <span>Relatório De Contagem</span>
+                <span>Relatório de Inventário</span>
             </a>
         </li>
+    }
+    <hr />
+
+    @if (User.IsInRole("Admin"))
+    {
+        @*        <li class="nav-item">
+    <a class="nav-link collapsed" asp-area="" asp-controller="InventoryMovement" asp-action="Index">
+    <i class="bi bi-card-checklist"></i>
+    <span>Importar Movimentação</span>
+    </a>
+    </li>*@
         <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#user-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-people"></i><span>Usuários</span><i class="bi bi-chevron-down ms-auto"></i>

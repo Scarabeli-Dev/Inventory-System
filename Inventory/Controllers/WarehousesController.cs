@@ -50,7 +50,7 @@ namespace Inventory.Controllers
             var warehouse = await _warehouseService.GetWarehouseByIdAsync(id);
             if (warehouse == null)
             {
-                return NotFound();
+                return RedirectToAction("Error", "Error", new { message = "Depósito não encontrado" });
             }
 
             ViewBag.Filter = filter;
@@ -92,7 +92,7 @@ namespace Inventory.Controllers
             var warehouse = await _warehouseService.GetWarehouseByIdAsync(id);
             if (warehouse == null)
             {
-                return NotFound();
+                return RedirectToAction("Error", "Error", new { message = "Depósito não encontrado" });
             }
 
             ViewData["WarehouseId"] = id;
@@ -110,7 +110,7 @@ namespace Inventory.Controllers
         {
             if (id != warehouse.Id)
             {
-                return NotFound();
+                return RedirectToAction("Error", "Error", new { message = "Depósito não encontrado" });
             }
 
             if (ModelState.IsValid)
@@ -125,7 +125,7 @@ namespace Inventory.Controllers
                     var result = await _warehouseService.GetWarehouseByIdAsync(id);
                     if (result == null)
                     {
-                        return NotFound();
+                        return RedirectToAction("Error", "Error", new { message = "Depósito não encontrado" });
                     }
                     else
                     {
@@ -147,7 +147,7 @@ namespace Inventory.Controllers
             var warehouse = await _warehouseService.GetWarehouseByIdAsync(id);
             if (warehouse == null)
             {
-                return NotFound();
+                return RedirectToAction("Error", "Error", new { message = "Depósito não encontrado" });
             }
 
             return View(warehouse);
