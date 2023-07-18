@@ -42,7 +42,7 @@ namespace Inventory.Services
             return await PageList<AddressingsInventoryStart>.CreateAsync(query, pageParams.PageNumber, query.Count());
         }
 
-        public async Task<PagingList<AddressingsInventoryStart>> GetAddressingsStockTakingsPagingAsync(string filter, int pageindex = 1, string sort = "AddressingCountRealized", int warehouseId = 0)
+        public async Task<PagingList<AddressingsInventoryStart>> GetAddressingsStockTakingsPagingAsync(string filter, int pageindex = 1, string sort = "AddressingCountRealized", int warehouseId = 0, int countStatus = 0)
         {
 
             var result = _context.AddressingsInventoryStart
@@ -51,6 +51,19 @@ namespace Inventory.Services
                                  .Include(i => i.InventoryStart).ThenInclude(w => w.Warehouse)
                                  .AsNoTracking()
                                  .AsQueryable();
+
+            if (countStatus == 1)
+            {
+                result = result.Where(p => p.AddressingCountRealized == false);
+            }
+            if (countStatus == 2)
+            {
+                result = result.Where(p => p.AddressingCountRealized == true && p.AddressingCountEnded == false);
+            }
+            if (countStatus == 3)
+            {
+                result = result.Where(p => p.AddressingCountEnded == true);
+            }
 
             if (warehouseId > 0)
             {
@@ -61,7 +74,7 @@ namespace Inventory.Services
             {
                 if ("Contado".ToLower().Contains(filter.ToLower()))
                 {
-                    result = result.Where(p => p.AddressingCountRealized == true);
+                    result = result.Where(p => p.AddressingCountRealized == true && p.AddressingCountEnded == false);
                 }
                 else if ("Finalizado".ToLower().Contains(filter.ToLower()))
                 {
@@ -199,6 +212,19 @@ namespace Inventory.Services
             if (addressingsStockTaking != null)
             {
                 addressingsStockTaking.AddressingCountEnded = true;
+                _context.Update(addressingsStockTaking);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> SetAddressingCountEndedFalseAsync(int addressingId)
+        {
+            var addressingsStockTaking = await GetAddressingsStockTakingByAddressingIdAsync(addressingId);
+            if (addressingsStockTaking != null)
+            {
+                addressingsStockTaking.AddressingCountEnded = false;
                 _context.Update(addressingsStockTaking);
                 await _context.SaveChangesAsync();
                 return true;

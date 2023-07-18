@@ -1,0 +1,29 @@
+﻿@model StockTaking
+
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">Reabrir</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form class="row g-3" asp-action="DeleteStockTaking">
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="hidden" name="addressingId" value="@Model.Id" />
+                </div>
+                Deseja realmente  <strong class="text-danger">DELETAR</strong> a contagem do item <strong>@Model.Item.Name</strong>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <input type="submit" value="Excluir Contagem" class="btn btn-danger" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

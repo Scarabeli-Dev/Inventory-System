@@ -33,5 +33,6 @@ namespace Inventory.Models.Enums
         bd = 22,
         sc = 23,
         res = 24,
+        fd = 25,
     }
 }

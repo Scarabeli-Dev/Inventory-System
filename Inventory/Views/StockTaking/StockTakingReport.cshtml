@@ -13,6 +13,8 @@
             <thead>
                 <tr>
                     <th>
+                    </th>
+                    <th>
                         Código do Produto
                     </th>
                     <th>
@@ -37,6 +39,14 @@
                 {
                     <tr>
                         <td>
+                            @if (item.StockTakingId > 0)
+                            {
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" id="delete-stock-taking" data-stocktaking-id="@item.StockTakingId" data-item-name="@item.ItemName" data-bs-target="#deleteStockTaking">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            }
+                        </td>
+                        <td>
                             @Html.DisplayFor(modelItem => item.ItemId)
                         </td>
                         <td>
@@ -55,6 +65,13 @@
                         @if (item.NumberOfCount == 0)
                         {
                             <td class="text-danger">-</td>
+                            recount = true;
+                        }
+                        else if (item.RecoutItem == true)
+                        {
+                            <td class="table-danger">
+                                Recontagem Aberta
+                            </td>
                             recount = true;
                         }
                         else if (item.ItemInitialQuantity != item.ItemStockTakingQuantity && item.ItemStockTakingQuantity != item.ItemStockTakingPreviousQuantity)
@@ -80,14 +97,23 @@
                 }
             </tbody>
         </table>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addressingCountEnded">
-            Encerrar Contagem
-        </button>
+        @if (addressing.AddressingCountEnded)
+        {
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addressingCountReopen">
+                Reabrir Contagem
+            </button>
+        }
+        else
+        {
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addressingCountEnded">
+                Encerrar Contagem
+            </button>
+        }
     </div>
 </div>
 
 
-<!-- Basic Modal -->
+<!-- Close Count -->
 <div class="modal fade" id="addressingCountEnded" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -124,4 +150,63 @@
             }
         </div>
     </div>
-</div><!-- End Basic Modal-->
+</div><!-- End Close Count-->
+<!-- Reopen Count -->
+<div class="modal fade" id="addressingCountReopen" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Reabrir</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form class="row g-3" asp-action="ReopenAddressingInventory" method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="hidden" name="addressingId" value="@addressing.Id" />
+                    </div>
+                    Deseja realmente reabir a contagem o endereçamento <strong>@addressing.Addressing.Name</strong>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <input type="submit" value="Reabrir Contagem" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div><!-- End Reopen Count-->
+<!--Modal Delete-->
+<div class="modal fade" id="deleteStockTaking" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Apagar Contagem</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form class="row g-3" asp-action="DeleteStockTaking">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="hidden" name="stockTakingId" value="" />
+                    </div>
+                    Deseja realmente APAGAR a contagem do item <strong></strong>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <input type="submit" value="Excluir Contagem" class="btn btn-danger" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div><!-- End Delete-->
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#delete-stock-taking').click(function () {
+                var stockTakingId = $(this).data('stocktaking-id');
+                var itemName = $(this).data('item-name');
+
+                $('#deleteStockTaking input[name="stockTakingId"]').val(stockTakingId);
+                $('#deleteStockTaking .modal-body strong').text(itemName);
+            });
+        });
+    </script>
+}

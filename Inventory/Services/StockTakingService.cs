@@ -25,8 +25,9 @@ namespace Inventory.Services
 
         public async Task<bool> SaveStockTakingWithOutRecount(StockTaking stockTaking)
         {
+            stockTaking.StockTakingDate = DateTime.Now;
 
-            if (stockTaking.IsPerishableItem == true && stockTaking.Id != 0)
+            if (stockTaking.IsPerishableItem == true)
             {
                 stockTaking.StockTakingQuantity = 0;
                 var perishableItemsToDelete = new List<PerishableItem>();
@@ -61,7 +62,7 @@ namespace Inventory.Services
             stockTaking.NumberOfCount++;
             stockTaking.ItemToRecount = false;
 
-            if (stockTaking.IsPerishableItem == true && stockTaking.Id != 0)
+            if (stockTaking.IsPerishableItem == true)
             {
                 stockTaking.StockTakingQuantity = 0;
                 var perishableItemsToDelete = new List<PerishableItem>();

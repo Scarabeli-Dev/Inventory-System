@@ -28,5 +28,8 @@ namespace Inventory.ViewModels
 
         [Display(Name = "Quantidade Da Contagem")]
         public int NumberOfCount { get; set; }
+
+        [Display(Name = "Item em Recontagem")]
+        public bool RecoutItem { get; set; } = false;
     }
 }

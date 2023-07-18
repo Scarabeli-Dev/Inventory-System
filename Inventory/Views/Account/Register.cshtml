@@ -12,40 +12,79 @@
         <form class="row g-3" asp-controller="Account" asp-action="Register" method="post">
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="col-6">
-                <label asp-for="Name"> </label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+            <div class="row mt-2">
+                <div class="col-md-4">
+                    <label asp-for="Name"> </label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="UserName"> </label>
+                    <input asp-for="UserName" class="form-control" />
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
             </div>
-            <div class="col-6">
-                <label asp-for="UserName"> </label>
-                <input asp-for="UserName" class="form-control" />
-                <span asp-validation-for="UserName" class="text-danger"></span>
-            </div>
-            <div class="col-4">
-                <label asp-for="Email"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="col-4">
-                <label asp-for="Password"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="col-4">
-                <label asp-for="Role"></label>
-                <select asp-for="Role" name="Role" class="chosen-select col-6 form-control" tabindex="17" id="addressing-select">
-                    @foreach (var item in roles)
-                    {
-                        <option value="@item.Name">@item.Name</option>
-                    }
-                </select>
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <label asp-for="Password"></label>
+                    <input id="passwordInput" asp-for="Password" class="form-control" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label class="label-control">Confirme a senha</label>
+                    <input id="confirmPasswordInput" type="password" class="form-control" />
+                    <span id="passwordMismatchError" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Role"></label>
+                    <select asp-for="Role" name="Role" class="chosen-select col-md-4 form-control" tabindex="17" id="addressing-select">
+                        @foreach (var item in roles)
+                        {
+                            <option value="@item.Name">@item.Name</option>
+                        }
+                    </select>
+                </div>
             </div>
             <div class="form-group">
-                <input type="submit" class="btn btn-success " value="Registrar" />
+                <input id="submitButton" type="submit" class="btn btn-success " value="Registrar" />
             </div>
         </form>
     </div>
 </div>
 
+<script>
+    const passwordInput = document.getElementById('passwordInput');
+    const confirmPasswordInput = document.getElementById('confirmPasswordInput');
+    const passwordMismatchError = document.getElementById('passwordMismatchError');
+    const submitButton = document.getElementById('submitButton');
 
+    let typingTimer;
+    const doneTypingInterval = 100;
+
+    function checkPasswordMatch() {
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        if (password !== confirmPassword) {
+            passwordMismatchError.textContent = "As senhas não coincidem.";
+            submitButton.disabled = true;
+        } else {
+            passwordMismatchError.textContent = "";
+            submitButton.disabled = false;
+        }
+    }
+
+    confirmPasswordInput.addEventListener('input', function () {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(checkPasswordMatch, doneTypingInterval);
+    });
+
+    confirmPasswordInput.addEventListener('keydown', function () {
+        clearTimeout(typingTimer);
+    });
+</script>

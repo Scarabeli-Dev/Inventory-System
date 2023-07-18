@@ -11,5 +11,6 @@ namespace Inventory.Services.Interfaces
         Task<PagingList<User>> GetUsersByPaggingList(string filter, int pageindex = 1, string sort = "Name");
         Task<User> GetUserByIdAsync(int userId);
         bool UpdateUser(User user, ChangePasswordViewModel userVM);
+        Task<bool> AdminUpdateUser(User user, EditUserViewModel userVM);
     }
 }

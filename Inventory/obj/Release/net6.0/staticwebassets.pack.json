@@ -1721,6 +1721,10 @@
       "PackagePath": "staticwebassets\\favicon.ico"
     },
     {
+      "Id": "C:\\Systems\\Inventory\\Inventory\\wwwroot\\images\\LogoRC.png",
+      "PackagePath": "staticwebassets\\images\\LogoRC.png"
+    },
+    {
       "Id": "C:\\Systems\\Inventory\\Inventory\\wwwroot\\images\\count.png",
       "PackagePath": "staticwebassets\\images\\count.png"
     },

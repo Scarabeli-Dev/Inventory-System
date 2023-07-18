@@ -29,13 +29,16 @@
             <thead>
                 <tr>
                     <th>
-                        @Html.DisplayNameFor(model => model.IsCompleted)
-                    </th>
-                    <th>
                         @Html.DisplayNameFor(model => model.InventoryStartDate)
                     </th>
                     <th>
                         @Html.DisplayNameFor(model => model.StockTakingFinishDate)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.IsCompleted)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Warehouse)
                     </th>
                     <th></th>
                 </tr>
@@ -45,13 +48,16 @@
                 {
                     <tr>
                         <td>
-                            @Html.DisplayFor(modelItem => item.IsCompleted)
-                        </td>
-                        <td>
                             @Html.DisplayFor(modelItem => item.InventoryStartDate)
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.StockTakingFinishDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Warehouse.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.IsCompleted)
                         </td>
                         <td>
                             <div class="d-grid gap-2 d-md-flex justify-content-md-end">

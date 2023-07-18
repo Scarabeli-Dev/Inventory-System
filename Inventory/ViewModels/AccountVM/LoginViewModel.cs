@@ -5,11 +5,11 @@ namespace Inventory.ViewModels.AccountVM
 {
     public class LoginViewModel
     {
-        [Required(ErrorMessage = "Informe o nome")]
+        [Required(ErrorMessage = "Nome de Usuário")]
         [Display(Name = "Usuário")]
         public string UserName { get; set; }
 
-        [Required(ErrorMessage = "Informe a senha")]
+        [Required(ErrorMessage = "Senha")]
         [DataType(DataType.Password)]
         [Display(Name = "Senha")]
         public string Password { get; set; }

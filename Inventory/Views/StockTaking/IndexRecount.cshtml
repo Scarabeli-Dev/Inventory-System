@@ -26,6 +26,9 @@
                     <th>
                         @Html.SortableHeaderFor(model => model.Item.Name)
                     </th>
+                    <th>
+                        @Html.SortableHeaderFor(model => model.AddressingsInventoryStart)
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -42,6 +45,9 @@
                         </td>
                         <td>
                             @Html.DisplayFor(modelItem => item.Item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AddressingsInventoryStart.Addressing.Name)
                         </td>
                     </tr>
                 }

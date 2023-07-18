@@ -9,7 +9,7 @@ namespace Inventory.ViewModels.AccountVM
         [Required(ErrorMessage = "{0} é obrigatório!")]
         public string Name { get; set; }
 
-        [Display(Name = "UserName")]
+        [Display(Name = "Nome de Usuário")]
         [StringLength(80, ErrorMessage = "Máximo de {1} caracteres!")]
         [Required(ErrorMessage = "{0} é obrigatório!")]
         public string UserName { get; set; }

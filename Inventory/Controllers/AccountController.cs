@@ -68,6 +68,7 @@ namespace Inventory.Controllers
             return View(loginVM);
         }
 
+        [Authorize(Roles = "Admin")]
         [Route("Cadastro/")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Register()
@@ -100,6 +101,44 @@ namespace Inventory.Controllers
             }
             TempData["errorMessage"] = "Usuário " + userVM.UserName;
             return View(userVM);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [Route("Editar/")]
+        public IActionResult UserEdit(int userId)
+        {
+            EditUserViewModel userReturn = new EditUserViewModel();
+
+            return View(userReturn);
+        }
+
+        [HttpPost]
+        [Route("Editar/")]
+        public async Task<IActionResult> UserEdit(EditUserViewModel userVM, int userId)
+        {
+            if (!ModelState.IsValid)
+                return View(userVM);
+            try
+            {
+                var user = await _accountService.GetUserByIdAsync(userVM.UserId);
+
+                if (user != null && user.Id == userId)
+                {
+                    bool result = await _accountService.AdminUpdateUser(user, userVM);
+
+                    if (result)
+                    {
+                        return RedirectToAction("Index", "Warehouses");
+                    }
+                }
+
+                TempData["user"] = "Erro ao mudar senha!";
+                return View(userVM);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "Error", new { message = ex.Message });
+            }
         }
 
         [Route("Mudar-Senha/")]

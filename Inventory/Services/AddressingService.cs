@@ -99,6 +99,8 @@ namespace Inventory.Services
             var result = await _context.Addressing.Include(l => l.Item)
                                                   .ThenInclude(i => i.Item)
                                                   .Include(w => w.Warehouse)
+                                                  .Include(s => s.StockTaking)
+                                                  .ThenInclude(s => s.StockTaking)
                                                   .ToListAsync();
 
             return result;

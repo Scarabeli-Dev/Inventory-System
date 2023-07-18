@@ -65,6 +65,33 @@ namespace Inventory.Services
             }
 
         }
+        public async Task<bool> AdminUpdateUser(User user, EditUserViewModel userVM)
+        {
+            try
+            {
+                // Gerar o token de redefinição de senha
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                // Redefinir a senha do usuário
+                var result = await _userManager.ResetPasswordAsync(user, token, userVM.Password);
+
+
+
+                if (result.Succeeded)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
 
         public async Task<PagingList<User>> GetUsersByPaggingList(string filter, int pageindex = 1, string sort = "Name")
         {

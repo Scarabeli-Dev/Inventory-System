@@ -2,18 +2,14 @@
 
 @{
     ViewData["Title"] = "Selecione o endereçamento para ver os detalhes";
+    var generalProgress = ViewBag.GeneralProgress;
 }
 
 <h2>@ViewData["Title"]</h2>
-@*<div class="progress mt-3" id="generalProgress">
-    @{
-        var progressWidthAddressing = (adressingsQtd * 100) / Model.Count();
-        var progressPercentageAdressing = $"{progressWidthAddressing}%";
-    }
-    <div class="progress-bar" role="progressbar" style="width: @progressWidthAddressing%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
-        @progressPercentageAdressing Concluídos!
-    </div>
-</div>*@
+
+<div class="progress-bar" role="progressbar" style="width: @generalProgress%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+    @(generalProgress)% Concluídos!
+</div>
 
 <form method="get">
     <div class="row align-items-end mb-3">
@@ -26,6 +22,22 @@
             <label for="warehouseId" class="form-label">Depósito</label>
             @Html.DropDownList("warehouseId", ViewData["WarehouseId"] as SelectList, new { @class = "form-control" })
         </div>
+
+        <div class="col-md-2">
+            <label for="countStatus" class="form-label">Status</label>
+            <select name="countStatus" class="form-control">
+                @foreach (var option in ViewBag.CountStatusOptions)
+                {
+                    if (option.Value == ViewBag.StatusSelect)
+                    {
+                        <option value="@option.Value" selected>@option.Text</option>
+
+                    }
+                    <option value="@option.Value">@option.Text</option>
+                }
+            </select>
+            </div>
+
 
         <div class="col-md-2">
             <button type="submit" class="btn btn-info">Aplicar filtro</button>

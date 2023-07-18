@@ -155,7 +155,7 @@
                                                 @stockTaking.AddressingsInventoryStart.Addressing.Warehouse.Name
                                             </td>
                                             <td>
-                                                @if (stockTaking.PerishableItem != null)
+                                                @if (stockTaking.PerishableItem.Count() > 0)
                                                 {
                                                     <button class="accordion-button collapsed" style="background-color:#e2e3e5;" data-bs-toggle="collapse" data-bs-target="#collapse-@stockTaking.Id" aria-expanded="false" aria-controls="collapse-@stockTaking.Id">
                                                         @stockTaking.AddressingsInventoryStart.Addressing.Name
@@ -180,7 +180,7 @@
                                                 @stockTaking.StockTakingQuantity
                                             </td>
                                         </tr>
-                                        @if (stockTaking.PerishableItem != null)
+                                        @if (stockTaking.PerishableItem.Count() > 0)
                                         {
                                             <tr id="collapse-@stockTaking.Id" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordion-@stockTaking.Id">
                                                 <td colspan="6" class="accordion-body">

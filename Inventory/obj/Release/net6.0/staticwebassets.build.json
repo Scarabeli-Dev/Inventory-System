@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "5F9CQqlf89JndYDFW0ad0JeU8DFdG9iK+yj1srJhF2M=",
+  "Hash": "NgOvY06/G/mVtEyxXtK1rcrUm/PuHxSNr19nxckBvhU=",
   "Source": "Inventory",
   "BasePath": "_content/Inventory",
   "Mode": "Default",
@@ -7359,6 +7359,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\count.png"
+    },
+    {
+      "Identity": "C:\\Systems\\Inventory\\Inventory\\wwwroot\\images\\LogoRC.png",
+      "SourceId": "Inventory",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Systems\\Inventory\\Inventory\\wwwroot\\",
+      "BasePath": "_content/Inventory",
+      "RelativePath": "images/LogoRC.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\LogoRC.png"
     },
     {
       "Identity": "C:\\Systems\\Inventory\\Inventory\\wwwroot\\js\\chosen.jquery.js",
