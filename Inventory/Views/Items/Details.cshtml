@@ -14,8 +14,9 @@
 <div class="card">
     <div class="card-body">
         @Html.DisplayFor(model => model.Observation)
+        <h3>Registro do Sistema</h3>
         <table class="table table-striped mt-2">
-            <thead>
+            <thead class="table-primary">
                 <tr>
                     <th>
                         Quantidade
@@ -45,8 +46,46 @@
                 }
             </tbody>
         </table>
-    <div>
-        <a class="btn btn-primary" asp-action="Index">Voltar</a>
-    </div>
+        @if (Model.StockTaking.Count() > 0)
+        {
+            <hr />
+
+            <h3>Contagens Realizadas</h3>
+
+            <table class="table table-striped mt-2">
+                <thead class="table-primary">
+                    <tr>
+                        <th>
+                            Quantidade
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Addressings)
+                        </th>
+                        <th>
+                            Depósito
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var stockTaking in Model.StockTaking)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => stockTaking.StockTakingQuantity) @Html.DisplayFor(model => model.UnitOfMeasurement)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => stockTaking.AddressingsInventoryStart.Addressing.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => stockTaking.AddressingsInventoryStart.Addressing.Warehouse.Name)
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        <div>
+            <a class="btn btn-primary" asp-action="Index">Voltar</a>
+        </div>
     </div>
 </div>

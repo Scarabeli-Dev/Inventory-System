@@ -178,6 +178,7 @@ namespace Inventory.Services
         {
             return await _context.AddressingsInventoryStart.Include(x => x.Addressing)
                                                         .Include(x => x.InventoryStart)
+                                                        .AsNoTracking()
                                                         .FirstOrDefaultAsync(a => a.AddressingId == addressingId);
         }
 

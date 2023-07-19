@@ -67,11 +67,7 @@ namespace Inventory.Controllers
             {
                 itemInAddressing = itemInAddressing + addressing.Addressing.Item.Count();
 
-                if (addressing.StockTaking.Count() > 0)
-                {
-                    itemCount++;
-                }
-
+                itemCount = itemCount + addressing.StockTaking.Count();
             }
 
             var generalProgress = (itemCount * 100) / itemInAddressing;
@@ -141,15 +137,20 @@ namespace Inventory.Controllers
             try
             {
                 var inventoryVerify = await _addressingsInventoryStartService.GetAddressingsStockTakingByAddressingIdAsync(stockTaking.AddressingsInventoryStartId);
-
+                var stockTakingVerify = await _stockTakingService.GetStockTakingByAddressingAndItemIdAsync(stockTaking.AddressingsInventoryStartId, stockTaking.ItemId);
                 if (inventoryVerify == null)
                 {
                     TempData["errorMessage"] = "contagem. Inventário não aberto para o dépósito";
                     return RedirectToAction("Index", "Warehouses");
                 }
+                if (stockTakingVerify != null)
+                {
+                    TempData["errorMessage"] = $"contagem. Já existe uma contagem para o item {stockTakingVerify.ItemId} - {stockTakingVerify.Item.Name} no endereçamento {stockTakingVerify.AddressingsInventoryStart.Addressing.Name}";
+                    return RedirectToAction("Index", "Warehouses");
+                }
 
 
-                var itemCount = await _itemService.GetItemByIdAsync(stockTaking.ItemId);
+                var itemCount = await _itemService.GetItemByIdForCountAsync(stockTaking.ItemId);
 
                 if (ModelState.IsValid)
                 {
@@ -170,7 +171,7 @@ namespace Inventory.Controllers
                     await _stockTakingService.SaveStockTakingWithRecount(stockTaking);
 
                     TempData["successMessage"] = "Contagem do item " + itemCount.Id + "- " + itemCount.Name;
-                    return RedirectToAction("Details", "Warehouses", new { id = stockTaking.AddressingsInventoryStart.Addressing.WarehouseId });
+                    return RedirectToAction("Details", "Warehouses", new { id = inventoryVerify.Addressing.WarehouseId });
                 }
 
                 if (!ModelState.IsValid && (stockTaking.IsPerishableItem || (stockTaking.IsPerishableItem == false && stockTaking.PerishableItem.Count() > 0)))
@@ -233,7 +234,7 @@ namespace Inventory.Controllers
                 TempData["errorMessage"] = $"Contagem do endereçamento {stockTaking.AddressingsInventoryStart.Addressing.Name} já encerrada";
                 return RedirectToAction(nameof(Index));
             }
-            if(stockTaking.ItemToRecount)
+            if (stockTaking.ItemToRecount)
             {
                 stockTaking.StockTakingQuantity = 0;
             }
@@ -259,7 +260,7 @@ namespace Inventory.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                var item = await _itemService.GetItemByIdAsync(itemId);
+                var item = await _itemService.GetItemByIdForCountAsync(itemId);
                 if (itemId != stockTaking.ItemId)
                 {
                     return RedirectToAction("Error", "Error", new { message = "Contagem não encontrada" });
@@ -390,12 +391,14 @@ namespace Inventory.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    await _stockTakingService.SaveStockTakingWithRecount(stockTaking);
+                    if (await _stockTakingService.SaveStockTakingWithRecount(stockTaking))
+                    {
+                        var result = await _stockTakingService.GetStockTakingByIdAsync(stockTaking.Id);
+                        TempData["successMessage"] = "Contagem do item " + item.Id + "- " + item.Name;
 
-                    var result = await _stockTakingService.GetStockTakingByIdAsync(stockTaking.Id);
-                    TempData["successMessage"] = "Contagem do item " + item.Id + "- " + item.Name;
+                        return RedirectToAction("Details", "Warehouses", new { id = result.AddressingsInventoryStart.Addressing.WarehouseId });
+                    }
 
-                    return RedirectToAction("Details", "Warehouses", new { id = result.AddressingsInventoryStart.Addressing.WarehouseId });
                 }
                 TempData["errorMessage"] = "contagem do item " + item.Id + "- " + item.Name;
                 return View(stockTaking);

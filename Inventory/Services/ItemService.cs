@@ -93,7 +93,23 @@ namespace Inventory.Services
 
         public async Task<Item> GetItemByIdAsync(string id)
         {
-            var result = await _context.Item.Include(l => l.Addressings).ThenInclude(il => il.Addressing).ThenInclude(w => w.Warehouse).FirstOrDefaultAsync(m => m.Id == id);
+            var result = await _context.Item.Include(l => l.Addressings).ThenInclude(il => il.Addressing).ThenInclude(w => w.Warehouse)
+                                            .Include(s => s.StockTaking)
+                                            .ThenInclude(a => a.AddressingsInventoryStart)
+                                            .ThenInclude(a => a.Addressing)
+                                            .ThenInclude(w => w.Warehouse)
+                                            .AsNoTracking()
+                                            .FirstOrDefaultAsync(m => m.Id == id);
+
+            return result;
+        }
+
+        public async Task<Item> GetItemByIdForCountAsync(string id)
+        {
+            var result = await _context.Item.Include(l => l.Addressings).ThenInclude(il => il.Addressing).ThenInclude(w => w.Warehouse)
+                                            .Include(s => s.StockTaking)
+                                            .AsNoTracking()
+                                            .FirstOrDefaultAsync(m => m.Id == id);
 
             return result;
         }

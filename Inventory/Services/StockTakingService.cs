@@ -85,11 +85,13 @@ namespace Inventory.Services
             }
 
             _context.StockTaking.Update(stockTaking);
+            _context.Entry(stockTaking).State = EntityState.Detached;
             await _context.SaveChangesAsync();
 
             await _addressingsStockTakingService.SetAddressingCountRealizedTrueAsync(stockTaking.AddressingsInventoryStartId);
             return true;
         }
+
 
         public async Task<bool> AddStockTakingForRecountAssync(int stockTakingId)
         {
