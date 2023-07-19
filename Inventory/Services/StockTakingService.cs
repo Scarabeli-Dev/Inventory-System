@@ -158,11 +158,11 @@ namespace Inventory.Services
 
         public async Task<List<StockTaking>> GetAllStockTakingByItemIdAsync(string itemId)
         {
-             var result = await _context.StockTaking.Include(i => i.Item)
-                                             .Include(a => a.AddressingsInventoryStart).ThenInclude(a => a.Addressing)
-                                             .Include(i => i.AddressingsInventoryStart).ThenInclude(a => a.InventoryStart)
-                                             .Include(p => p.PerishableItem)
-                                             .Where(st => st.ItemId == itemId).ToListAsync();
+            var result = await _context.StockTaking.Include(i => i.Item)
+                                            .Include(a => a.AddressingsInventoryStart).ThenInclude(a => a.Addressing)
+                                            .Include(i => i.AddressingsInventoryStart).ThenInclude(a => a.InventoryStart)
+                                            .Include(p => p.PerishableItem)
+                                            .Where(st => st.ItemId == itemId).ToListAsync();
             return result;
         }
 

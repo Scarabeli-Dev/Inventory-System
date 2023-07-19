@@ -150,7 +150,7 @@
                                     {
                                         decimal itemSystemQuantity = 0;
                                         addressingItem.Add(stockTaking.AddressingsInventoryStart.AddressingId);
-                                        <tr class="table-secondary">
+                                        <tr class="table-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="@stockTaking.StockTakingObservation">
                                             <td>
                                                 @stockTaking.AddressingsInventoryStart.Addressing.Warehouse.Name
                                             </td>

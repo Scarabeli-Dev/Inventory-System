@@ -136,8 +136,8 @@ namespace Inventory.Controllers
         {
             try
             {
-                var inventoryVerify = await _addressingsInventoryStartService.GetAddressingsStockTakingByAddressingIdAsync(stockTaking.AddressingsInventoryStart.AddressingId);
-                var stockTakingVerify = await _stockTakingService.GetStockTakingByAddressingAndItemIdAsync(stockTaking.AddressingsInventoryStart.AddressingId, stockTaking.ItemId);
+                var inventoryVerify = await _addressingsInventoryStartService.GetAddressingsStockTakingByAddressingIdAsync(stockTaking.AddressingsInventoryStartId);
+                var stockTakingVerify = await _stockTakingService.GetStockTakingByAddressingAndItemIdAsync(inventoryVerify.AddressingId, stockTaking.ItemId);
                 if (inventoryVerify == null)
                 {
                     TempData["errorMessage"] = "contagem. Inventário não aberto para o dépósito";
