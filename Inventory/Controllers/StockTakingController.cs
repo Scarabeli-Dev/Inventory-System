@@ -136,8 +136,8 @@ namespace Inventory.Controllers
         {
             try
             {
-                var inventoryVerify = await _addressingsInventoryStartService.GetAddressingsStockTakingByAddressingIdAsync(stockTaking.AddressingsInventoryStartId);
-                var stockTakingVerify = await _stockTakingService.GetStockTakingByAddressingAndItemIdAsync(stockTaking.AddressingsInventoryStartId, stockTaking.ItemId);
+                var inventoryVerify = await _addressingsInventoryStartService.GetAddressingsStockTakingByAddressingIdAsync(stockTaking.AddressingsInventoryStart.AddressingId);
+                var stockTakingVerify = await _stockTakingService.GetStockTakingByAddressingAndItemIdAsync(stockTaking.AddressingsInventoryStart.AddressingId, stockTaking.ItemId);
                 if (inventoryVerify == null)
                 {
                     TempData["errorMessage"] = "contagem. Inventário não aberto para o dépósito";
@@ -253,7 +253,7 @@ namespace Inventory.Controllers
         {
             try
             {
-                var addressingStatus = await _addressingsInventoryStartService.GetAddressingsStockTakingByAddressingIdAsync(stockTaking.AddressingsInventoryStartId);
+                var addressingStatus = await _addressingsInventoryStartService.GetAddressingsStockTakingByAddressingIdAsync(stockTaking.AddressingsInventoryStart.AddressingId);
                 if (addressingStatus.AddressingCountEnded)
                 {
                     TempData["errorMessage"] = $"Contagem do endereçamento {stockTaking.AddressingsInventoryStart.Addressing.Name} já encerrada";
@@ -349,10 +349,10 @@ namespace Inventory.Controllers
                 if (await _stockTakingService.AddStockTakingForRecountAssync(stockTakingId))
                 {
                     TempData["successMessage"] = "Recontagem do item " + stockTaking.ItemId + "- " + stockTaking.Item.Name;
-                    return RedirectToAction("StockTakingReport", "StockTaking", new { addressingId = stockTaking.AddressingsInventoryStartId });
+                    return RedirectToAction("StockTakingReport", "StockTaking", new { addressingId = stockTaking.AddressingsInventoryStart.AddressingId });
                 }
                 TempData["errorMessage"] = "contagem do item " + stockTaking.ItemId + "- " + stockTaking.Item.Name;
-                return RedirectToAction("StockTakingReport", "StockTaking", new { addressingId = stockTaking.AddressingsInventoryStartId });
+                return RedirectToAction("StockTakingReport", "StockTaking", new { addressingId = stockTaking.AddressingsInventoryStart.AddressingId });
             }
             catch (Exception)
             {
@@ -527,7 +527,7 @@ namespace Inventory.Controllers
         public async Task<IActionResult> DeleteStockTaking(int stockTakingId)
         {
             StockTaking stockTaking = await _stockTakingService.GetStockTakingByIdAsync(stockTakingId);
-            var addressingId = stockTaking.AddressingsInventoryStartId;
+            var addressingId = stockTaking.AddressingsInventoryStart.AddressingId;
 
             if (stockTaking == null)
             {
@@ -544,7 +544,7 @@ namespace Inventory.Controllers
         public async Task<IActionResult> DeleteConfirmed(int stockTakingId)
         {
             StockTaking stockTaking = await _stockTakingService.GetStockTakingByIdAsync(stockTakingId);
-            var addressingId = stockTaking.AddressingsInventoryStartId;
+            var addressingId = stockTaking.AddressingsInventoryStart.AddressingId;
 
             if (stockTaking == null)
             {

@@ -41,7 +41,7 @@
                         <td>
                             @if (item.StockTakingId > 0)
                             {
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" id="delete-stock-taking" data-stocktaking-id="@item.StockTakingId" data-item-name="@item.ItemName" data-bs-target="#deleteStockTaking">
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" id="delete-stock-taking" data-stocktaking-id="@item.StockTakingId" data-item-name="@item.ItemName" data-bs-target="#deleteStockTaking" onclick="deleteStockTaking('@item.StockTakingId', '@item.ItemName')">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             }
@@ -199,14 +199,12 @@
 </div><!-- End Delete-->
 @section Scripts {
     <script type="text/javascript">
-        $(document).ready(function () {
-            $('#delete-stock-taking').click(function () {
-                var stockTakingId = $(this).data('stocktaking-id');
-                var itemName = $(this).data('item-name');
+        function deleteStockTaking(stockTakingId, itemName) {
+            console.log(stockTakingId)
 
-                $('#deleteStockTaking input[name="stockTakingId"]').val(stockTakingId);
-                $('#deleteStockTaking .modal-body strong').text(itemName);
-            });
-        });
+            $('#deleteStockTaking input[name="stockTakingId"]').val(stockTakingId);
+            $('#deleteStockTaking .modal-body strong').text(itemName);
+        }
+
     </script>
 }
