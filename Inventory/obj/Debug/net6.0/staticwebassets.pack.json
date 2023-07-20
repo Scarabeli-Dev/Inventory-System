@@ -1729,6 +1729,10 @@
       "PackagePath": "staticwebassets\\images\\count.png"
     },
     {
+      "Id": "C:\\Systems\\Inventory\\Inventory\\wwwroot\\js\\charts\\echart--gauge-grade.js",
+      "PackagePath": "staticwebassets\\js\\charts\\echart--gauge-grade.js"
+    },
+    {
       "Id": "C:\\Systems\\Inventory\\Inventory\\wwwroot\\js\\chosen.jquery.js",
       "PackagePath": "staticwebassets\\js\\chosen.jquery.js"
     },

@@ -94,6 +94,7 @@ builder.Services.AddScoped<IPerishableItemService, PerishableItemService>();
 builder.Services.AddScoped<IReportViewService, ReportViewService>();
 builder.Services.AddScoped<IStockTakingService, StockTakingService>();
 builder.Services.AddScoped<IWarehouseService, WarehouseService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 // Add Paging List
 builder.Services.AddPaging(options =>

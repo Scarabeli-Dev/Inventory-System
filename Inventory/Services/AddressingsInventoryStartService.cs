@@ -209,7 +209,7 @@ namespace Inventory.Services
 
         public async Task<bool> SetAddressingCountEndedTrueAsync(int addressingId)
         {
-            var addressingsStockTaking = await GetAddressingsStockTakingByAddressingIdAsync(addressingId);
+            var addressingsStockTaking = await _context.AddressingsInventoryStart.FirstOrDefaultAsync(i => i.Id == addressingId);
             if (addressingsStockTaking != null)
             {
                 addressingsStockTaking.AddressingCountEnded = true;
@@ -222,7 +222,7 @@ namespace Inventory.Services
 
         public async Task<bool> SetAddressingCountEndedFalseAsync(int addressingId)
         {
-            var addressingsStockTaking = await GetAddressingsStockTakingByAddressingIdAsync(addressingId);
+            var addressingsStockTaking = await _context.AddressingsInventoryStart.FirstOrDefaultAsync(i => i.Id == addressingId);
             if (addressingsStockTaking != null)
             {
                 addressingsStockTaking.AddressingCountEnded = false;

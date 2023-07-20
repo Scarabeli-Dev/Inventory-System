@@ -253,8 +253,8 @@ namespace Inventory.Controllers
         {
             try
             {
-                var addressingStatus = await _addressingsInventoryStartService.GetAddressingsStockTakingByAddressingIdAsync(stockTaking.AddressingsInventoryStart.AddressingId);
-                if (addressingStatus.AddressingCountEnded)
+                var inventoryVerify = await _addressingsInventoryStartService.GetAddressingsStockTakingByAddressingIdAsync(stockTaking.AddressingsInventoryStartId);
+                if (inventoryVerify.AddressingCountEnded)
                 {
                     TempData["errorMessage"] = $"Contagem do endereçamento {stockTaking.AddressingsInventoryStart.Addressing.Name} já encerrada";
                     return RedirectToAction(nameof(Index));
@@ -281,6 +281,7 @@ namespace Inventory.Controllers
                     }
                     stockTaking.StockTakingQuantity = decimal.Parse(stockTaking.StockTakingQuantity.ToString().Replace(",", "."), CultureInfo.InvariantCulture);
 
+                    stockTaking.AddressingsInventoryStartId = inventoryVerify.Id;
                     await _stockTakingService.SaveStockTakingWithOutRecount(stockTaking);
 
                     var result = await _stockTakingService.GetStockTakingByIdAsync(stockTaking.Id);
@@ -306,6 +307,7 @@ namespace Inventory.Controllers
 
                     stockTaking.StockTakingQuantity = decimal.Parse(stockTaking.StockTakingQuantity.ToString().Replace(",", "."), CultureInfo.InvariantCulture);
 
+                    stockTaking.AddressingsInventoryStartId = inventoryVerify.Id;
                     await _stockTakingService.SaveStockTakingWithOutRecount(stockTaking);
 
                     TempData["successMessage"] = "Contagem do item " + item.Id + "- " + item.Name;

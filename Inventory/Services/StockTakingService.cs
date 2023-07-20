@@ -27,9 +27,6 @@ namespace Inventory.Services
         {
             stockTaking.StockTakingDate = DateTime.Now;
 
-            var inventoryAddressing = await _addressingsStockTakingService.GetAddressingsStockTakingByAddressingIdAsync(stockTaking.AddressingsInventoryStartId);
-            stockTaking.AddressingsInventoryStartId = inventoryAddressing.Id;
-
             if (stockTaking.IsPerishableItem == true)
             {
                 stockTaking.StockTakingQuantity = 0;
@@ -55,7 +52,7 @@ namespace Inventory.Services
             _context.StockTaking.Update(stockTaking);
             await _context.SaveChangesAsync();
 
-            await _addressingsStockTakingService.SetAddressingCountRealizedTrueAsync(inventoryAddressing.AddressingId);
+            await _addressingsStockTakingService.SetAddressingCountRealizedTrueAsync(stockTaking.AddressingsInventoryStartId);
             return true;
         }
 

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "hoQwecrAD7I1jtp0TXZNJnNr94T6IC3zDWJ8aT47cIQ=",
+  "Hash": "LGmFo+drj6RyNb6WOw+FcAOGrKL7/yRlmzblECb5W0c=",
   "Source": "Inventory",
   "BasePath": "_content/Inventory",
   "Mode": "Default",
@@ -7376,6 +7376,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\LogoRC.png"
+    },
+    {
+      "Identity": "C:\\Systems\\Inventory\\Inventory\\wwwroot\\js\\charts\\echart--gauge-grade.js",
+      "SourceId": "Inventory",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Systems\\Inventory\\Inventory\\wwwroot\\",
+      "BasePath": "_content/Inventory",
+      "RelativePath": "js/charts/echart--gauge-grade.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\charts\\echart--gauge-grade.js"
     },
     {
       "Identity": "C:\\Systems\\Inventory\\Inventory\\wwwroot\\js\\chosen.jquery.js",
