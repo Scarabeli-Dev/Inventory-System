@@ -57,6 +57,12 @@ namespace Inventory.Controllers
 
                 if (result.Succeeded)
                 {
+                    var usersAdmin = await _userManager.GetUsersInRoleAsync("Admin");
+                    var usersReport = await _userManager.GetUsersInRoleAsync("Relatorio");
+                    if (usersAdmin.Contains(user) || usersReport.Contains(user))
+                    {
+                        return RedirectToAction("Index", "Dashboard");
+                    }
                     if (string.IsNullOrEmpty(loginVM.ReturnUrl))
                     {
                         return RedirectToAction("Index", "Warehouses");

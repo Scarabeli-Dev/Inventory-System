@@ -1,49 +1,84 @@
-﻿@model ChartsViewModel
-
+﻿@using System.Globalization;
+@model ChartsViewModel
 @{
+    var brazilianCulture = new CultureInfo("pt-BR");
+
+    int itemsTotal = Model.TotalOfItems;
     int stockTakingAmount = Model.ItemsWithStockTakingAmount;
+
     int stockTakingRigth = Model.ItemsWithCorrectAmount;
-    decimal gaugeValue = ((decimal)stockTakingRigth / stockTakingAmount);
+    int addressingRigth = Model.ItemsWithAddressingRigth;
+    decimal perishableItemsAmount = Model.ItemPerishableAmount;
+    decimal perishableItemsExpirate = Model.ItemPerishableExpirateDate;
+    decimal stockTakingCountAmount = Model.TotalQuantityItemsStockTaking;
+
+    decimal complet = ((decimal)stockTakingAmount / itemsTotal) * 100;
+
+    decimal gaugeValueStockTaking = ((decimal)stockTakingRigth / stockTakingAmount);
+    decimal gaugeValueAddressing = ((decimal)addressingRigth / stockTakingAmount);
+    decimal gaugeStockDivergence = (1 - gaugeValueStockTaking);
+    decimal gaugeValueLostDate = 0;
+    if (perishableItemsExpirate != 0)
+    {
+        gaugeValueLostDate = (perishableItemsExpirate / perishableItemsAmount);
+    }
+    decimal radarUserOfInventory = (1 - gaugeValueLostDate);
+
+    double radarEffectivenessOfInventoryManagement = (((double)gaugeValueStockTaking * 0.35) + ((double)radarUserOfInventory * 0.45) + ((double)gaugeValueAddressing * 0.2));
 }
 
 <link rel="stylesheet" href="~/css/site.css" />
-<div class="pagetitle">
-    <h1>Dashboard</h1>
-</div><!-- End Page Title -->
+<div class="row mb-4 d-flex justify-content-between align-self-baseline">
+    <!-- Parte 1: Título "Dashboard" -->
+    <div class="col-1">
+        <div class="pagetitle">
+            <h1>Dashboard</h1>
+        </div>
+    </div>
+
+    <!-- Parte 2: Barra de progresso -->
+    <div class="col-7 d-flex align-items-center">
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: @(complet.ToString("N2", brazilianCulture))%;" aria-valuenow="@complet" aria-valuemin="0" aria-valuemax="100">
+                @complet.ToString("N2", brazilianCulture)% Concluídos!
+            </div>
+        </div>
+    </div>
+
+    <!-- Parte 3: SelectList e botão -->
+    <div class="col-2">
+        <form method="get" class="input-group">
+            <div class="col-8">
+                @Html.DropDownList("warehouseId", ViewData["WarehouseId"] as SelectList, new { @class = "form-control" })
+            </div>
+            <div class="col-4">
+                <button type="submit" class="btn btn-info">Filtrar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 
 <section class="section dashboard">
 
-    <div class="col-lg-12">
-        <div class="row">
+    <div class="row">
+        <div class="col-lg-4">
 
             <!-- Sales Card -->
-            <div class="col-xxl-4 col-md-6">
-                <div class="card info-card sales-card">
+            <div class="col-xxl-12 col-md-12 col-sm-12">
+                <div class="card info-card revenue-card mb-4">
 
-                    <div class="filter">
-                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <li class="dropdown-header text-start">
-                                <h6>Filter</h6>
-                            </li>
-
-                            <li><a class="dropdown-item" href="#">Today</a></li>
-                            <li><a class="dropdown-item" href="#">This Month</a></li>
-                            <li><a class="dropdown-item" href="#">This Year</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="card-body">
-                        <h5 class="card-title">Sales <span>| Today</span></h5>
+                    <div class="card-body p-0 ps-3">
+                        <h5 class="card-title">SKUs Contados</h5>
 
                         <div class="d-flex align-items-center">
                             <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                <i class="bi bi-cart"></i>
+                                <i class="bi bi-tag"></i>
                             </div>
-                            <div class="ps-3">
-                                <h6>145</h6>
-                                <span class="text-success small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-
+                            <div class="ps-1">
+                                <h6>@stockTakingAmount.ToString("N0", brazilianCulture)</h6>
+                                <span class="text-success small pt-1 fw-bold">@complet.ToString("N2", brazilianCulture)%</span> <span class="text-muted small pt-2 ps-1">Concluídos!</span>
                             </div>
                         </div>
                     </div>
@@ -51,174 +86,83 @@
                 </div>
             </div><!-- End Sales Card -->
             <!-- Revenue Card -->
-            <div class="col-xxl-4 col-md-6">
+            <div class="col-xxl-12 col-md-12">
                 <div class="card info-card revenue-card">
 
-                    <div class="filter">
-                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <li class="dropdown-header text-start">
-                                <h6>Filter</h6>
-                            </li>
-
-                            <li><a class="dropdown-item" href="#">Today</a></li>
-                            <li><a class="dropdown-item" href="#">This Month</a></li>
-                            <li><a class="dropdown-item" href="#">This Year</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="card-body">
-                        <h5 class="card-title">Revenue <span>| This Month</span></h5>
+                    <div class="card-body p-0 ps-3">
+                        <h5 class="card-title">Volume de Itens Contados</h5>
 
                         <div class="d-flex align-items-center">
                             <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                <i class="bi bi-currency-dollar"></i>
+                                <i class="bi bi-tags"></i>
                             </div>
                             <div class="ps-3">
-                                <h6>$3,264</h6>
-                                <span class="text-success small pt-1 fw-bold">8%</span> <span class="text-muted small pt-2 ps-1">increase</span>
-
+                                <h6>@Model.TotalQuantityItemsStockTaking.ToString("N2", brazilianCulture)</h6>
                             </div>
                         </div>
                     </div>
 
                 </div>
-            </div><!-- End Revenue Card -->
-            <!-- Customers Card -->
-            <div class="col-xxl-4 col-xl-12">
-
-                <div class="card info-card customers-card">
-
-                    <div class="filter">
-                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                            <li class="dropdown-header text-start">
-                                <h6>Filter</h6>
-                            </li>
-
-                            <li><a class="dropdown-item" href="#">Today</a></li>
-                            <li><a class="dropdown-item" href="#">This Month</a></li>
-                            <li><a class="dropdown-item" href="#">This Year</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="card-body">
-                        <h5 class="card-title">Customers <span>| This Year</span></h5>
-
-                        <div class="d-flex align-items-center">
-                            <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                                <i class="bi bi-people"></i>
-                            </div>
-                            <div class="ps-3">
-                                <h6>1244</h6>
-                                <span class="text-danger small pt-1 fw-bold">12%</span> <span class="text-muted small pt-2 ps-1">decrease</span>
-
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-
-            </div><!-- End Customers Card -->
-            <div class="col-lg-6">
+            </div>
+            <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">ACURACIDADE DO ESTOQUE</h5>
+                        <h5 class="card-title">Divergência de Estoque</h5>
 
                         <!-- Pie Chart -->
-                        <div id="trafficChart" style="min-height: 600px;" class="echart"></div>
+                        <div id="echart--gauge-gradeStockDivergence" style="min-height: 217px;" data-value="@gaugeStockDivergence"></div>
 
-                        <script>
-                            document.addEventListener("DOMContentLoaded", () => {
-                                echarts.init(document.querySelector("#trafficChart")).setOption({
-                                    series: [
-                                        {
-                                            type: 'gauge',
-                                            startAngle: 180,
-                                            endAngle: 0,
-                                            center: ['50%', '75%'],
-                                            radius: '90%',
-                                            min: 0,
-                                            max: 1,
-                                            splitNumber: 8,
-                                            axisLine: {
-                                                lineStyle: {
-                                                    width: 20,
-                                                    color: [
-                                                        [0.85, '#FF6E76'],
-                                                        [0.90, '#FDDD60'],
-                                                        [0.95, '#58D9F9'],
-                                                        [1, '#7CFFB2']
-                                                    ]
-                                                }
-                                            },
-                                            pointer: {
-                                                icon: 'path://M12.8,0.7l12,40.1H0.7L12.8,0.7z',
-                                                length: '22%',
-                                                width: 12,
-                                                offsetCenter: [0, '-55%'],
-                                                itemStyle: {
-                                                    color: 'auto'
-                                                }
-                                            },
-                                            axisTick: {
-                                                length: 12,
-                                                lineStyle: {
-                                                    color: 'auto',
-                                                    width: 2
-                                                }
-                                            },
-                                            splitLine: {
-                                                length: 20,
-                                                lineStyle: {
-                                                    color: 'auto',
-                                                    width: 5
-                                                }
-                                            },
-                                            axisLabel: {
-                                                color: '#464646',
-                                                fontSize: 20,
-                                                distance: -60,
-                                                rotate: 'horizontal',
-                                                formatter: function (value) {
-                                                    if (value === 0.875) {
-                                                        return '';
-                                                    } else if (value === 0.625) {
-                                                        return '';
-                                                    } else if (value === 0.375) {
-                                                        return '';
-                                                    } else if (value === 0.125) {
-                                                        return '';
-                                                    }
-                                                    return '';
-                                                }
-                                            },
-                                            title: {
-                                                offsetCenter: [0, '5%'],
-                                                fontSize: 15,
-                                                fontWeight: 'bold'
-                                            },
-                                            detail: {
-                                                fontSize: 55,
-                                                offsetCenter: [0, '-5%'],
-                                                valueAnimation: true,
-                                                formatter: function (value) {
-                                                    return (value * 100).toFixed(1) + '%';
-                                                },
-                                                color: '#012987'
-                                            },
-                                            data: [
-                                                {
-                                                    value: @gaugeValue,
-                                                    name: ''
-                                                }
-                                            ]
-                                        }
-                                    ]
-                                });
-                            });
-                        </script>
 
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Perdas de Estoque</h5>
+
+                        <!-- Pie Chart -->
+                        <div id="echart--gauge-gradeExpirateDate" style="min-height: 217px;" data-value="@gaugeValueLostDate"></div>
+
+                    </div>
+                </div>
+            </div>
+        </div><!-- End Revenue Card -->
+
+        <div class="col-8">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Acuracidade de Estoque</h5>
+
+                            <!-- Pie Chart -->
+                            <div id="echart--gauge-gradeStockTaking" style="min-height: 217px;" data-value="@gaugeValueStockTaking"></div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Assertividade das Locações</h5>
+
+                            <!-- Pie Chart -->
+                            <div id="echart--gauge-gradeAddressing" style="min-height: 217px;" data-value="@gaugeValueAddressing"></div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Eficácia da Gestão dos Estoques</h5>
+
+                        <!-- Pie Chart -->
+                        <div id="echart--effectiveness" style="min-height: 550px; margin-top:0;" data-value-1="@gaugeValueStockTaking" data-value-2="@radarUserOfInventory" data-value-3="@gaugeValueAddressing" data-value-4="@radarEffectivenessOfInventoryManagement"></div>
 
                     </div>
                 </div>
@@ -227,4 +171,10 @@
     </div>
 </section>
 
-<script src="assets/vendor/echarts/echarts.min.js"></script>
+<script src="https://fastly.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<script src="~/js/charts/echart--gauge-gradeStockTaking.js"></script>
+<script src="~/js/charts/echart--gauge-gradeAddressing.js"></script>
+<script src="~/js/charts/echart--gauge-gradeExpirateDate.js"></script>
+<script src="~/js/charts/echart--gauge-gradeStockDivergence.js"></script>
+<script src="~/js/charts/echart--radar-effectiveness.js"></script>
+<script src="~/assets/vendor/echarts/echarts.min.js"></script>

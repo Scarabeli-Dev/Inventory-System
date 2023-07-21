@@ -4,6 +4,6 @@ namespace Inventory.Services.Interfaces
 {
     public interface IDashboardService
     {
-        ChartsViewModel GaugeGrade();
+        ChartsViewModel DashboardData(int warehouseId);
     }
 }

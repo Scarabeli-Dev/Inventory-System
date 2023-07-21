@@ -10,7 +10,7 @@ using System.Reflection;
 
 namespace Inventory.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin, Relatorio")]
     public class ReportsController : Controller
     {
         private readonly IReportViewService _reportViewService;

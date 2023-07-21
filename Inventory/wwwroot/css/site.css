@@ -35,3 +35,7 @@ body {
     height: 100vh;
     overflow: hidden;
 }
+
+.custom-chart-container {
+    height: 100px; /* Defina a altura desejada aqui */
+}

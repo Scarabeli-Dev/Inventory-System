@@ -3,10 +3,12 @@ using FastReport.Web;
 using Inventory.Helpers;
 using Inventory.Services.Interfaces;
 using Inventory.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inventory.Controllers
 {
+    [Authorize]
     public class AddressingsInventoryStartController : Controller
     {
         private readonly IAddressingsInventoryStartService _addressingsInventoryStartService;

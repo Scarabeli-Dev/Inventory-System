@@ -152,8 +152,9 @@ app.UseStaticFiles(new StaticFileOptions()
 });
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Warehouses}/{action=Index}/{id?}");
+        name: "default",
+        pattern: "{controller=Warehouses}/{action=Index}/{id?}");
+
 app.MapRazorPages();
 
 app.Run();

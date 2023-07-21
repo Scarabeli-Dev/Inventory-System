@@ -30,6 +30,11 @@ namespace Inventory.Controllers
         // GET: Warehouses
         public async Task<IActionResult> Index(string filter, int pageindex = 1, string sort = "Name")
         {
+            if (User.IsInRole("Relatorio"))
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
             var model = await _warehouseService.GetAllWarehousesAsync(filter, pageindex, sort);
 
             return View(model);

@@ -21,7 +21,10 @@ namespace Inventory.Services
 
         public IEnumerable<Item> Items => _context.Item.Include(l => l.Addressings)
                                                        .ThenInclude(l => l.Addressing)
-                                                       .Include(s => s.StockTaking);
+                                                       .Include(s => s.StockTaking)
+                                                       .ThenInclude(ai => ai.AddressingsInventoryStart)
+                                                       .Include(s => s.StockTaking)
+                                                       .ThenInclude(p => p.PerishableItem);
 
         public async Task<PagingList<Item>> GetAllItemsPagingAsync(string filter, int pageindex = 1, string sort = "Name")
         {

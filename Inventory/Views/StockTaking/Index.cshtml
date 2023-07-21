@@ -31,12 +31,14 @@
                     if (option.Value == ViewBag.StatusSelect)
                     {
                         <option value="@option.Value" selected>@option.Text</option>
-
                     }
-                    <option value="@option.Value">@option.Text</option>
+                    else
+                    {
+                        <option value="@option.Value">@option.Text</option>
+                    }
                 }
             </select>
-            </div>
+        </div>
 
 
         <div class="col-md-2">
