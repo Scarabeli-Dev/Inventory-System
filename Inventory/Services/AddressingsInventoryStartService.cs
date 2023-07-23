@@ -177,6 +177,7 @@ namespace Inventory.Services
         public async Task<AddressingsInventoryStart> GetAddressingsStockTakingByAddressingIdAsync(int addressingId)
         {
             return await _context.AddressingsInventoryStart.Include(x => x.Addressing)
+                                                        .ThenInclude(i => i.Item)
                                                         .Include(x => x.InventoryStart)
                                                         .AsNoTracking()
                                                         .FirstOrDefaultAsync(a => a.AddressingId == addressingId);

@@ -70,15 +70,15 @@
                 <div class="card info-card revenue-card mb-4">
 
                     <div class="card-body p-0 ps-3">
-                        <h5 class="card-title">SKUs Contados</h5>
+                        <h5 class="card-title">SKUs Inventáriados</h5>
 
                         <div class="d-flex align-items-center">
                             <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                                 <i class="bi bi-tag"></i>
                             </div>
                             <div class="ps-1">
-                                <h6>@stockTakingAmount.ToString("N0", brazilianCulture)</h6>
-                                <span class="text-success small pt-1 fw-bold">@complet.ToString("N2", brazilianCulture)%</span> <span class="text-muted small pt-2 ps-1">Concluídos!</span>
+                                <h6 data-bs-toggle="tooltip" data-bs-placement="top" title="SKUs Inventariados – Quantidade absoluta de SKUs contados (códigos exclusivos), independente de seus volumes">@stockTakingAmount.ToString("N0", brazilianCulture)</h6>
+                                <span class="text-success small pt-1 fw-bold" data-bs-toggle="tooltip" data-bs-placement="top" title="Progresso do Inventário – Percentual de itens inventariados no estoque dos depósitos selecionados. É dado pela fórmula: [SKUs Inventariados / SKUs Listados] * 100">@complet.ToString("N2", brazilianCulture)%</span> <span class="text-muted small pt-2 ps-1">Concluídos!</span>
                             </div>
                         </div>
                     </div>
@@ -97,7 +97,7 @@
                                 <i class="bi bi-tags"></i>
                             </div>
                             <div class="ps-3">
-                                <h6>@Model.TotalQuantityItemsStockTaking.ToString("N2", brazilianCulture)</h6>
+                                <h6 data-bs-toggle="tooltip" data-bs-placement="top" title="Volume de Itens Inventariados – Considera o volume total de itens inventariados nos depósitos selecionados.">@Model.TotalQuantityItemsStockTaking.ToString("N2", brazilianCulture)</h6>
                             </div>
                         </div>
                     </div>
@@ -110,7 +110,7 @@
                         <h5 class="card-title">Divergência de Estoque</h5>
 
                         <!-- Pie Chart -->
-                        <div id="echart--gauge-gradeStockDivergence" style="min-height: 217px;" data-value="@gaugeStockDivergence"></div>
+                        <div id="echart--gauge-gradeStockDivergence" style="min-height: 217px;" data-value="@gaugeStockDivergence" data-bs-toggle="tooltip" data-bs-placement="top" title="Divergência de Estoque - Calculado em função do total de SKUs armazenados nos depósitos selecionados, este indicador apresenta o percentual de itens registrados que, certificados fisicamente, possuem quantidades informadas incorretamente."></div>
 
 
                     </div>
@@ -122,7 +122,7 @@
                         <h5 class="card-title">Perdas de Estoque</h5>
 
                         <!-- Pie Chart -->
-                        <div id="echart--gauge-gradeExpirateDate" style="min-height: 217px;" data-value="@gaugeValueLostDate"></div>
+                        <div id="echart--gauge-gradeExpirateDate" style="min-height: 217px;" data-value="@gaugeValueLostDate" data-bs-toggle="tooltip" data-bs-placement="top" title="Perdas de Estoque – Este indicador considera o volume de itens que continuam armazenados após seu vencimento. Seu cálculo é realizado considerando apenas itens perecíveis."></div>
 
                     </div>
                 </div>
@@ -137,7 +137,7 @@
                             <h5 class="card-title">Acuracidade de Estoque</h5>
 
                             <!-- Pie Chart -->
-                            <div id="echart--gauge-gradeStockTaking" style="min-height: 217px;" data-value="@gaugeValueStockTaking"></div>
+                            <div id="echart--gauge-gradeStockTaking" style="min-height: 217px;" data-value="@gaugeValueStockTaking" data-bs-toggle="tooltip" data-bs-placement="top" title="Acuracidade de Estoque – Calculado em função do total de SKUs armazenados nos depósitos selecionados, este indicador apresenta o percentual de itens registrados que, certificados fisicamente, possuem quantidades corretamente informadas."></div>
 
 
                         </div>
@@ -150,7 +150,7 @@
                             <h5 class="card-title">Assertividade das Locações</h5>
 
                             <!-- Pie Chart -->
-                            <div id="echart--gauge-gradeAddressing" style="min-height: 217px;" data-value="@gaugeValueAddressing"></div>
+                            <div id="echart--gauge-gradeAddressing" style="min-height: 217px;" data-value="@gaugeValueAddressing" data-bs-toggle="tooltip" data-bs-placement="top" title="Assertividade das Locações – Este indicador avalia a organização dos itens que possuem endereçamento atribuído. O valor indica o percentual de SKUs com correspondência exata entre o informado no sistema e o verificado fisicamente."></div>
 
                         </div>
                     </div>
@@ -162,7 +162,7 @@
                         <h5 class="card-title">Eficácia da Gestão dos Estoques</h5>
 
                         <!-- Pie Chart -->
-                        <div id="echart--effectiveness" style="min-height: 550px; margin-top:0;" data-value-1="@gaugeValueStockTaking" data-value-2="@radarUserOfInventory" data-value-3="@gaugeValueAddressing" data-value-4="@radarEffectivenessOfInventoryManagement"></div>
+                        <div id="echart--effectiveness" style="min-height: 550px; margin-top:0;" data-value-1="@gaugeValueStockTaking" data-value-2="@radarUserOfInventory" data-value-3="@gaugeValueAddressing" data-value-4="@radarEffectivenessOfInventoryManagement" data-bs-toggle="tooltip" data-bs-placement="top" title="Eficácia da Gestão dos Estoques – Este indicador pondera três variáveis para medir o nível de eficácia da Gestão dos Estoques, evidenciando os fatores mais relevantes para a melhoria da operação como um todo. São eles: Acuracidade de estoque, com peso de 35% sobre o indicador; Assertividade das Locações, com peso de 20% sobre o indicador; e Aproveitamento de Estoque (antítese da Perda de Estoque), com peso de 45% sobre o indicador."></div>
 
                     </div>
                 </div>

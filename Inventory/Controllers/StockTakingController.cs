@@ -350,6 +350,8 @@ namespace Inventory.Controllers
             {
                 if (await _stockTakingService.AddStockTakingForRecountAssync(stockTakingId))
                 {
+                    await _stockTakingService.SaveChangesAsync();
+
                     TempData["successMessage"] = "Recontagem do item " + stockTaking.ItemId + "- " + stockTaking.Item.Name;
                     return RedirectToAction("StockTakingReport", "StockTaking", new { addressingId = stockTaking.AddressingsInventoryStart.AddressingId });
                 }
@@ -393,6 +395,7 @@ namespace Inventory.Controllers
 
                 if (ModelState.IsValid)
                 {
+
                     if (await _stockTakingService.SaveStockTakingWithRecount(stockTaking))
                     {
                         var result = await _stockTakingService.GetStockTakingByIdAsync(stockTaking.Id);
@@ -560,5 +563,20 @@ namespace Inventory.Controllers
 
             return RedirectToAction("StockTakingReport", "StockTaking", new { addressingId = addressingId });
         }
+
+        //private async void RecountVerify(StockTaking stockTaking)
+        //{
+        //    var addressingInventoryStart = _addressingsInventoryStartService.AddressingsInventoryStarts.FirstOrDefault(i => i.Id == stockTaking.AddressingsInventoryStartId);
+        //    var itemAddressing = await _itemAddressingService.GetItemAddressingByIdsAsync(stockTaking.ItemId, addressingInventoryStart.AddressingId);
+
+        //    if (itemAddressing.Quantity != stockTaking.StockTakingQuantity || stockTaking.StockTakingQuantity != stockTaking.StockTakingPreviousQuantity)
+        //    {
+        //        if(await _stockTakingService.AddStockTakingForRecountAssync(stockTaking.Id))
+        //        {
+        //            await _stockTakingService.SaveChangesAsync();
+        //        }
+
+        //    }
+        //}
     }
 }

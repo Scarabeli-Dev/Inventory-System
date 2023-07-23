@@ -1,6 +1,7 @@
 ﻿using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Inventory.ViewModels.DashboardViewModels;
+using System.Numerics;
 
 namespace Inventory.Services
 {
@@ -80,6 +81,7 @@ namespace Inventory.Services
             }
 
             // Cálculos para as propriedades adicionais
+            model.StockTakingComplet = ((decimal)model.ItemsWithStockTakingAmount / model.TotalOfItems) * 100;
             model.GaugeValueStockTaking = (decimal)model.ItemsWithCorrectAmount / model.ItemsWithStockTakingAmount;
             model.GaugeValueAddressing = (decimal)model.ItemsWithAddressingRigth / model.ItemsWithStockTakingAmount;
             model.GaugeStockDivergence = 1 - model.GaugeValueStockTaking;

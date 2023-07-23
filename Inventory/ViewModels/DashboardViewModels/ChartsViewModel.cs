@@ -10,7 +10,7 @@
         public decimal ItemPerishableExpirateDate { get; set; }
         public decimal TotalQuantityItems { get; set; }
         public decimal TotalQuantityItemsStockTaking { get; set; }
-
+        public decimal StockTakingComplet { get; set; }
 
         // Adicione as propriedades para as informações dos gráficos aqui
         public decimal GaugeValueStockTaking { get; set; }

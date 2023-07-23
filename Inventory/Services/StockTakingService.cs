@@ -13,14 +13,17 @@ namespace Inventory.Services
         private readonly InventoryContext _context;
         private readonly IAddressingsInventoryStartService _addressingsStockTakingService;
         private readonly IPerishableItemService _perishableItemService;
+        private readonly IItemAddressingService _itemAddressingService;
 
         public StockTakingService(InventoryContext context,
                                   IAddressingsInventoryStartService addressingsStockTakingService,
-                                  IPerishableItemService perishableItemService) : base(context)
+                                  IPerishableItemService perishableItemService,
+                                  IItemAddressingService itemAddressingService) : base(context)
         {
             _context = context;
             _addressingsStockTakingService = addressingsStockTakingService;
             _perishableItemService = perishableItemService;
+            _itemAddressingService = itemAddressingService;
         }
 
         public async Task<bool> SaveStockTakingWithOutRecount(StockTaking stockTaking)
@@ -60,10 +63,24 @@ namespace Inventory.Services
         {
             stockTaking.StockTakingDate = DateTime.Now;
             stockTaking.NumberOfCount++;
-            stockTaking.ItemToRecount = false;
+
 
             var inventoryAddressing = await _addressingsStockTakingService.GetAddressingsStockTakingByAddressingIdAsync(stockTaking.AddressingsInventoryStartId);
             stockTaking.AddressingsInventoryStartId = inventoryAddressing.Id;
+
+            var itemAddressing = await _itemAddressingService.GetItemAddressingByIdsAsync(stockTaking.ItemId, inventoryAddressing.AddressingId);
+
+            if (itemAddressing.Quantity != stockTaking.StockTakingQuantity && stockTaking.StockTakingQuantity != stockTaking.StockTakingPreviousQuantity && stockTaking.IsPerishableItem == false)
+            {
+                stockTaking.ItemToRecount = true;
+                stockTaking.StockTakingPreviousQuantity = stockTaking.StockTakingQuantity;
+                stockTaking.StockTakingQuantity = 0;
+            }
+            else
+            {
+                stockTaking.ItemToRecount = false;
+            }
+            _context.Entry(itemAddressing).State = EntityState.Detached;
 
             if (stockTaking.IsPerishableItem == true)
             {
@@ -90,7 +107,10 @@ namespace Inventory.Services
             _context.StockTaking.Update(stockTaking);
             await _context.SaveChangesAsync();
 
+
             await _addressingsStockTakingService.SetAddressingCountRealizedTrueAsync(inventoryAddressing.AddressingId);
+
+
             return true;
         }
 
@@ -104,6 +124,8 @@ namespace Inventory.Services
             stockTaking.StockTakingQuantity = 0;
             stockTaking.ItemToRecount = true;
 
+            if(stockTaking.PerishableItem != null)
+
             foreach (var item in stockTaking.PerishableItem)
             {
                 item.PerishableItemPreviousQuantity = item.PerishableItemQuantity;
@@ -112,7 +134,6 @@ namespace Inventory.Services
             }
 
             _context.StockTaking.Update(stockTaking);
-            await _context.SaveChangesAsync();
 
             return true;
         }
