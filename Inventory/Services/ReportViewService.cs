@@ -341,7 +341,7 @@ namespace Inventory.Services
                 }
             }
 
-            model.RouteValue = new RouteValueDictionary { { "filter", filter } };
+            model.RouteValue = new RouteValueDictionary { { "filter", filter }, { "warehouseId", warehouseId }, { "stockSituation", stockSituation }, { "addressingSituation", addressingSituation } };
 
             return model;
         }

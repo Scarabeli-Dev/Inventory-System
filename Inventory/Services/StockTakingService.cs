@@ -64,13 +64,25 @@ namespace Inventory.Services
             stockTaking.StockTakingDate = DateTime.Now;
             stockTaking.NumberOfCount++;
 
+            var addressingId = stockTaking.AddressingsInventoryStartId;
 
             var inventoryAddressing = await _addressingsStockTakingService.GetAddressingsStockTakingByAddressingIdAsync(stockTaking.AddressingsInventoryStartId);
+
             stockTaking.AddressingsInventoryStartId = inventoryAddressing.Id;
 
-            var itemAddressing = await _itemAddressingService.GetItemAddressingByIdsAsync(stockTaking.ItemId, inventoryAddressing.AddressingId);
 
-            if (itemAddressing.Quantity != stockTaking.StockTakingQuantity && stockTaking.StockTakingQuantity != stockTaking.StockTakingPreviousQuantity && stockTaking.IsPerishableItem == false)
+            var itemAddressing = await _itemAddressingService.GetItemAddressingByIdsAsync(stockTaking.ItemId, addressingId);
+            if (itemAddressing != null)
+            {
+                if (itemAddressing.Quantity != stockTaking.StockTakingQuantity && stockTaking.StockTakingQuantity != stockTaking.StockTakingPreviousQuantity && stockTaking.IsPerishableItem == false)
+                {
+                    stockTaking.ItemToRecount = true;
+                    stockTaking.StockTakingPreviousQuantity = stockTaking.StockTakingQuantity;
+                    stockTaking.StockTakingQuantity = 0;
+                }
+                _context.Entry(itemAddressing).State = EntityState.Detached;
+            }
+            else if (0 != stockTaking.StockTakingQuantity && stockTaking.StockTakingQuantity != stockTaking.StockTakingPreviousQuantity && stockTaking.IsPerishableItem == false)
             {
                 stockTaking.ItemToRecount = true;
                 stockTaking.StockTakingPreviousQuantity = stockTaking.StockTakingQuantity;
@@ -80,7 +92,6 @@ namespace Inventory.Services
             {
                 stockTaking.ItemToRecount = false;
             }
-            _context.Entry(itemAddressing).State = EntityState.Detached;
 
             if (stockTaking.IsPerishableItem == true)
             {
@@ -104,11 +115,13 @@ namespace Inventory.Services
                 }
             }
 
+            _context.Entry(inventoryAddressing).State = EntityState.Detached;
+
             _context.StockTaking.Update(stockTaking);
             await _context.SaveChangesAsync();
 
 
-            await _addressingsStockTakingService.SetAddressingCountRealizedTrueAsync(inventoryAddressing.AddressingId);
+            await _addressingsStockTakingService.SetAddressingCountRealizedTrueAsync(addressingId);
 
 
             return true;
@@ -124,14 +137,14 @@ namespace Inventory.Services
             stockTaking.StockTakingQuantity = 0;
             stockTaking.ItemToRecount = true;
 
-            if(stockTaking.PerishableItem != null)
+            if (stockTaking.PerishableItem != null)
 
-            foreach (var item in stockTaking.PerishableItem)
-            {
-                item.PerishableItemPreviousQuantity = item.PerishableItemQuantity;
-                item.PerishableItemQuantity = 0;
-                _context.Update<PerishableItem>(item);
-            }
+                foreach (var item in stockTaking.PerishableItem)
+                {
+                    item.PerishableItemPreviousQuantity = item.PerishableItemQuantity;
+                    item.PerishableItemQuantity = 0;
+                    _context.Update<PerishableItem>(item);
+                }
 
             _context.StockTaking.Update(stockTaking);
 
@@ -155,6 +168,7 @@ namespace Inventory.Services
             }
 
             var model = await PagingList.CreateAsync(result, 10, pageindex, sort, "ItemId");
+            model.Action = "IndexRecount";
             model.RouteValue = new RouteValueDictionary { { "filter", filter } };
 
             return model;

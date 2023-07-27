@@ -564,19 +564,19 @@ namespace Inventory.Controllers
             return RedirectToAction("StockTakingReport", "StockTaking", new { addressingId = addressingId });
         }
 
-        //private async void RecountVerify(StockTaking stockTaking)
-        //{
-        //    var addressingInventoryStart = _addressingsInventoryStartService.AddressingsInventoryStarts.FirstOrDefault(i => i.Id == stockTaking.AddressingsInventoryStartId);
-        //    var itemAddressing = await _itemAddressingService.GetItemAddressingByIdsAsync(stockTaking.ItemId, addressingInventoryStart.AddressingId);
+        [Route("Lista/Pereciveis")]
+        public async Task<IActionResult> PerishableItems(string filter, int pageindex = 1, string sortExpression = "ExpirationDate", int warehouseId = 0, bool nullExpirationDate = false, DateTime? expirationDate = null)
+        {
+            var model = await _perishableItemService.GetAllPerishableItemsPagingListAsync(filter, pageindex, sortExpression, warehouseId, nullExpirationDate, expirationDate);
 
-        //    if (itemAddressing.Quantity != stockTaking.StockTakingQuantity || stockTaking.StockTakingQuantity != stockTaking.StockTakingPreviousQuantity)
-        //    {
-        //        if(await _stockTakingService.AddStockTakingForRecountAssync(stockTaking.Id))
-        //        {
-        //            await _stockTakingService.SaveChangesAsync();
-        //        }
+            var warehouses = await _warehouseService.GetAllAsync<Warehouse>();
+            var warehouseList = warehouses.Select(w => new SelectListItem { Text = w.Name, Value = w.Id.ToString() }).ToList();
+            warehouseList.Insert(0, new SelectListItem { Text = "Todos", Value = 0.ToString() });
+            ViewData["WarehouseId"] = new SelectList(warehouseList, "Value", "Text", warehouseId);
 
-        //    }
-        //}
+            ViewData["ExpirationDate"] = expirationDate != null ? ((DateTime)expirationDate).ToString("yyyy-MM-dd") : "";
+
+            return View(model);
+        }
     }
 }

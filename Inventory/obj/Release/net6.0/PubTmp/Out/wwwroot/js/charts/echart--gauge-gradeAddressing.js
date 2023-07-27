@@ -91,7 +91,8 @@ option = {
                     value: frontValue,
                     name: ''
                 }
-            ]
+            ],
+            animation: true
         }
     ]
 };

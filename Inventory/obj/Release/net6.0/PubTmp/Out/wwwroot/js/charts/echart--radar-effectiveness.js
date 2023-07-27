@@ -14,10 +14,12 @@ var option;
 
 option = {
     radar: {
+        radius: '110%',
+        center: ['50%', '60%'],
         indicator: [
-            { name: 'Acuracidade de Estoque', max: 100 },
-            { name: 'Aproveitamento de Estoque', max: 100 },
-            { name: 'Assertividade das Locações', max: 100 }
+            { name: 'Acuracidade de Estoque', max: 100, color: '#012987', fontSize: '22' },
+            { name: 'Aproveitamento de Estoque', max: 100, color: '#012987' },
+            { name: 'Assertividade das Locações', max: 100, color: '#012987' }
         ]
     },
     series: [
@@ -67,7 +69,7 @@ option = {
                 color: '#012987'
             }
         }
-    ]
+    ],
 };
 
 

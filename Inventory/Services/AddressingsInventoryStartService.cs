@@ -101,7 +101,7 @@ namespace Inventory.Services
             }
 
             var model = await PagingList.CreateAsync(result, 10, pageindex, sort, "AddressingCountRealized");
-            model.RouteValue = new RouteValueDictionary { { "filter", filter } };
+            model.RouteValue = new RouteValueDictionary { { "filter", filter}, { "warehouseId", warehouseId }, { "countStatus", countStatus } };
 
             return model;
         }
@@ -200,7 +200,7 @@ namespace Inventory.Services
                 addressingsStockTaking.AddressingCountRealized = true;
 
                 _context.Update(addressingsStockTaking);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
 
                 return true;
             }

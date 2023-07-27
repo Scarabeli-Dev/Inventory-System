@@ -1,0 +1,91 @@
+﻿@model PagingList<PerishableItem>
+
+@{
+}
+<form method="get">
+    <div class="row align-items-end mb-3">
+        <div class="col-md-2">
+            <label for="filter" class="form-label">Pesquise pelo Item</label>
+            <input name="filter" class="form-control" placeholder="filtro" value="@Model.RouteValue["Filter"]" />
+
+        </div>
+        <div class="col-md-2">
+            <label for="warehouseId" class="form-label">Depósito</label>
+            @Html.DropDownList("warehouseId", ViewData["WarehouseId"] as SelectList, new { @class = "form-control" })
+        </div>
+        <div class="col-md-2">
+            <label for="expirationDate" class="form-label">Data de Validade Até</label>
+            <input type="date" name="expirationDate" class="form-control" value="@(ViewData["ExpirationDate"] ?? null)" />
+        </div>
+        <div class="col-md-2">
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Default switch checkbox input</label>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-info">Aplicar filtro</button>
+        </div>
+    </div>
+
+</form>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.SortableHeaderFor(model => model.StockTaking.Item.Id)
+                    </th>
+                    <th>
+                        @Html.SortableHeaderFor(model => model.StockTaking.Item.Name)
+                    </th>
+                    <th>
+                        @Html.SortableHeaderFor(model => model.ItemBatch)
+                    </th>
+                    <th>
+                        @Html.SortableHeaderFor(model => model.ExpirationDate)
+                    </th>
+                    <th>
+                        @Html.SortableHeaderFor(model => model.StockTaking.AddressingsInventoryStart.Addressing)
+                    </th>
+                    </th>
+                    <th>
+                        @Html.SortableHeaderFor(model => model.StockTaking.AddressingsInventoryStart.Addressing.Warehouse)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StockTaking.Item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StockTaking.Item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ItemBatch)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ExpirationDate)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StockTaking.AddressingsInventoryStart.Addressing.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StockTaking.AddressingsInventoryStart.Addressing.Warehouse.Name)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div class="d-flex align-content-start">
+    <vc:pager-with-named-view paging-list="@Model" view-name="Custom" />
+</div>

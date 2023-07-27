@@ -20,6 +20,7 @@ namespace Inventory.Services
         {
             return await _context.ItemsAddressing.Include(i => i.Item)
                                                  .Include(a => a.Addressing)
+                                                 .AsNoTracking()
                                                  .FirstOrDefaultAsync(i => (i.ItemId == itemId) &&
                                                                            (i.AddressingId == addressingId));
         }
