@@ -34,24 +34,23 @@
     <div class="card-body">
         <table class="table table-striped">
             <thead>
-                <tr>
-                    <th>
+                <tr class="col-12">
+                    <th class="col-1">
                         @Html.SortableHeaderFor(model => model.StockTaking.Item.Id)
                     </th>
-                    <th>
+                    <th class="col-4">
                         @Html.SortableHeaderFor(model => model.StockTaking.Item.Name)
                     </th>
-                    <th>
+                    <th class="col-2">
                         @Html.SortableHeaderFor(model => model.ItemBatch)
                     </th>
-                    <th>
+                    <th class="col-2">
                         @Html.SortableHeaderFor(model => model.ExpirationDate)
                     </th>
-                    <th>
+                    <th class="col-2">
                         @Html.SortableHeaderFor(model => model.StockTaking.AddressingsInventoryStart.Addressing)
                     </th>
-                    </th>
-                    <th>
+                    <th class="col-1">
                         @Html.SortableHeaderFor(model => model.StockTaking.AddressingsInventoryStart.Addressing.Warehouse)
                     </th>
                 </tr>

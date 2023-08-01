@@ -28,7 +28,7 @@ namespace Inventory.Controllers
         //    return View(await _reportViewService.FinalReport(pageParams));
         //}
 
-        public async Task<IActionResult> Index(string filter, int pageindex = 1, string sortExpression = "ItemName", int warehouseId = 0, int stockSituation = -1, int addressingSituation = -1)
+        public async Task<IActionResult> Index(string filter, int pageSize = 10, int pageindex = 1, string sortExpression = "ItemName", int warehouseId = 0, int stockSituation = -1, int addressingSituation = -1)
         {
             var warehouses = await _warehouseService.GetAllAsync<Warehouse>();
             var warehouseList = warehouses.Select(w => new SelectListItem { Text = w.Name, Value = w.Id.ToString() }).ToList();
@@ -38,9 +38,23 @@ namespace Inventory.Controllers
             ViewData["StockSituation"] = new SelectList(GetEnumSelectListWithAll<StockSituation>("Todos"), "Value", "Text", stockSituation);
             ViewData["AddressingSituation"] = new SelectList(GetEnumSelectListWithAll<AddressingSituation>("Todos"), "Value", "Text", addressingSituation);
 
+            List<SelectListItem> pageSizeOptions = new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "10", Text = "10" },
+                    new SelectListItem { Value = "15", Text = "15" },
+                    new SelectListItem { Value = "20", Text = "20" },
+                    new SelectListItem { Value = "25", Text = "25" },
+                    new SelectListItem { Value = "30", Text = "30" },
+                    new SelectListItem { Value = "35", Text = "35" },
+                    new SelectListItem { Value = "40", Text = "40" },
+                    new SelectListItem { Value = "45", Text = "45" },
+                    new SelectListItem { Value = "50", Text = "50" }
+                };
 
+            ViewBag.StatusSelect = pageSize.ToString();
+            ViewBag.PageSizeOptions = pageSizeOptions;
 
-            return View(await _reportViewService.ReportWithMovementation(filter, pageindex, sortExpression, warehouseId, stockSituation, addressingSituation));
+            return View(await _reportViewService.ReportWithMovementation(filter, pageSize, pageindex, sortExpression, warehouseId, stockSituation, addressingSituation));
         }
 
         private List<SelectListItem> GetEnumSelectListWithAll<T>(string displayNameAll) where T : Enum

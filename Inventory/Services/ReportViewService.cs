@@ -6,6 +6,7 @@ using Inventory.ViewModels;
 using Inventory.ViewModels.ViewModelEnums;
 using Microsoft.EntityFrameworkCore;
 using ReflectionIT.Mvc.Paging;
+using System.Drawing.Printing;
 
 namespace Inventory.Services
 {
@@ -30,7 +31,7 @@ namespace Inventory.Services
             _context = context;
         }
 
-        public async Task<PagingList<StockTakingReport>> ReportWithMovementation(string filter, int pageindex = 1, string sortExpression = "ItemName", int warehouseId = 0, int stockSituation = -1, int addressingSituation = -1)
+        public async Task<PagingList<StockTakingReport>> ReportWithMovementation(string filter, int pageSize = 10, int pageindex = 1, string sortExpression = "ItemName", int warehouseId = 0, int stockSituation = -1, int addressingSituation = -1)
         {
             List<StockTaking> allStockTakings = await _stockTakingService.GetAllStockTakingAsync();
             List<ItemsAddressings> allItemsAddressings = await _itemAddressingService.GetAllItemsAddressingsAsync();
@@ -233,7 +234,7 @@ namespace Inventory.Services
             }
 
 
-            var model = await PagingList.CreateAsync(result, 10, pageindex, sortExpression, "ItemName");
+            var model = await PagingList.CreateAsync(result, pageSize, pageindex, sortExpression, "ItemName");
 
             foreach (var item in model)
             {
@@ -341,7 +342,7 @@ namespace Inventory.Services
                 }
             }
 
-            model.RouteValue = new RouteValueDictionary { { "filter", filter }, { "warehouseId", warehouseId }, { "stockSituation", stockSituation }, { "addressingSituation", addressingSituation } };
+            model.RouteValue = new RouteValueDictionary { { "filter", filter }, { "pageSize", pageSize }, { "warehouseId", warehouseId }, { "stockSituation", stockSituation }, { "addressingSituation", addressingSituation } };
 
             return model;
         }

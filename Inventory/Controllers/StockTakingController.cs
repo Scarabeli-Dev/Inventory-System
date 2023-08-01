@@ -1,4 +1,5 @@
-﻿using Inventory.Helpers.Exceptions;
+﻿using FastReport;
+using Inventory.Helpers.Exceptions;
 using Inventory.Models;
 using Inventory.Services;
 using Inventory.Services.Interfaces;
@@ -104,22 +105,34 @@ namespace Inventory.Controllers
         }
 
         [Route("Cadastro")]
-        public async Task<IActionResult> ItemCount(string itemId, bool stockTakingCheched)
+        public async Task<IActionResult> ItemCount(string itemId, bool stockTakingCheched, string filter, int pageindex = 1, string sort = "Name")
         {
             var checkStockTacking = await _stockTakingService.GetAllStockTakingByItemIdAsync(itemId);
 
-            if (checkStockTacking.Count() > 0 && stockTakingCheched == false)
+            if (checkStockTacking.Count() > 0 && stockTakingCheched == false && filter == null && pageindex == 1)
                 return RedirectToAction("CheckStockTaking", "StockTaking", new { itemId = itemId });
 
+            int changePage = 0;
+            if (pageindex > 1 || filter != null)
+            {
+                changePage = 1;
+            }
 
             var item = await _itemService.GetItemByIdAsync(itemId);
             ViewBag.item = item;
+            ViewBag.ItemId = item.Id;
 
             var addressing = await _addressingService.GetAddressingByItemIdAsync(itemId);
             ViewBag.Addressing = addressing;
 
             var addressings = await _addressingService.GetAllAddressingsByWarehouseIdAsync(addressing.WarehouseId);
             ViewBag.Addressings = addressings;
+
+            var addressingsPage = await _addressingService.GetAllAddressingsByPagingForCountAsync(itemId, stockTakingCheched, filter, pageindex, sort);
+
+            ViewBag.ChangePage = changePage;
+
+            ViewBag.AddressingsPage = addressingsPage;
 
             ViewBag.Inventory = await _inventoryStartService.GetInventoryStartByAddressingAsync(addressing.Id);
 

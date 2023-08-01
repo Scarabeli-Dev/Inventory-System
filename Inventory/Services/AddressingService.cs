@@ -42,6 +42,24 @@ namespace Inventory.Services
             return await PageList<Addressing>.CreateAsync(query, pageParams.PageNumber, query.Count());
         }
 
+        public async Task<PagingList<Addressing>> GetAllAddressingsByPagingForCountAsync(string itemId, bool stockTakingCheched, string filter, int pageindex = 1, string sort = "Name")
+        {
+            var result = _context.Addressing.Include(w => w.Warehouse)
+                                          .AsNoTracking()
+                                          .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filter))
+            {
+                result = result.Where(p => p.Name.ToLower().Contains(filter.ToLower()));
+            }
+
+            var model = await PagingList.CreateAsync(result, 10, pageindex, sort, "Name");
+            model.Action = "ItemCount";
+            model.RouteValue = new RouteValueDictionary { { "filter", filter }, { "itemId", itemId }, { "stockTakingCheched", stockTakingCheched } };
+
+            return model;
+        }
+
         public async Task<PagingList<Addressing>> GetAllAddressingsByPagingAsync(string filter, int pageindex = 1, string sort = "Name")
         {
             var result = _context.Addressing.Include(l => l.Item)
@@ -108,7 +126,10 @@ namespace Inventory.Services
 
         public async Task<Addressing> GetAddressingByIdAsync(int id)
         {
-            var result = await _context.Addressing.Include(l => l.Item).ThenInclude(il => il.Item).Include(w => w.Warehouse).FirstOrDefaultAsync(m => m.Id == id);
+            var result = await _context.Addressing.Include(l => l.Item).ThenInclude(il => il.Item)
+                                                  .Include(w => w.Warehouse)
+                                                  .Include(a => a.StockTaking).ThenInclude(s => s.StockTaking)
+                                                  .FirstOrDefaultAsync(m => m.Id == id);
 
             return result;
         }

@@ -1,37 +1,79 @@
 ﻿@model Addressing
 
 @{
-    ViewData["Title"] = "Details";
+    decimal quantity = 0;
 }
+@foreach (var item in Model.Item)
+{
+    quantity = quantity + item.Quantity;
+}
+<h1>@Model.Name - Depósito @Model.Warehouse.Name</h1>
 
-<h1>Details</h1>
-
-<div>
-    <h4>Addressing</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Warehouse)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Warehouse.Name)
-        </dd>
-        @foreach (var item in Model.Item)
+<div class="card">
+    <div class="card-body">
+        <h3>Registro do Sistema</h3>
+        <table class="table table-striped mt-2">
+            <thead class="table-primary">
+                <tr>
+                    <th>
+                        Quantidade
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Item)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Item)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Quantity) @Html.DisplayFor(modelItem => item.Item.UnitOfMeasurement)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Item.Name)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @if (Model.StockTaking.Count() > 0)
         {
-            <dd class="col-sm-10">
-                @Html.DisplayFor(modelItem => item.Item.Name) -
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </dd>
+            <hr />
+
+            <h3>Contagens Realizadas</h3>
+
+            <table class="table table-striped mt-2">
+                <thead class="table-primary">
+                    <tr>
+                        <th>
+                            Quantidade
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Item)
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var addressingInventory in Model.StockTaking)
+                    {
+                        @foreach (var stockTaking in addressingInventory.StockTaking)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => stockTaking.StockTakingQuantity) @Html.DisplayFor(modelItem => stockTaking.Item.UnitOfMeasurement)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => stockTaking.Item.Name)
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
         }
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+        <div>
+            <a class="btn btn-primary" asp-action="Index">Voltar</a>
+        </div>
+    </div>
 </div>

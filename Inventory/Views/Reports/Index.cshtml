@@ -13,27 +13,43 @@
 
 <form method="get">
     <div class="row align-items-end mb-3">
-        <div class="col-md-2">
+        <div class="col-2">
             <label for="warehouseId" class="form-label">Pesquise pelo Item</label>
             <input name="filter" class="form-control" placeholder="filtro" value="@Model.RouteValue["Filter"]" />
         </div>
 
-        <div class="col-md-2">
+        <div class="col-2">
             <label for="warehouseId" class="form-label">Depósito</label>
             @Html.DropDownList("warehouseId", ViewData["WarehouseId"] as SelectList, new { @class = "form-control" })
         </div>
 
-        <div class="col-md-3">
+        <div class="col-3">
             <label for="stockSitutation" class="form-label">Situação do Estoque</label>
             @Html.DropDownList("stockSituation", ViewData["StockSituation"] as SelectList, new { @class = "form-control" })
 
         </div>
 
-        <div class="col-md-3">
+        <div class="col-3">
             <label for="addressingSitutation" class="form-label">Situação do Endereçamento</label>
             @Html.DropDownList("addressingSituation", ViewData["AddressingSituation"] as SelectList, new { @class = "form-control" })
         </div>
-        <div class="col-md-2">
+        <div class="col-2">
+            <label for="pageSize" class="form-label">Itens por página</label>
+            <select name="pageSize" id="pageSizeOptions" class="form-control">
+                @foreach (var option in ViewBag.PageSizeOptions)
+                {
+                    if (option.Value == ViewBag.StatusSelect)
+                    {
+                        <option value="@option.Value" selected>@option.Text</option>
+                    }
+                    else
+                    {
+                        <option value="@option.Value">@option.Text</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-2">
             <button type="submit" class="btn btn-info">Aplicar filtro</button>
         </div>
     </div>

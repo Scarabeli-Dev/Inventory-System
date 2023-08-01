@@ -8,6 +8,7 @@ namespace Inventory.Services.Interfaces
     {
         Task<Addressing> AddAddressingAsync(Addressing location);
         Task<PageList<Addressing>> GetAllPageListDataTable(PageParams pageParams);
+        Task<PagingList<Addressing>> GetAllAddressingsByPagingForCountAsync(string itemId, bool stockTakingCheched, string filter, int pageindex = 1, string sort = "Name");
         Task<PagingList<Addressing>> GetAllAddressingsByPagingAsync(string filter, int pageindex = 1, string sort = "Name");
         Task<PagingList<Addressing>> GetAddressingsByWarehouseIdAsync(int warehouseId, string filter, int pageindex = 1, string sort = "Name");
         Task<List<Addressing>> GetAllAddressingsByWarehouseIdAsync(int warehouseId);

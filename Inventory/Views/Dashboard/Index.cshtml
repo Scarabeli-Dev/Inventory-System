@@ -38,9 +38,9 @@
 
     <!-- Parte 2: Barra de progresso -->
     <div class="col-7">
-        <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: @(complet)%;" aria-valuenow="@complet" aria-valuemin="0" aria-valuemax="100">
-                @complet.ToString("N2", brazilianCulture)% Concluídos!
+        <div class="progress" style="height: 35px;">
+            <div class="progress-bar" role="progressbar" style="width: @(complet)%" aria-valuenow="@complet" aria-valuemin="0" aria-valuemax="100">
+                <h4 class="mt-2">@complet.ToString("N2", brazilianCulture)% Concluídos!</h4>
             </div>
         </div>
     </div>
