@@ -199,6 +199,16 @@ namespace Inventory.Services
             return result;
         }
 
+        public async Task<List<StockTaking>> GetAllStockTakingImportByItemIdAsync(string itemId)
+        {
+            var result = await _context.StockTaking.Include(i => i.Item)
+                                            .Include(a => a.AddressingsInventoryStart).ThenInclude(a => a.Addressing)
+                                            .Include(i => i.AddressingsInventoryStart).ThenInclude(a => a.InventoryStart)
+                                            .Include(p => p.PerishableItem)
+                                            .Where(st => st.ItemId == itemId && st.StockTakingObservation == "Contagem do item importada diretamente para o sistema").ToListAsync();
+            return result;
+        }
+
         public async Task<List<StockTaking>> GetAllStockTakingAsync()
         {
             return await _context.StockTaking.Include(l => l.Item)

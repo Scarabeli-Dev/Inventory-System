@@ -5,6 +5,7 @@ using Inventory.ViewModels.ViewModelEnums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using ReflectionIT.Mvc.Paging;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 
@@ -22,20 +23,19 @@ namespace Inventory.Controllers
             _warehouseService = warehouseService;
         }
 
-        //[Route("Contagem-com-movimentacao")]
-        //public async Task<IActionResult> ReportWithMovementation(PageParams pageParams)
-        //{
-        //    return View(await _reportViewService.FinalReport(pageParams));
-        //}
-
-        public async Task<IActionResult> Index(string filter, int pageSize = 10, int pageindex = 1, string sortExpression = "ItemName", int warehouseId = 0, int stockSituation = -1, int addressingSituation = -1)
+        public async Task<IActionResult> Index(string filter, int pageSize = 10, int pageindex = 1, string sortExpression = "ItemName", int warehouseId = 0, int stockSituation = -2, int addressingSituation = -2)
         {
             var warehouses = await _warehouseService.GetAllAsync<Warehouse>();
             var warehouseList = warehouses.Select(w => new SelectListItem { Text = w.Name, Value = w.Id.ToString() }).ToList();
             warehouseList.Insert(0, new SelectListItem { Text = "Todos", Value = 0.ToString() });
             ViewData["WarehouseId"] = new SelectList(warehouseList, "Value", "Text", warehouseId);
 
-            ViewData["StockSituation"] = new SelectList(GetEnumSelectListWithAll<StockSituation>("Todos"), "Value", "Text", stockSituation);
+            var additionalOptions = new Dictionary<int, string>
+            {
+                { -1, "Apenas itens contados" }
+            };
+
+            ViewData["StockSituation"] = new SelectList(GetEnumSelectListWithAll<StockSituation>("Todos", additionalOptions), "Value", "Text", stockSituation);
             ViewData["AddressingSituation"] = new SelectList(GetEnumSelectListWithAll<AddressingSituation>("Todos"), "Value", "Text", addressingSituation);
 
             List<SelectListItem> pageSizeOptions = new List<SelectListItem>
@@ -51,15 +51,25 @@ namespace Inventory.Controllers
                     new SelectListItem { Value = "50", Text = "50" }
                 };
 
-            ViewBag.StatusSelect = pageSize.ToString();
+            ViewBag.PageSizeSelect = pageSize.ToString();
             ViewBag.PageSizeOptions = pageSizeOptions;
 
-            return View(await _reportViewService.ReportWithMovementation(filter, pageSize, pageindex, sortExpression, warehouseId, stockSituation, addressingSituation));
+            return View(_reportViewService.ReportWithMovementation(filter, pageSize, pageindex, sortExpression, warehouseId, stockSituation, addressingSituation));
         }
 
         private List<SelectListItem> GetEnumSelectListWithAll<T>(string displayNameAll) where T : Enum
         {
-            var selectList = new List<SelectListItem> { new SelectListItem { Value = "-1", Text = displayNameAll } };
+            return GetEnumSelectListWithAll<T>(displayNameAll, new Dictionary<int, string>());
+        }
+
+        private List<SelectListItem> GetEnumSelectListWithAll<T>(string displayNameAll, Dictionary<int, string> additionalOptions) where T : Enum
+        {
+            var selectList = new List<SelectListItem> { new SelectListItem { Value = "-2", Text = displayNameAll } };
+
+            foreach (var kvp in additionalOptions)
+            {
+                selectList.Add(new SelectListItem { Value = kvp.Key.ToString(), Text = kvp.Value });
+            }
 
             selectList.AddRange(Enum.GetValues(typeof(T))
                 .OfType<T>()

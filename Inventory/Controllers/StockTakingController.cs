@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Printing;
 using System.Globalization;
 
 namespace Inventory.Controllers
@@ -45,7 +46,7 @@ namespace Inventory.Controllers
             _perishableItemService = perishableItemService;
         }
 
-        public async Task<IActionResult> Index(string filter, int pageindex = 1, string sort = "AddressingCountRealized", int warehouseId = 0, int countStatus = 0)
+        public async Task<IActionResult> Index(string filter, int pageSize = 10, int pageindex = 1, string sort = "AddressingCountRealized", int warehouseId = 0, int countStatus = 0)
         {
             var warehouses = await _warehouseService.GetAllAsync<Warehouse>();
             var warehouseList = warehouses.Select(w => new SelectListItem { Text = w.Name, Value = w.Id.ToString() }).ToList();
@@ -88,8 +89,23 @@ namespace Inventory.Controllers
             ViewBag.StatusSelect = countStatus.ToString();
             ViewBag.CountStatusOptions = countStatusOptions;
 
+            List<SelectListItem> pageSizeOptions = new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "10", Text = "10" },
+                    new SelectListItem { Value = "15", Text = "15" },
+                    new SelectListItem { Value = "20", Text = "20" },
+                    new SelectListItem { Value = "25", Text = "25" },
+                    new SelectListItem { Value = "30", Text = "30" },
+                    new SelectListItem { Value = "35", Text = "35" },
+                    new SelectListItem { Value = "40", Text = "40" },
+                    new SelectListItem { Value = "45", Text = "45" },
+                    new SelectListItem { Value = "50", Text = "50" }
+            };
 
-            return View(await _addressingsInventoryStartService.GetAddressingsStockTakingsPagingAsync(filter, pageindex, sort, warehouseId, countStatus));
+            ViewBag.PageSizeSelect = pageSize.ToString();
+            ViewBag.PageSizeOptions = pageSizeOptions;
+
+            return View(await _addressingsInventoryStartService.GetAddressingsStockTakingsPagingAsync(filter, pageSize, pageindex, sort, warehouseId, countStatus));
         }
 
         [Route("Lista/Deposito")]
@@ -256,6 +272,8 @@ namespace Inventory.Controllers
 
             ViewBag.IsRecount = stockTaking.ItemToRecount;
 
+            stockTaking.AddressingsInventoryStartId = stockTaking.AddressingsInventoryStart.AddressingId;
+
             return View(stockTaking);
         }
 
@@ -294,6 +312,7 @@ namespace Inventory.Controllers
                     }
                     stockTaking.StockTakingQuantity = decimal.Parse(stockTaking.StockTakingQuantity.ToString().Replace(",", "."), CultureInfo.InvariantCulture);
 
+                    // para as versões 1.0.x o AddressingsInventoryStartId esta sendo recebido no frontend pelo Id do Addressing, setá corrigido na versão 1.1
                     stockTaking.AddressingsInventoryStartId = inventoryVerify.Id;
                     await _stockTakingService.SaveStockTakingWithOutRecount(stockTaking);
 

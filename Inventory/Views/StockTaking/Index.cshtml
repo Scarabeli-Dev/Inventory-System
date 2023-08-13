@@ -11,7 +11,7 @@
     @(generalProgress)% Concluídos!
 </div>
 
-<form method="get">
+<form method="get" id="filterForm">
     <div class="row align-items-end mb-3">
         <div class="col-md-2">
             <label for="filter" class="form-label">Pesquise pelo Endereçamento</label>
@@ -39,7 +39,7 @@
                 }
             </select>
         </div>
-
+        <input name="pageSize" id="pageSizeInput" value="@ViewBag.PageSizeSelect" hidden />
 
         <div class="col-md-2">
             <button type="submit" class="btn btn-info">Aplicar filtro</button>
@@ -145,6 +145,32 @@
 </div>
 
 
-<div>
-    <vc:pager paging-list="@Model"></vc:pager>
+<div class="d-flex justify-content-between">
+    <div class="col-2">
+        <label for="pageSize" class="form-label">Itens por página</label>
+        <select name="pageSize" id="pageSizeOptions" class="form-control" onchange="updatePageSizeAndSubmit()">
+            @foreach (var option in ViewBag.PageSizeOptions)
+            {
+                if (option.Value == ViewBag.PageSizeSelect)
+                {
+                    <option value="@option.Value" selected>@option.Text</option>
+                }
+                else
+                {
+                    <option value="@option.Value">@option.Text</option>
+                }
+            }
+        </select>
+    </div>
+    <div>
+        <vc:pager paging-list="@Model"></vc:pager>
+    </div>
 </div>
+
+<script>
+    function updatePageSizeAndSubmit() {
+        var selectedValue = document.getElementById("pageSizeOptions").value;
+        document.getElementById("pageSizeInput").value = selectedValue;
+        document.getElementById("filterForm").submit();
+    }
+</script>

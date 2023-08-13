@@ -1,5 +1,8 @@
-﻿@model PagingList<StockTakingReport>
+﻿@using System.Globalization;
+@model PagingList<FinalReportViewModel>
 @{
+    var brazilianCulture = new CultureInfo("pt-BR");
+
     ViewData["Title"] = "Relatório De Contagem";
 }
 
@@ -11,7 +14,7 @@
 
 <h3>@ViewData["Title"]</h3>
 
-<form method="get">
+<form method="get" id="filterForm">
     <div class="row align-items-end mb-3">
         <div class="col-2">
             <label for="warehouseId" class="form-label">Pesquise pelo Item</label>
@@ -33,22 +36,7 @@
             <label for="addressingSitutation" class="form-label">Situação do Endereçamento</label>
             @Html.DropDownList("addressingSituation", ViewData["AddressingSituation"] as SelectList, new { @class = "form-control" })
         </div>
-        <div class="col-2">
-            <label for="pageSize" class="form-label">Itens por página</label>
-            <select name="pageSize" id="pageSizeOptions" class="form-control">
-                @foreach (var option in ViewBag.PageSizeOptions)
-                {
-                    if (option.Value == ViewBag.StatusSelect)
-                    {
-                        <option value="@option.Value" selected>@option.Text</option>
-                    }
-                    else
-                    {
-                        <option value="@option.Value">@option.Text</option>
-                    }
-                }
-            </select>
-        </div>
+        <input name="pageSize" id="pageSizeInput" value="@ViewBag.PageSizeSelect" hidden />
         <div class="col-2">
             <button type="submit" class="btn btn-info">Aplicar filtro</button>
         </div>
@@ -72,19 +60,19 @@
                         Unidade de Medida
                     </th>
                     <th class="col-1">
-                        Quantidade do Sistema
+                        @Html.SortableHeaderFor(model => model.SystemQuantity, "SystemQuantity")
                     </th>
                     <th class="col-1">
-                        Quantidade Contada
+                        @Html.SortableHeaderFor(model => model.QuantityStockTaking, "QuantityStockTaking")
                     </th>
                     <th class="col-1">
-                        Divergência
+                        @Html.SortableHeaderFor(model => model.Divergence, "Divergence")
                     </th>
                     <th class="col-2">
-                        Situação do Estoque
+                        @Html.SortableHeaderFor(model => model.StockSituation, "StockSituation")
                     </th>
                     <th class="col-2">
-                        Situação do Armazenamento
+                        @Html.SortableHeaderFor(model => model.AddressingSituation, "AddressingSituation")
                     </th>
                 </tr>
             </thead>
@@ -105,28 +93,28 @@
                             @Html.DisplayFor(modelItem => item.UnitOfMeasurement)
                         </td>
                         <td class="text-end">
-                            @Html.DisplayFor(modelItem => item.SystemQuantity)
+                            @string.Format(brazilianCulture, "{0:N2}", item.SystemQuantity)
                         </td>
                         <td class="text-end">
-                            @Html.DisplayFor(modelItem => item.QuantityStockTaking)
+                            @string.Format(brazilianCulture, "{0:N2}", item.QuantityStockTaking)
                         </td>
 
                         @if (item.Divergence > 0)
                         {
                             <td class="table-danger text-end">
-                                <i class="bi bi-arrow-up-circle"></i> @Html.DisplayFor(modelItem => item.Divergence)
+                                @string.Format(brazilianCulture, "{0:N2}", item.Divergence)
                             </td>
                         }
                         else if (item.Divergence < 0)
                         {
                             <td class="table-danger text-end">
-                                <i class="bi bi-arrow-down-circle"></i> @Html.DisplayFor(modelItem => item.Divergence)
+                                @string.Format(brazilianCulture, "{0:N2}", item.Divergence)
                             </td>
                         }
                         else
                         {
                             <td class="table-success text-end">
-                                <i class="bi bi-check-circle"></i> @Html.DisplayFor(modelItem => item.Divergence)
+                                @string.Format(brazilianCulture, "{0:N2}", item.Divergence)
                             </td>
                         }
 
@@ -183,17 +171,36 @@
                                                 }
                                             </td>
                                             <td class="text-end">
-                                                @foreach (var addressingQtd in stockTaking.AddressingsInventoryStart.Addressing.Item)
+                                                @foreach (var addressingQtd in item.Addressings)
                                                 {
-                                                    if (addressingQtd.ItemId == item.ItemId)
+                                                    if (addressingQtd.AddressingId == stockTaking.AddressingsInventoryStart.AddressingId)
                                                     {
                                                         itemSystemQuantity = itemSystemQuantity + addressingQtd.Quantity;
+
+                                                        if (item.InventoryMovement != null)
+                                                        {
+                                                            foreach (var itemMovement in item.InventoryMovement)
+                                                            {
+                                                                if (itemMovement.WarehouseId == addressingQtd.Addressing.WarehouseId)
+                                                                {
+                                                                    if (itemMovement.MovementeType == MovementeType.E)
+                                                                    {
+                                                                        itemSystemQuantity = itemSystemQuantity + itemMovement.Amount;
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        itemSystemQuantity = itemSystemQuantity - itemMovement.Amount;
+                                                                    }
+                                                                }
+
+                                                            }
+                                                        }
                                                     }
                                                 }
-                                                @itemSystemQuantity
+                                                @itemSystemQuantity.ToString("N2", brazilianCulture)
                                             </td>
                                             <td class="text-end">
-                                                @stockTaking.StockTakingQuantity
+                                                @stockTaking.StockTakingQuantity.ToString("N2", brazilianCulture)
                                             </td>
                                         </tr>
                                         @if (stockTaking.PerishableItem.Count() > 0)
@@ -237,7 +244,7 @@
                                                                         }
                                                                     </td>
                                                                     <td class="text-end">
-                                                                        @itemBatch.PerishableItemQuantity
+                                                                        @itemBatch.PerishableItemQuantity.ToString("N2", brazilianCulture)
                                                                     </td>
                                                                 </tr>
                                                             }
@@ -259,7 +266,7 @@
                                                     @addressing.Addressing.Name
                                                 </td>
                                                 <td class="text-end">
-                                                    @addressing.Quantity
+                                                    @addressing.Quantity.ToString("N2", brazilianCulture)
                                                 </td>
                                                 <td class="text-end">
                                                     0
@@ -277,12 +284,36 @@
     </div>
 </div>
 
-<div>
-    <vc:pager paging-list="@Model"></vc:pager>
+<div class="d-flex justify-content-between">
+    <div class="col-2">
+        <label for="pageSize" class="form-label">Itens por página</label>
+        <select name="pageSize" id="pageSizeOptions" class="form-control" onchange="updatePageSizeAndSubmit()">
+            @foreach (var option in ViewBag.PageSizeOptions)
+            {
+                if (option.Value == ViewBag.PageSizeSelect)
+                {
+                    <option value="@option.Value" selected>@option.Text</option>
+                }
+                else
+                {
+                    <option value="@option.Value">@option.Text</option>
+                }
+            }
+        </select>
+    </div>
+    <div>
+        <vc:pager paging-list="@Model"></vc:pager>
+    </div>
 </div>
 
 <script>
     setTimeout(function () {
         document.getElementById('infoAlert').style.display = 'none';
     }, 5000); // 3 segundos
+
+    function updatePageSizeAndSubmit() {
+        var selectedValue = document.getElementById("pageSizeOptions").value;
+        document.getElementById("pageSizeInput").value = selectedValue;
+        document.getElementById("filterForm").submit();
+    }
 </script>

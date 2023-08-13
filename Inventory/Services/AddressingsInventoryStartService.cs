@@ -42,7 +42,7 @@ namespace Inventory.Services
             return await PageList<AddressingsInventoryStart>.CreateAsync(query, pageParams.PageNumber, query.Count());
         }
 
-        public async Task<PagingList<AddressingsInventoryStart>> GetAddressingsStockTakingsPagingAsync(string filter, int pageindex = 1, string sort = "AddressingCountRealized", int warehouseId = 0, int countStatus = 0)
+        public async Task<PagingList<AddressingsInventoryStart>> GetAddressingsStockTakingsPagingAsync(string filter, int pageSize = 10, int pageindex = 1, string sort = "AddressingCountRealized", int warehouseId = 0, int countStatus = 0)
         {
 
             var result = _context.AddressingsInventoryStart
@@ -100,8 +100,8 @@ namespace Inventory.Services
                     1);
             }
 
-            var model = await PagingList.CreateAsync(result, 10, pageindex, sort, "AddressingCountRealized");
-            model.RouteValue = new RouteValueDictionary { { "filter", filter}, { "warehouseId", warehouseId }, { "countStatus", countStatus } };
+            var model = await PagingList.CreateAsync(result, pageSize, pageindex, sort, "AddressingCountRealized");
+            model.RouteValue = new RouteValueDictionary { { "filter", filter }, { "pageSize", pageSize }, { "warehouseId", warehouseId }, { "countStatus", countStatus } };
 
             return model;
         }
@@ -171,6 +171,19 @@ namespace Inventory.Services
 
             }
             _context.AddRange(addressingsStockTakingRange);
+            _context.SaveChanges();
+        }
+
+        public async Task CreateAddressingsStockTakingImportAsync(int inventoryStartId, int addressingId)
+        {
+            AddressingsInventoryStart addressingsStockTaking = new AddressingsInventoryStart();
+
+            addressingsStockTaking.InventoryStartId = inventoryStartId;
+            addressingsStockTaking.AddressingId = addressingId;
+            addressingsStockTaking.AddressingCountEnded = false;
+            addressingsStockTaking.AddressingCountRealized = false;
+
+            await _context.AddAsync(addressingsStockTaking);
             _context.SaveChanges();
         }
 

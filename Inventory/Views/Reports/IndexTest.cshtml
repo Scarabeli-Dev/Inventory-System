@@ -1,0 +1,298 @@
+﻿@model PagingList<FinalReportViewModel>
+@{
+    ViewData["Title"] = "Relatório De Contagem";
+}
+
+<div id="infoAlert" class="alert alert-info alert-dismissible fade show" role="alert">
+    <i class="bi bi-info-circle me-1"></i>
+    Clique no Código do item para ver mais detalhes!
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+
+<h3>@ViewData["Title"]</h3>
+
+<form method="get" id="filterForm">
+    <div class="row align-items-end mb-3">
+        <div class="col-2">
+            <label for="warehouseId" class="form-label">Pesquise pelo Item</label>
+            <input name="filter" class="form-control" placeholder="filtro" value="@Model.RouteValue["Filter"]" />
+        </div>
+
+        <div class="col-2">
+            <label for="warehouseId" class="form-label">Depósito</label>
+            @Html.DropDownList("warehouseId", ViewData["WarehouseId"] as SelectList, new { @class = "form-control" })
+        </div>
+
+        <div class="col-3">
+            <label for="stockSitutation" class="form-label">Situação do Estoque</label>
+            @Html.DropDownList("stockSituation", ViewData["StockSituation"] as SelectList, new { @class = "form-control" })
+
+        </div>
+
+        <div class="col-3">
+            <label for="addressingSitutation" class="form-label">Situação do Endereçamento</label>
+            @Html.DropDownList("addressingSituation", ViewData["AddressingSituation"] as SelectList, new { @class = "form-control" })
+        </div>
+        <input name="pageSize" id="pageSizeInput" value="" hidden />
+        <div class="col-2">
+            <button type="submit" class="btn btn-info">Aplicar filtro</button>
+        </div>
+    </div>
+</form>
+
+
+<div class="card">
+    <div class="card-body">
+
+        <table class="table mt-4 table-hover">
+            <thead class="align-middle">
+                <tr class="table-primary">
+                    <th class="col-1">
+                        @Html.SortableHeaderFor(model => model.ItemId, "ItemId")
+                    </th>
+                    <th class="col-3">
+                        @Html.SortableHeaderFor(model => model.ItemName, "ItemName")
+                    </th>
+                    <th class="col-1">
+                        Unidade de Medida
+                    </th>
+                    <th class="col-1">
+                        Quantidade do Sistema
+                    </th>
+                    <th class="col-1">
+                        Quantidade Contada
+                    </th>
+                    <th class="col-1">
+                        Divergência
+                    </th>
+                    <th class="col-2">
+                        Situação do Estoque
+                    </th>
+                    <th class="col-2">
+                        Situação do Armazenamento
+                    </th>
+                </tr>
+            </thead>
+            <tbody class="align-middle">
+                @foreach (var item in Model)
+                {
+
+                    <tr>
+                        <td>
+                            <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#collapse-@item.ItemId" aria-expanded="false" aria-controls="collapse-@item.ItemId">
+                                @Html.DisplayFor(modelItem => item.ItemId)
+                            </button>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ItemName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.UnitOfMeasurement)
+                        </td>
+                        <td class="text-end">
+                            @Html.DisplayFor(modelItem => item.SystemQuantity)
+                        </td>
+                        <td class="text-end">
+                            @Html.DisplayFor(modelItem => item.QuantityStockTaking)
+                        </td>
+
+                        @if (item.Divergence > 0)
+                        {
+                            <td class="table-danger text-end">
+                                <i class="bi bi-arrow-up-circle"></i> @Html.DisplayFor(modelItem => item.Divergence)
+                            </td>
+                        }
+                        else if (item.Divergence < 0)
+                        {
+                            <td class="table-danger text-end">
+                                <i class="bi bi-arrow-down-circle"></i> @Html.DisplayFor(modelItem => item.Divergence)
+                            </td>
+                        }
+                        else
+                        {
+                            <td class="table-success text-end">
+                                <i class="bi bi-check-circle"></i> @Html.DisplayFor(modelItem => item.Divergence)
+                            </td>
+                        }
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StockSituation)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AddressingSituation)
+                        </td>
+                    </tr>
+                    <tr id="collapse-@item.ItemId" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordion-@item.ItemId">
+                        <td colspan="8" class="accordion-body">
+                            <table class="table table-hover">
+                                <thead class="align-middle">
+                                    <tr class="table-info">
+                                        <th>
+                                            Depósito
+                                        </th>
+                                        <th>
+                                            Endereçamento
+                                        </th>
+                                        <th class="text-end">
+                                            Quantidade do Sistema
+                                        </th>
+                                        <th class="text-end">
+                                            Quantidade da Contagem
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="align-middle">
+                                    @{
+                                        HashSet<int> addressingItem = new HashSet<int>();
+                                    }
+
+                                    @foreach (var stockTaking in item.StockTakings)
+                                    {
+                                        decimal itemSystemQuantity = 0;
+                                        addressingItem.Add(stockTaking.AddressingsInventoryStart.AddressingId);
+                                        <tr class="table-secondary" data-bs-toggle="tooltip" data-bs-placement="top" title="@stockTaking.StockTakingObservation">
+                                            <td>
+                                                @stockTaking.AddressingsInventoryStart.Addressing.Warehouse.Name
+                                            </td>
+                                            <td>
+                                                @if (stockTaking.PerishableItem.Count() > 0)
+                                                {
+                                                    <button class="accordion-button collapsed" style="background-color:#e2e3e5;" data-bs-toggle="collapse" data-bs-target="#collapse-@stockTaking.Id" aria-expanded="false" aria-controls="collapse-@stockTaking.Id">
+                                                        @stockTaking.AddressingsInventoryStart.Addressing.Name
+                                                    </button>
+                                                }
+                                                else
+                                                {
+                                                    @stockTaking.AddressingsInventoryStart.Addressing.Name
+                                                }
+                                            </td>
+                                            <td class="text-end">
+                                                @foreach (var addressingQtd in stockTaking.AddressingsInventoryStart.Addressing.Item)
+                                                {
+                                                    if (addressingQtd.ItemId == item.ItemId)
+                                                    {
+                                                        itemSystemQuantity = itemSystemQuantity + addressingQtd.Quantity;
+                                                    }
+                                                }
+                                                @itemSystemQuantity
+                                            </td>
+                                            <td class="text-end">
+                                                @stockTaking.StockTakingQuantity
+                                            </td>
+                                        </tr>
+                                        @if (stockTaking.PerishableItem.Count() > 0)
+                                        {
+                                            <tr id="collapse-@stockTaking.Id" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordion-@stockTaking.Id">
+                                                <td colspan="6" class="accordion-body">
+                                                    <table class="table table-hover">
+                                                        <thead class="align-middle">
+                                                            <tr class="table-success">
+                                                                <th>
+                                                                    Lote
+                                                                </th>
+                                                                <th>
+                                                                    Data de Fabricação
+                                                                </th>
+                                                                <th>
+                                                                    Data de Validade
+                                                                </th>
+                                                                <th class="text-end">
+                                                                    Quantidade do Lote
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="align-middle">
+                                                            @foreach (var itemBatch in stockTaking.PerishableItem)
+                                                            {
+                                                                <tr class="table-light">
+                                                                    <td>
+                                                                        @itemBatch.ItemBatch
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (itemBatch.FabricationDate.HasValue)
+                                                                        {
+                                                                            @(((DateTime)itemBatch.FabricationDate).ToString("dd/MM/yyyy"))
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        @if (itemBatch.ExpirationDate.HasValue)
+                                                                        {
+                                                                            @(((DateTime)itemBatch.ExpirationDate).ToString("dd/MM/yyyy"))
+                                                                        }
+                                                                    </td>
+                                                                    <td class="text-end">
+                                                                        @itemBatch.PerishableItemQuantity
+                                                                    </td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    @foreach (var addressing in item.Addressings)
+                                    {
+                                        if (!addressingItem.Contains(addressing.AddressingId))
+                                        {
+                                            <tr class="table-secondary">
+                                                <td>
+                                                    @addressing.Addressing.Warehouse.Name
+                                                </td>
+                                                <td>
+                                                    @addressing.Addressing.Name
+                                                </td>
+                                                <td class="text-end">
+                                                    @addressing.Quantity
+                                                </td>
+                                                <td class="text-end">
+                                                    0
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="d-flex justify-content-between">
+
+    <div class="col-2">
+        <label for="pageSize" class="form-label">Itens por página</label>
+        <select name="pageSize" id="pageSizeOptions" class="form-control" onchange="updatePageSizeAndSubmit()">
+            @foreach (var option in ViewBag.PageSizeOptions)
+            {
+                if (option.Value == ViewBag.StatusSelect)
+                {
+                    <option value="@option.Value" selected>@option.Text</option>
+                }
+                else
+                {
+                    <option value="@option.Value">@option.Text</option>
+                }
+            }
+        </select>
+    </div>
+    <div>
+        <vc:pager paging-list="@Model"></vc:pager>
+    </div>
+</div>
+
+<script>
+    setTimeout(function () {
+        document.getElementById('infoAlert').style.display = 'none';
+    }, 5000); // 3 segundos
+
+    function updatePageSizeAndSubmit() {
+        var selectedValue = document.getElementById("pageSizeOptions").value;
+        document.getElementById("pageSizeInput").value = selectedValue;
+        document.getElementById("filterForm").submit();
+    }
+</script>

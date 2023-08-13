@@ -87,6 +87,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW1wb3J0c1xJbXBvcnRBbGwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Systems/Inventory/Inventory/Views/Imports/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW1wb3J0c1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Systems/Inventory/Inventory/Views/InventoryMovement/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW52ZW50b3J5TW92ZW1lbnRcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -133,6 +137,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Systems/Inventory/Inventory/Views/Reports/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Systems/Inventory/Inventory/Views/Reports/IndexTest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xJbmRleFRlc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Systems/Inventory/Inventory/Views/Shared/Components/PagerWithNamedView/Custom.cshtml]

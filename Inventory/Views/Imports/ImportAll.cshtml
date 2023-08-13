@@ -18,6 +18,22 @@
     <div class="col-lg-6">
         <div class="card">
             <div class="card-body">
+                <h5 class="card-title">Importação com Contagem</h5>
+
+                <form asp-controller="Imports" asp-action="ImportWithStockTaking" mothod="post" enctype="multipart/form-data">
+                    <div class="input-group mb-3">
+                        <input type="file" name="documentFile" class="form-control" />
+                        <button type="submit" class="btn btn-group btn-success">Upload</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
                 <h5 class="card-title">Importar Movimentação</h5>
 
                 <form asp-controller="InventoryMovement" asp-action="UploadDocument" mothod="post" enctype="multipart/form-data">

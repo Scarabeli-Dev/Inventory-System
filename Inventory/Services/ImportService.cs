@@ -3,6 +3,7 @@ using Inventory.Data;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
 using Inventory.ViewModels.Imports;
+using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
 namespace Inventory.Services
@@ -14,18 +15,24 @@ namespace Inventory.Services
         private readonly IAddressingService _addressingService;
         private readonly IWarehouseService _warehouseService;
         private readonly IItemAddressingService _itemAddressingService;
+        private readonly IAddressingsInventoryStartService _addressingsInventoryStartService;
+        private readonly IInventoryStartService _inventoryStartService;
 
         public ImportService(InventoryContext context,
                              IItemService itemService,
                              IAddressingService addressingService,
                              IWarehouseService warehouseService,
-                             IItemAddressingService itemAddressingService)
+                             IItemAddressingService itemAddressingService,
+                             IAddressingsInventoryStartService addressingsInventoryStartService,
+                             IInventoryStartService inventoryStartService)
         {
             _context = context;
             _itemService = itemService;
             _addressingService = addressingService;
             _warehouseService = warehouseService;
             _itemAddressingService = itemAddressingService;
+            _addressingsInventoryStartService = addressingsInventoryStartService;
+            _inventoryStartService = inventoryStartService;
         }
 
         public async Task<bool> ImportAsync(string fileName, string destiny)
@@ -110,6 +117,37 @@ namespace Inventory.Services
             return true;
         }
 
+        public async Task<List<string>> ImportItemsWithStockTaking(string fileName, string destiny)
+        {
+            List<ImportBase> importsList = new List<ImportBase>();
+            List<string> itemsIds = new List<string>();
+            bool importRealize = await ImportAsync(fileName, destiny);
+
+            if (importRealize)
+            {
+                var path = Path.Combine(Directory.GetCurrentDirectory(), "Resources", destiny, fileName);
+                using (var reader = new StreamReader(path))
+                using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    csv.Read();
+                    csv.ReadHeader();
+                    while (csv.Read())
+                    {
+                        var importList = csv.GetRecord<ImportBase>();
+                        importsList.Add(importList);
+                        itemsIds.Add(importList.Id);
+                    }
+                }
+
+                bool stockTakingAdd = await InsertStockTaking(importsList);
+                if (stockTakingAdd)
+                {
+                    return itemsIds;
+                }
+            }
+            return itemsIds;
+        }
+
         public async Task<bool> InsertWarehouses(List<Warehouse> warehouseInsert)
         {
             await _context.Warehouse.AddRangeAsync(warehouseInsert);
@@ -117,27 +155,6 @@ namespace Inventory.Services
 
             return true;
         }
-
-        //public async Task<bool> InsertAddressings(List<AddressingBaseImport> addressingsBaseImport)
-        //{
-        //    List<Addressing> addressingsInsert = new List<Addressing>();
-
-        //    foreach (var item in addressingsBaseImport)
-        //    {
-        //        Addressing addressingInsert = new Addressing();
-
-        //        var warehouse = await _warehouseService.GetWarehouseByName(item.WarehouseName);
-
-        //        addressingInsert.Name = item.AddressingName;
-        //        addressingInsert.WarehouseId = warehouse.Id;
-        //        addressingsInsert.Add(addressingInsert);
-        //    }
-
-        //    await _context.Addressing.AddRangeAsync(addressingsInsert);
-        //    await _context.SaveChangesAsync();
-
-        //    return true;
-        //}
 
         public async Task<bool> InsertAddressings(List<AddressingBaseImport> addressingsBaseImport)
         {
@@ -173,42 +190,6 @@ namespace Inventory.Services
             return true;
         }
 
-        //public async Task<bool> InsertItems(List<ItemBaseImport> itemBaseImport)
-        //{
-        //    List<Item> itemInsert = new List<Item>();
-        //    List<ItemsAddressings> itemsAddressingsInsert = new List<ItemsAddressings>();
-
-        //    // Listas para duplicados
-        //    List<string> duplicateIds = GetDuplicateIds(itemBaseImport);
-        //    List<string> fisrtOccurrence = new List<string>();
-
-        //    foreach (var item in itemBaseImport)
-        //    {
-
-        //        if (duplicateIds.Contains(item.Id))
-        //        {
-        //            if (fisrtOccurrence.Contains(item.Id))
-        //            {
-        //                itemsAddressingsInsert.Add(await InsertOnlyItemAddressingImportItemAsync(item, null));
-        //                continue;
-        //            }
-        //            itemInsert.Add(await InsertImportItemAsync(item));
-        //            itemsAddressingsInsert.Add(await InsertOnlyItemAddressingImportItemAsync(item, null));
-        //            fisrtOccurrence.Add(item.Id);
-        //            continue;
-        //        }
-        //        itemInsert.Add(await InsertImportItemAsync(item));
-        //        itemsAddressingsInsert.Add(await InsertOnlyItemAddressingImportItemAsync(null, item));
-
-        //    }
-
-
-        //    await _context.Item.AddRangeAsync(itemInsert);
-        //    await _context.ItemsAddressing.AddRangeAsync(itemsAddressingsInsert);
-        //    await _context.SaveChangesAsync();
-        //    return true;
-        //}
-
         public async Task<bool> InsertItems(List<ItemBaseImport> itemBaseImport, HashSet<string> addressingNames)
         {
             //Verify item exist
@@ -230,7 +211,7 @@ namespace Inventory.Services
 
 
             // Obter todos os addressings existentes
-            var addressings = await _addressingService.GetAllAsync<Addressing>();
+            var addressings = await _addressingService.GetAllAddressingsAsync();
 
             // Popula o dicionário com os IDs dos addressings usando a chave composta de nome do addressing e nome do warehouse
             foreach (var addressing in addressings)
@@ -341,23 +322,51 @@ namespace Inventory.Services
             return itemAddressingInsert;
         }
 
-        //private async Task<ItemsAddressings> InsertOnlyItemAddressingImportItemAsync(ItemBaseImport item, ItemBaseImport itemReturn)
-        //{
-        //    ItemsAddressings itemsAddressings = new ItemsAddressings();
-        //    if (itemReturn != null)
-        //    {
-        //        itemsAddressings.ItemId = itemReturn.Id;
-        //        itemsAddressings.AddressingId = itemReturn.AddressingId;
-        //        itemsAddressings.Quantity = itemReturn.Quantity;
-        //    }
-        //    else
-        //    {
-        //        itemsAddressings.ItemId = item.Id;
-        //        itemsAddressings.AddressingId = item.AddressingId;
-        //        itemsAddressings.Quantity = item.Quantity;
-        //    }
+        private async Task<bool> InsertStockTaking(List<ImportBase> importsList)
+        {
+            List<StockTaking> addStockTakings = new List<StockTaking>();
 
-        //    return itemsAddressings;
-        //}
+            HashSet<string> addressingNames = new HashSet<string>();
+            Dictionary<string, int> addressingsIds = new Dictionary<string, int>();
+            var addressings = await _addressingService.GetAllAddressingsAsync();
+            foreach (var addressing in addressings)
+            {
+                addressingsIds[addressing.Name] = addressing.Id;
+                addressingNames.Add(addressing.Name);
+            }
+
+            foreach (var item in importsList)
+            {
+                var addesingInventoryStart = await _addressingsInventoryStartService.GetAddressingsStockTakingByAddressingIdAsync(addressingsIds[item.AddressingName]);
+
+                if (addesingInventoryStart == null)
+                {
+                    var addressing = await _addressingService.GetAddressingByIdAsync(addressingsIds[item.AddressingName]);
+                    var inventoryStart = await _inventoryStartService.GetInventoryStartByWarehouseIdAsync(addressing.WarehouseId);
+                    await _addressingsInventoryStartService.CreateAddressingsStockTakingImportAsync(inventoryStart.Id, addressing.Id);
+
+                    addesingInventoryStart = await _addressingsInventoryStartService.GetAddressingsStockTakingByAddressingIdAsync(addressingsIds[item.AddressingName]);
+                }
+                else
+                {
+                    addesingInventoryStart = await _addressingsInventoryStartService.GetAddressingsStockTakingByAddressingIdAsync(addressingsIds[item.AddressingName]);
+                }
+
+                StockTaking addStockTaking = new StockTaking();
+
+                addStockTaking.ItemId = item.Id;
+                addStockTaking.AddressingsInventoryStartId = addesingInventoryStart.Id;
+                addStockTaking.StockTakingQuantity = item.Quantity;
+                addStockTaking.IsPerishableItem = false;
+                addStockTaking.NumberOfCount = 1;
+                addStockTaking.StockTakingObservation = "Contagem do item importada diretamente para o sistema";
+
+                addStockTakings.Add(addStockTaking);
+            }
+
+            _context.StockTaking.AddRange(addStockTakings);
+            _context.SaveChanges();
+            return true;
+        }
     }
 }

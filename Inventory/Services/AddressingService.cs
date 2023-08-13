@@ -119,6 +119,7 @@ namespace Inventory.Services
                                                   .Include(w => w.Warehouse)
                                                   .Include(s => s.StockTaking)
                                                   .ThenInclude(s => s.StockTaking)
+                                                  .AsNoTracking()
                                                   .ToListAsync();
 
             return result;

@@ -9,5 +9,6 @@ namespace Inventory.Services.Interfaces
         Task<PagingList<InventoryStart>> GetAllInventoryStartsAsync(string filter, int pageindex = 1, string sort = "InventoryStartDate");
         Task<InventoryStart> GetInventoryStartByIdAsync(int id);
         Task<InventoryStart> GetInventoryStartByAddressingAsync(int addressingId);
+        Task<InventoryStart> GetInventoryStartByWarehouseIdAsync(int warehouseId);
     }
 }

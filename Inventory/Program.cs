@@ -52,6 +52,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddSession();
 
 // Regional Configurations
 var enUsCulture = new CultureInfo("en-US");
@@ -126,6 +127,7 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseSession();
 
 app.UseFastReport();
 app.UseRouting();

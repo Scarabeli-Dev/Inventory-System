@@ -1,0 +1,48 @@
+﻿@model IEnumerable<StockTaking>
+@{
+    ViewData["Title"] = "Total de " + Model.Count() + " Itens Importados";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="card">
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Item.Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Item.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.StockTakingQuantity)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AddressingsInventoryStart)
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Item.Id)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.StockTakingQuantity)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AddressingsInventoryStart.Addressing.Name)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

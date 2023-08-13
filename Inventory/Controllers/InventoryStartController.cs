@@ -99,9 +99,9 @@ namespace Inventory.Controllers
         }
 
         [Route("Contagem/Enderecamento")]
-        public async Task<IActionResult> AddressingCount(string filter, int pageindex = 1, string sort = "Id")
+        public async Task<IActionResult> AddressingCount(string filter, int pageSize = 10, int pageindex = 1, string sort = "Id")
         {
-            return View(await _addressingsStockTakingService.GetAddressingsStockTakingsPagingAsync(filter, pageindex, sort));
+            return View(await _addressingsStockTakingService.GetAddressingsStockTakingsPagingAsync(filter, pageSize, pageindex, sort));
         }
     }
 }

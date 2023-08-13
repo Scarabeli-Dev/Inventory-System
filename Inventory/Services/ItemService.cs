@@ -182,6 +182,22 @@ namespace Inventory.Services
             return await _context.Item.Select(item => item.Id).ToListAsync();
         }
 
+        public List<Item> GetAllItemsAsync()
+        {
+            return _context.Item.Include(l => l.Addressings)
+                                      .ThenInclude(l => l.Addressing)
+                                      .ThenInclude(w => w.Warehouse)
+                                      .Include(s => s.StockTaking)
+                                      .ThenInclude(ai => ai.AddressingsInventoryStart)
+                                      .ThenInclude(a => a.Addressing)
+                                      .ThenInclude(w => w.Warehouse)
+                                      .Include(s => s.StockTaking)
+                                      .ThenInclude(p => p.PerishableItem)
+                                      .Include(im => im.InventoryMovement)
+                                      .AsNoTracking()
+                                      .ToList();
+        }
+
         private List<string> GetDuplicateIds(List<ItemImport> items)
         {
             List<string> duplicateIds = new List<string>();

@@ -14,5 +14,6 @@ namespace Inventory.Services.Interfaces
         Task<Item> GetItemByIdForCountAsync(string id);
         Task<bool> ImportItemAsync(string fileName, string destiny);
         Task<List<string>> GetAllItemIdsAsync();
+       List<Item> GetAllItemsAsync();
     }
 }

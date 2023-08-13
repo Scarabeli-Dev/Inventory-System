@@ -58,8 +58,17 @@ namespace Inventory.Services
                                                               .ThenInclude(il => il.Addressing)
                                                               .ThenInclude(s => s.StockTaking)
                                                               .Include(w => w.Warehouse)
-                                                              .FirstOrDefaultAsync(i => i.IsCompleted != true);
+                                                              .FirstOrDefaultAsync(i => i.IsCompleted != true && i.Addressings.Any(i => i.AddressingId == addressingId));
             return inventoryStart;
+        }
+
+        public async Task<InventoryStart> GetInventoryStartByWarehouseIdAsync(int warehouseId)
+        {
+            return await _context.InventoryStart.Include(l => l.Addressings)
+                                                .ThenInclude(il => il.Addressing)
+                                                .Include(w => w.Warehouse)
+                                                .AsNoTracking()
+                                                .FirstOrDefaultAsync(m => m.WarehouseId == warehouseId);
         }
     }
 }
