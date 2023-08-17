@@ -24,3 +24,18 @@ body {
 .collapsed {
     display: none;
 }
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#chart-container {
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.custom-chart-container {
+    height: 100px; /* Defina a altura desejada aqui */
+}

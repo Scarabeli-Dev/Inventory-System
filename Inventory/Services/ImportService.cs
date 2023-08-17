@@ -17,6 +17,7 @@ namespace Inventory.Services
         private readonly IItemAddressingService _itemAddressingService;
         private readonly IAddressingsInventoryStartService _addressingsInventoryStartService;
         private readonly IInventoryStartService _inventoryStartService;
+        private readonly IStockTakingService _stockTakingService;
 
         public ImportService(InventoryContext context,
                              IItemService itemService,
@@ -24,7 +25,8 @@ namespace Inventory.Services
                              IWarehouseService warehouseService,
                              IItemAddressingService itemAddressingService,
                              IAddressingsInventoryStartService addressingsInventoryStartService,
-                             IInventoryStartService inventoryStartService)
+                             IInventoryStartService inventoryStartService,
+                             IStockTakingService stockTakingService)
         {
             _context = context;
             _itemService = itemService;
@@ -33,6 +35,7 @@ namespace Inventory.Services
             _itemAddressingService = itemAddressingService;
             _addressingsInventoryStartService = addressingsInventoryStartService;
             _inventoryStartService = inventoryStartService;
+            _stockTakingService = stockTakingService;
         }
 
         public async Task<bool> ImportAsync(string fileName, string destiny)
@@ -235,10 +238,16 @@ namespace Inventory.Services
                         // Caso seja duplicado e não seja a primeira ocorrência, cria apenas o ItemsAddressings
                         if (addressingNames.Contains(item.AddressingName + item.WarehouseName))
                         {
-                            ItemsAddressings itemAddressing = await _itemAddressingService.GetItemAddressingByIdsAsync(item.Id, addressingsIds[item.AddressingName + item.WarehouseName]);
-                            if (itemAddressing != null)
+                            List<ItemsAddressings> itemAddressingList = await _itemAddressingService.GetAllItemAddressingByItemIdsAsync(item.Id);
+                            if (itemAddressingList != null)
                             {
-                                itemsAddressingsInsert.Add(InsertItemAddressingsForUpdateAsync(item, itemAddressing));
+                                foreach (var itemAddressing in itemAddressingList)
+                                {
+                                    if (itemAddressing.AddressingId == addressingsIds[item.AddressingName + item.WarehouseName] && itemAddressing.ItemId == item.Id)
+                                    {
+                                        itemsAddressingsInsert.Add(InsertItemAddressingsForUpdateAsync(item, itemAddressing));
+                                    }
+                                }
                                 continue;
                             }
                         }
@@ -261,8 +270,33 @@ namespace Inventory.Services
 
             await _context.Item.AddRangeAsync(itemInsert);
             //await _context.ItemsAddressing.AddRangeAsync(itemsAddressingsInsert);
-            _context.ItemsAddressing.UpdateRange(itemsAddressingsInsert);
-            await _context.SaveChangesAsync();
+            //_context.ItemsAddressing.UpdateRange(itemsAddressingsInsert);
+            var addItemsAddressing = await AddItemsAddressing(itemsAddressingsInsert);
+            if (addItemsAddressing)
+            {
+                await _context.SaveChangesAsync();
+            }
+
+            return true;
+        }
+
+        private async Task<bool> AddItemsAddressing(List<ItemsAddressings> itemsAddressingsInsert)
+        {
+            List<ItemsAddressings> withId = new List<ItemsAddressings>();
+            List<ItemsAddressings> withOutId = new List<ItemsAddressings>();
+
+            foreach (var item in itemsAddressingsInsert)
+            {
+                if (item.Id == 0)
+                {
+                    withOutId.Add(item);
+                }
+                else
+                {
+                    withId.Add(item);
+                }
+            }
+            await _context.ItemsAddressing.AddRangeAsync(withOutId);
 
             return true;
         }
@@ -358,7 +392,9 @@ namespace Inventory.Services
                 addStockTaking.AddressingsInventoryStartId = addesingInventoryStart.Id;
                 addStockTaking.StockTakingQuantity = item.Quantity;
                 addStockTaking.IsPerishableItem = false;
+                addStockTaking.StockTakingDate = DateTime.Now;
                 addStockTaking.NumberOfCount = 1;
+                addStockTaking.StockTakingPreviousQuantity = item.Quantity;
                 addStockTaking.StockTakingObservation = "Contagem do item importada diretamente para o sistema";
 
                 addStockTakings.Add(addStockTaking);

@@ -79,8 +79,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRkcmVzc2luZ3NcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Systems/Inventory/Inventory/Views/Dashboard/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRGFzaGJvYXJkXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Systems/Inventory/Inventory/Views/Imports/ImportAll.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW1wb3J0c1xJbXBvcnRBbGwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Systems/Inventory/Inventory/Views/Imports/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSW1wb3J0c1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Systems/Inventory/Inventory/Views/InventoryMovement/Index.cshtml]
@@ -131,6 +139,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Systems/Inventory/Inventory/Views/Reports/IndexTest.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0c1xJbmRleFRlc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Systems/Inventory/Inventory/Views/Shared/Components/PagerWithNamedView/Custom.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUGFnZXJXaXRoTmFtZWRWaWV3XEN1c3RvbS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Systems/Inventory/Inventory/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
@@ -163,6 +179,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvY2tUYWtpbmdcQ2hlY2tTdG9ja1Rha2luZy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Systems/Inventory/Inventory/Views/StockTaking/DeleteStockTaking.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvY2tUYWtpbmdcRGVsZXRlU3RvY2tUYWtpbmcuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Systems/Inventory/Inventory/Views/StockTaking/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvY2tUYWtpbmdcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
@@ -179,8 +199,16 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvY2tUYWtpbmdcSXRlbUNvdW50RWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Systems/Inventory/Inventory/Views/StockTaking/PerishableItems.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvY2tUYWtpbmdcUGVyaXNoYWJsZUl0ZW1zLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Systems/Inventory/Inventory/Views/StockTaking/StockTakingReport.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvY2tUYWtpbmdcU3RvY2tUYWtpbmdSZXBvcnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Systems/Inventory/Inventory/Views/StockTaking/_AddressingsPaging.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU3RvY2tUYWtpbmdcX0FkZHJlc3NpbmdzUGFnaW5nLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Systems/Inventory/Inventory/Views/Warehouses/Create.cshtml]

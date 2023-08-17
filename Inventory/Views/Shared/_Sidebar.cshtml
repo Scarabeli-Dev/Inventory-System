@@ -75,7 +75,7 @@
         <hr />
     }
 
-    @if (User.IsInRole("Admin") || !User.IsInRole("Relatorio"))
+    @if (User.IsInRole("Admin") || User.IsInRole("Relatorio"))
     {
         <li class="nav-item">
             <a class="nav-link collapsed" asp-area="" asp-controller="Dashboard" asp-action="Index">

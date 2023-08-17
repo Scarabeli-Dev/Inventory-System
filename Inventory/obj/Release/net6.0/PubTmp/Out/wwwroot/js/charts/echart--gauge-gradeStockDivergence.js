@@ -5,7 +5,8 @@ var myChart = echarts.init(dom, null, {
     useDirtyRect: false
 });
 var frontValue = parseFloat(dom.getAttribute('data-value'));
-
+var screemSize = parseFloat(dom.getAttribute('data-size'));
+debugger;
 var app = {};
 
 var option;

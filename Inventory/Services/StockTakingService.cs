@@ -28,6 +28,11 @@ namespace Inventory.Services
 
         public async Task<bool> SaveStockTakingWithOutRecount(StockTaking stockTaking)
         {
+            // Define o fuso horário UTC-3
+            //var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo"); // Ou outro ID de fuso horário adequado
+
+            //// Obtém a data e hora atual no fuso horário UTC-3
+            //stockTaking.StockTakingDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneInfo);
             stockTaking.StockTakingDate = DateTime.Now;
 
             if (stockTaking.IsPerishableItem == true)
@@ -61,6 +66,11 @@ namespace Inventory.Services
 
         public async Task<bool> SaveStockTakingWithRecount(StockTaking stockTaking)
         {
+            //// Define o fuso horário UTC-3
+            //var timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById("America/Sao_Paulo"); // Ou outro ID de fuso horário adequado
+
+            //// Obtém a data e hora atual no fuso horário UTC-3
+            //stockTaking.StockTakingDate = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneInfo);
             stockTaking.StockTakingDate = DateTime.Now;
             stockTaking.NumberOfCount++;
 

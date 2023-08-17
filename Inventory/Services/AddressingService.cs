@@ -130,6 +130,7 @@ namespace Inventory.Services
             var result = await _context.Addressing.Include(l => l.Item).ThenInclude(il => il.Item)
                                                   .Include(w => w.Warehouse)
                                                   .Include(a => a.StockTaking).ThenInclude(s => s.StockTaking)
+                                                  .AsNoTracking()
                                                   .FirstOrDefaultAsync(m => m.Id == id);
 
             return result;

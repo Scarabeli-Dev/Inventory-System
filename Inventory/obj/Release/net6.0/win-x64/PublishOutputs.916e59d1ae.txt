@@ -645,7 +645,7 @@ C:\Systems\Inventory\Inventory\obj\Release\net6.0\win-x64\PubTmp\Out\dbgshim.dll
 C:\Systems\Inventory\Inventory\obj\Release\net6.0\win-x64\PubTmp\Out\hostfxr.dll
 C:\Systems\Inventory\Inventory\obj\Release\net6.0\win-x64\PubTmp\Out\hostpolicy.dll
 C:\Systems\Inventory\Inventory\obj\Release\net6.0\win-x64\PubTmp\Out\mscordaccore.dll
-C:\Systems\Inventory\Inventory\obj\Release\net6.0\win-x64\PubTmp\Out\mscordaccore_amd64_amd64_6.0.1523.11507.dll
+C:\Systems\Inventory\Inventory\obj\Release\net6.0\win-x64\PubTmp\Out\mscordaccore_amd64_amd64_6.0.2023.32017.dll
 C:\Systems\Inventory\Inventory\obj\Release\net6.0\win-x64\PubTmp\Out\mscordbi.dll
 C:\Systems\Inventory\Inventory\obj\Release\net6.0\win-x64\PubTmp\Out\mscorrc.dll
 C:\Systems\Inventory\Inventory\obj\Release\net6.0\win-x64\PubTmp\Out\msquic.dll
