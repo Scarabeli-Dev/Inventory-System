@@ -12,7 +12,14 @@
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 
-<h3>@ViewData["Title"]</h3>
+<div class="d-flex justify-content-between">
+    <div class="col-6">
+        <h3>@ViewData["Title"]</h3>
+    </div>
+    <div class="col-6">
+        <a class="btn btn-primary" asp-action="ExportCSV" asp-controller="Reports">Exportar para CSV</a>
+    </div>
+</div>
 
 <form method="get" id="filterForm">
     <div class="row align-items-end mb-3">

@@ -1,4 +1,6 @@
-﻿using Inventory.Data;
+﻿using CsvHelper.Configuration;
+using CsvHelper;
+using Inventory.Data;
 using Inventory.Helpers;
 using Inventory.Models;
 using Inventory.Services.Interfaces;
@@ -8,7 +10,9 @@ using Microsoft.EntityFrameworkCore;
 using MySqlX.XDevAPI.Common;
 using ReflectionIT.Mvc.Paging;
 using System.Drawing.Printing;
+using System.Globalization;
 using System.Linq;
+using Inventory.ViewModels.Exports;
 
 namespace Inventory.Services
 {
@@ -204,5 +208,101 @@ namespace Inventory.Services
             return model;
         }
 
+        public void ExportToCSV()
+        {
+            var sampleData = GetSampleData();
+
+            var records = new List<CsvExportReport>();
+
+            foreach (var item in sampleData)
+            {
+                var row = new CsvExportReport
+                {
+                    Codigo = item.ItemId,
+                    Produto = item.ItemName,
+                    UnidadeMedida = item.UnitOfMeasurement,
+                    EstoqueSistema = item.SystemQuantity,
+                    Contagem = item.QuantityStockTaking,
+                    Divergencia = item.Divergence,
+                    StatusEstoque = item.StockSituation.GetDisplayName(), // Utilize o método para obter o DisplayName
+                    StatusEnderecamento = item.AddressingSituation.GetDisplayName(), // Utilize o método para obter o DisplayName
+                    Observacoes = string.Join("; ", item.StockTakings.Select(st => st.StockTakingObservation)),
+                    EnderecamentoSistema1 = GetAddressingSystemString(item.Addressings, 0), // Utilize uma função auxiliar para obter a string de endereçamento
+                    Dep1 = GetDepSystemString(item.Addressings, 0), // Utilize uma função auxiliar para obter a string de depósito
+                    Quantidade1 = GetQuantitySystem(item.Addressings, 0), // Utilize uma função auxiliar para obter a quantidade
+                    EnderecamentoSistema2 = GetAddressingSystemString(item.Addressings, 1), // Utilize uma função auxiliar para obter a string de endereçamento
+                    Dep2 = GetDepSystemString(item.Addressings, 1), // Utilize uma função auxiliar para obter a string de depósito
+                    Quantidade2 = GetQuantitySystem(item.Addressings, 1), // Utilize uma função auxiliar para obter a quantidade
+                    EnderecamentoContagem1 = GetAddressingCountString(item.StockTakings, 0), // Utilize uma função auxiliar para obter a string de endereçamento
+                    Dep3 = GetDepCountString(item.StockTakings, 0), // Utilize uma função auxiliar para obter a string de depósito
+                    Quantidade3 = GetQuantityCount(item.StockTakings, 0), // Utilize uma função auxiliar para obter a quantidade
+                    EnderecamentoContagem2 = GetAddressingCountString(item.StockTakings, 1), // Utilize uma função auxiliar para obter a string de endereçamento
+                    Dep4 = GetDepCountString(item.StockTakings, 1), // Utilize uma função auxiliar para obter a string de depósito
+                    Quantidade4 = GetQuantityCount(item.StockTakings, 1) // Utilize uma função auxiliar para obter a quantidade
+                };
+
+                records.Add(row);
+            }
+
+            using var writer = new StreamWriter("report.csv");
+            using var csv = new CsvWriter(writer, new CsvConfiguration(CultureInfo.InvariantCulture));
+
+            csv.WriteRecords(records);
+        }
+
+        // Funções auxiliares para obter os valores de endereçamento, depósito e quantidade
+        private string GetAddressingSystemString(IEnumerable<ItemsAddressings> addressings, int index)
+        {
+            if (index < addressings.Count())
+            {
+                return addressings.ElementAt(index).Addressing.Name;
+            }
+            return "";
+        }
+
+        private string GetDepSystemString(IEnumerable<ItemsAddressings> addressings, int index)
+        {
+            if (index < addressings.Count())
+            {
+                return addressings.ElementAt(index).Addressing.Warehouse.Name;
+            }
+            return "";
+        }
+
+        private decimal GetQuantitySystem(IEnumerable<ItemsAddressings> addressings, int index)
+        {
+            if (index < addressings.Count())
+            {
+                return addressings.ElementAt(index).Quantity;
+            }
+            return 0;
+        }
+
+        private string GetAddressingCountString(IEnumerable<StockTaking> stockTakings, int index)
+        {
+            if (index < stockTakings.Count())
+            {
+                return stockTakings.ElementAt(index).AddressingsInventoryStart.Addressing.Name;
+            }
+            return "";
+        }
+
+        private string GetDepCountString(IEnumerable<StockTaking> stockTakings, int index)
+        {
+            if (index < stockTakings.Count())
+            {
+                return stockTakings.ElementAt(index).AddressingsInventoryStart.Addressing.Warehouse.Name;
+            }
+            return "";
+        }
+
+        private decimal GetQuantityCount(IEnumerable<StockTaking> stockTakings, int index)
+        {
+            if (index < stockTakings.Count())
+            {
+                return stockTakings.ElementAt(index).StockTakingQuantity;
+            }
+            return 0;
+        }
     }
 }

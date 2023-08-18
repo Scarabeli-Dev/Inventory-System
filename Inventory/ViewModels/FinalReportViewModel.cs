@@ -36,9 +36,6 @@ namespace Inventory.ViewModels
         [Display(Name = "Situação do Armazenamento")]
         public AddressingSituation AddressingSituation { get; set; }
 
-        public int WarehouseAddressingId { get; set; }
-        public int WarehouseStocktakingId { get; set; }
-
         public IEnumerable<StockTaking> StockTakings { get; set; }
         public IEnumerable<ItemsAddressings> Addressings { get; set; }
         public IEnumerable<InventoryMovement> InventoryMovement { get; set; }

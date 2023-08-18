@@ -82,6 +82,15 @@ namespace Inventory.Controllers
             return selectList;
         }
 
+        public IActionResult ExportCSV()
+        {
+            _reportViewService.ExportToCSV();
 
+            var filePath = "report.csv"; // Nome do arquivo gerado pela função ExportToCSV
+
+            // Retorna o arquivo para download
+            byte[] fileBytes = System.IO.File.ReadAllBytes(filePath);
+            return File(fileBytes, "text/csv", "Relatorio.csv");
+        }
     }
 }
