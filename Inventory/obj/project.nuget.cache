@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "698c3zpylS1niGK1MTacmUtal10on/eS3ml8iykuAcN2CvMa+5qXQzwNLYCzdge7w9p3jDVNfar9yqPJYVr32g==",
+  "dgSpecHash": "e9dz1o2N9WI=",
   "success": true,
-  "projectFilePath": "C:\\Systems\\Inventory\\Inventory\\Inventory.csproj",
+  "projectFilePath": "C:\\APIs\\Inventory-System\\Inventory\\Inventory.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Scarabeli\\.nuget\\packages\\csvhelper\\30.0.1\\csvhelper.30.0.1.nupkg.sha512",
     "C:\\Users\\Scarabeli\\.nuget\\packages\\fastreport.compat\\2023.1.8\\fastreport.compat.2023.1.8.nupkg.sha512",

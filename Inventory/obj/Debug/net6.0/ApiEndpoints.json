@@ -1,0 +1,451 @@
+[
+  {
+    "ContainingType": "FastReport.Web.Controllers.UtilsController",
+    "Method": "GetComponentProperties",
+    "RelativePath": "_fr/designer.getComponentProperties",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.UtilsController",
+    "Method": "GetConfig",
+    "RelativePath": "_fr/designer.getConfig",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reportId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.ConnectionsController",
+    "Method": "GetConnectionStringProperties",
+    "RelativePath": "_fr/designer.getConnectionStringProperties",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ConnectionType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ConnectionString",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.ConnectionsController",
+    "Method": "GetConnectionTables",
+    "RelativePath": "_fr/designer.getConnectionTables",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ConnectionType",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ConnectionString",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.ConnectionsController",
+    "Method": "GetConnectionTypes",
+    "RelativePath": "_fr/designer.getConnectionTypes",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.UtilsController",
+    "Method": "GetFunctions",
+    "RelativePath": "_fr/designer.getFunctions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reportId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.DesignerReportController",
+    "Method": "GetReport",
+    "RelativePath": "_fr/designer.getReport",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reportId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.ConnectionsController",
+    "Method": "MakeConnectionString",
+    "RelativePath": "_fr/designer.makeConnectionString",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "connectionType",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.UtilsController",
+    "Method": "GetMSChartTemplate",
+    "RelativePath": "_fr/designer.objects/mschart/template",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.UtilsController",
+    "Method": "GetDesignerObjectPreview",
+    "RelativePath": "_fr/designer.objects/preview",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reportId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.DesignerReportController",
+    "Method": "GetPreviewReport",
+    "RelativePath": "_fr/designer.previewReport",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reportId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.DesignerReportController",
+    "Method": "SaveReport",
+    "RelativePath": "_fr/designer.saveReport",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reportId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.ExportReportController",
+    "Method": "GetExportSettings",
+    "RelativePath": "_fr/exportsettings.getSettings",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ReportId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Format",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.ExportReportController",
+    "Method": "ExportReport",
+    "RelativePath": "_fr/preview.exportReport",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ReportId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ExportFormat",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.GetPictureController",
+    "Method": "GetPicture",
+    "RelativePath": "_fr/preview.getPicture",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ReportId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PictureId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.GetReportController",
+    "Method": "GetReport",
+    "RelativePath": "_fr/preview.getReport",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reportId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ClickParams.Click",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ClickParams.CheckBoxClick",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ClickParams.TextEdit",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ClickParams.Text",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ClickParams.AdvMatrixClick",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "DialogParams.DialogN",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "DialogParams.DialogControlName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "DialogParams.DialogEventName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "DialogParams.DialogData",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ReportTabParams.SetTab",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ReportTabParams.CloseTab",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ReportPageParams.GoTo",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ReportPageParams.Bookmark",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ReportPageParams.DetailedReport",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ReportPageParams.DetailedPage",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "RenderBody",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "SkipPrepare",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ForceRefresh",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Zoom",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.PrintReportController",
+    "Method": "PrintReport",
+    "RelativePath": "_fr/preview.printReport",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ReportId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "PrintMode",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.ServiceController",
+    "Method": "TextEditForm",
+    "RelativePath": "_fr/preview.textEditForm",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "ReportId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Click",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.GetReportController",
+    "Method": "TouchReport",
+    "RelativePath": "_fr/preview.touchReport",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "reportId",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "FastReport.Web.Controllers.ResourcesController",
+    "Method": "GetResource",
+    "RelativePath": "_fr/resources.getResource",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "resourceName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "contentType",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

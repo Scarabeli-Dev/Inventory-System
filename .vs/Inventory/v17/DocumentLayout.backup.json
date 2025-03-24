@@ -1,0 +1,221 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\APIs\\Inventory-System\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|c:\\apis\\inventory-system\\inventory\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|solutionrelative:inventory\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|c:\\apis\\inventory-system\\inventory\\services\\dashboardservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|solutionrelative:inventory\\services\\dashboardservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|c:\\apis\\inventory-system\\inventory\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|solutionrelative:inventory\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|c:\\apis\\inventory-system\\inventory\\helpers\\seeduserroleinitial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|solutionrelative:inventory\\helpers\\seeduserroleinitial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|c:\\apis\\inventory-system\\inventory\\helpers\\interfaces\\iseeduserroleinitial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|solutionrelative:inventory\\helpers\\interfaces\\iseeduserroleinitial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|c:\\apis\\inventory-system\\inventory\\controllers\\reportscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|solutionrelative:inventory\\controllers\\reportscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|c:\\apis\\inventory-system\\inventory\\services\\reportviewservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|solutionrelative:inventory\\services\\reportviewservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|c:\\apis\\inventory-system\\inventory\\viewmodels\\exports\\csvexportreport.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|solutionrelative:inventory\\viewmodels\\exports\\csvexportreport.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|c:\\apis\\inventory-system\\inventory\\services\\stocktakingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|solutionrelative:inventory\\services\\stocktakingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|c:\\apis\\inventory-system\\inventory\\views\\reports\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|solutionrelative:inventory\\views\\reports\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|c:\\apis\\inventory-system\\inventory\\services\\interfaces\\ireportviewservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|solutionrelative:inventory\\services\\interfaces\\ireportviewservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|c:\\apis\\inventory-system\\inventory\\viewmodels\\finalreportviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{AF8D21FB-AA36-48B1-9619-5CFB42D01BFE}|Inventory\\Inventory.csproj|solutionrelative:inventory\\viewmodels\\finalreportviewmodel.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 239,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e506b91c-c606-466a-90a9-123d1d1e12b3}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{13b12e3e-c1b4-4539-9371-4fe9a0d523fc}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "C:\\APIs\\Inventory-System\\Inventory\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "Inventory\\appsettings.Development.json",
+              "ToolTip": "C:\\APIs\\Inventory-System\\Inventory\\appsettings.Development.json",
+              "RelativeToolTip": "Inventory\\appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAABbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-02-17T15:06:54.584Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DashboardService.cs",
+              "DocumentMoniker": "C:\\APIs\\Inventory-System\\Inventory\\Services\\DashboardService.cs",
+              "RelativeDocumentMoniker": "Inventory\\Services\\DashboardService.cs",
+              "ToolTip": "C:\\APIs\\Inventory-System\\Inventory\\Services\\DashboardService.cs",
+              "RelativeToolTip": "Inventory\\Services\\DashboardService.cs",
+              "ViewState": "AgIAACoAAAAAAAAAAAAiwC4AAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-14T17:55:44.054Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\APIs\\Inventory-System\\Inventory\\Program.cs",
+              "RelativeDocumentMoniker": "Inventory\\Program.cs",
+              "ToolTip": "C:\\APIs\\Inventory-System\\Inventory\\Program.cs",
+              "RelativeToolTip": "Inventory\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-14T17:49:45.044Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ISeedUserRoleInitial.cs",
+              "DocumentMoniker": "C:\\APIs\\Inventory-System\\Inventory\\Helpers\\Interfaces\\ISeedUserRoleInitial.cs",
+              "RelativeDocumentMoniker": "Inventory\\Helpers\\Interfaces\\ISeedUserRoleInitial.cs",
+              "ToolTip": "C:\\APIs\\Inventory-System\\Inventory\\Helpers\\Interfaces\\ISeedUserRoleInitial.cs",
+              "RelativeToolTip": "Inventory\\Helpers\\Interfaces\\ISeedUserRoleInitial.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-14T17:49:57.778Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "SeedUserRoleInitial.cs",
+              "DocumentMoniker": "C:\\APIs\\Inventory-System\\Inventory\\Helpers\\SeedUserRoleInitial.cs",
+              "RelativeDocumentMoniker": "Inventory\\Helpers\\SeedUserRoleInitial.cs",
+              "ToolTip": "C:\\APIs\\Inventory-System\\Inventory\\Helpers\\SeedUserRoleInitial.cs",
+              "RelativeToolTip": "Inventory\\Helpers\\SeedUserRoleInitial.cs",
+              "ViewState": "AgIAAC4AAAAAAAAAAADgv0EAAABHAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-14T17:49:07.574Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ReportViewService.cs",
+              "DocumentMoniker": "C:\\APIs\\Inventory-System\\Inventory\\Services\\ReportViewService.cs",
+              "RelativeDocumentMoniker": "Inventory\\Services\\ReportViewService.cs",
+              "ToolTip": "C:\\APIs\\Inventory-System\\Inventory\\Services\\ReportViewService.cs",
+              "RelativeToolTip": "Inventory\\Services\\ReportViewService.cs",
+              "ViewState": "AQIAANsAAAAAAAAAAAAiwOYAAAAzAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-14T15:17:57.792Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "IReportViewService.cs",
+              "DocumentMoniker": "C:\\APIs\\Inventory-System\\Inventory\\Services\\Interfaces\\IReportViewService.cs",
+              "RelativeDocumentMoniker": "Inventory\\Services\\Interfaces\\IReportViewService.cs",
+              "ToolTip": "C:\\APIs\\Inventory-System\\Inventory\\Services\\Interfaces\\IReportViewService.cs",
+              "RelativeToolTip": "Inventory\\Services\\Interfaces\\IReportViewService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAqwAoAAAAYAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-14T15:17:57.906Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ReportsController.cs",
+              "DocumentMoniker": "C:\\APIs\\Inventory-System\\Inventory\\Controllers\\ReportsController.cs",
+              "RelativeDocumentMoniker": "Inventory\\Controllers\\ReportsController.cs",
+              "ToolTip": "C:\\APIs\\Inventory-System\\Inventory\\Controllers\\ReportsController.cs",
+              "RelativeToolTip": "Inventory\\Controllers\\ReportsController.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAA4AAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-14T15:17:57.908Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "StockTakingService.cs",
+              "DocumentMoniker": "C:\\APIs\\Inventory-System\\Inventory\\Services\\StockTakingService.cs",
+              "RelativeDocumentMoniker": "Inventory\\Services\\StockTakingService.cs",
+              "ToolTip": "C:\\APIs\\Inventory-System\\Inventory\\Services\\StockTakingService.cs",
+              "RelativeToolTip": "Inventory\\Services\\StockTakingService.cs",
+              "ViewState": "AQIAAPYAAAAAAAAAAAAswAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-14T15:17:57.91Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "CsvExportReport.cs",
+              "DocumentMoniker": "C:\\APIs\\Inventory-System\\Inventory\\ViewModels\\Exports\\CsvExportReport.cs",
+              "RelativeDocumentMoniker": "Inventory\\ViewModels\\Exports\\CsvExportReport.cs",
+              "ToolTip": "C:\\APIs\\Inventory-System\\Inventory\\ViewModels\\Exports\\CsvExportReport.cs",
+              "RelativeToolTip": "Inventory\\ViewModels\\Exports\\CsvExportReport.cs",
+              "ViewState": "AQIAADQAAAAAAAAAAAAywCoAAAAaAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-14T15:17:57.911Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\APIs\\Inventory-System\\Inventory\\Views\\Reports\\Index.cshtml",
+              "RelativeDocumentMoniker": "Inventory\\Views\\Reports\\Index.cshtml",
+              "ToolTip": "C:\\APIs\\Inventory-System\\Inventory\\Views\\Reports\\Index.cshtml",
+              "RelativeToolTip": "Inventory\\Views\\Reports\\Index.cshtml",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAABRAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-02-14T15:17:57.914Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "FinalReportViewModel.cs",
+              "DocumentMoniker": "C:\\APIs\\Inventory-System\\Inventory\\ViewModels\\FinalReportViewModel.cs",
+              "RelativeDocumentMoniker": "Inventory\\ViewModels\\FinalReportViewModel.cs",
+              "ToolTip": "C:\\APIs\\Inventory-System\\Inventory\\ViewModels\\FinalReportViewModel.cs",
+              "RelativeToolTip": "Inventory\\ViewModels\\FinalReportViewModel.cs",
+              "ViewState": "AQIAAAsAAAAAAAAAAAAQwCYAAAA0AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-14T15:17:57.915Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
